@@ -13,8 +13,6 @@ QT += sql
 TARGET = homeAutoGui
 TEMPLATE = app
 
-#INCLUDEPATH +=C:\mysql\include
-#LIBS += D:\libmysql.dll
 
 SOURCES += main.cpp\
         mainwindow.cpp \
