@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     db.setUserName("ali");
     db.setPassword("reyhan");
     if (!db.open()) {
-        qDebug() <<  db.lastError().text() << db.lastError().number();//"Database error occurred";
+        qDebug() <<  db.lastError().text() << db.lastError().number();
     } else
         qDebug() << "connected to database";
 
