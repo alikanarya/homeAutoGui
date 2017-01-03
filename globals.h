@@ -29,8 +29,8 @@ float aInpArrVal[aInpSize];
 
 int aOutArr[aOutSize];
 
-//QString clientAddress = "192.168.2.232"; // BBB ***
-QString clientAddress = "192.168.1.235"; // BBB ***
+QString clientAddress = "192.168.2.232"; // BBB ***
+//QString clientAddress = "192.168.1.235"; // BBB ***
 //QString clientAddress = "192.168.1.124"; // BBBak
 
 //QString clientAddress = "192.168.2.241"; // DebianVB
