@@ -41,6 +41,8 @@ private slots:
     void transferData();
 
 
+    void on_pushButton_clicked();
+
 signals:
 
     void connectTo();

@@ -15,6 +15,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->setupUi(this);
 
+    ui->dateEdit_BEGIN->setDate(QDate::currentDate());
+    ui->dateEdit_END->setDate(QDate::currentDate());
+
     serverx = new Server();
     clientx = new Client();
     checkClientX = new checkClient();
@@ -188,3 +191,50 @@ void MainWindow::transferData(){
 
 }
 
+
+void MainWindow::on_pushButton_clicked(){
+
+    QString beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+    QString endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    QString beginTime = ui->timeEdit_BEGIN->time().toString();
+    QString endTime = ui->timeEdit_END->time().toString();
+
+    QString qryStr = QString( "SELECT * FROM zones WHERE date <= '%1' AND date >= '%2' AND time <= '%3' AND time >= '%4'").arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+    cout << qryStr.toUtf8().constData() << endl;
+
+
+    if (db.open()) {
+
+        QSqlQuery qry;
+        qry.prepare( qryStr );
+
+        if( !qry.exec() )
+
+            qDebug() << qry.lastError();
+
+        else {
+
+            qDebug( "Selected!" );
+
+            QSqlRecord rec = qry.record();
+            int cols = rec.count();
+
+            QString temp;
+            for( int c=0; c<cols; c++ )
+              temp += rec.fieldName(c) + ((c<cols-1)?"\t":"");
+            qDebug() << temp;
+
+            while( qry.next() )
+            {
+              temp = "";
+              for( int c=0; c<cols; c++ )
+                temp += qry.value(c).toString() + ((c<cols-1)?"\t":"");
+              qDebug() << temp;
+            }
+
+
+        }
+
+    }
+
+}
