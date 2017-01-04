@@ -48,15 +48,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(checkClientX, SIGNAL(notConnected()),this, SLOT(NotConnectedToServer()));
     connect(this, SIGNAL(sendData()),this, SLOT(transferData()));
 
-    db.setHostName(clientAddress);
-    db.setDatabaseName(dbName);
-    db.setUserName(dbUser);
-    db.setPassword(dbPass);
-    if (!db.open()) {
-        qDebug() <<  db.lastError().text() << db.lastError().number();
-    } else
-        qDebug() << "connected to database";
 
+    connectToDB();
 
 }
 
@@ -85,9 +78,25 @@ bool MainWindow::readSettings(){
     }
 }
 
+void MainWindow::connectToDB(){
+
+    db.setHostName(clientAddress);
+    db.setDatabaseName(dbName);
+    db.setUserName(dbUser);
+    db.setPassword(dbPass);
+    if (!db.open()) {
+        qDebug() <<  db.lastError().text() << db.lastError().number();
+        ui->DBconnStatusLabel->setText(MSG_DB_CON_NO);
+        ui->DBconnStatusLabel->setStyleSheet("color: red");
+    } else {
+        ui->DBconnStatusLabel->setText(MSG_DB_CON_YES);
+        ui->DBconnStatusLabel->setStyleSheet("color: green");
+    }
+}
+
 void MainWindow::ConnectedToServer(){
 
-    ui->connStatusLabel->setText(MSG_CONN_YES);
+    ui->connStatusLabel->setText(MSG_BBB_CON_YES);
     ui->connStatusLabel->setStyleSheet("color: green");
 }
 
@@ -95,7 +104,7 @@ void MainWindow::NotConnectedToServer(){
 
     //cout << MSG_CONN_NO.toUtf8().constData() << endl;
 
-    ui->connStatusLabel->setText(MSG_CONN_NO);
+    ui->connStatusLabel->setText(MSG_BBB_CON_NO);
     ui->connStatusLabel->setStyleSheet("color: red");
 
     ui->dINP1->setStyleSheet("background-color: light gray");

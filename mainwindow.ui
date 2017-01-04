@@ -281,9 +281,9 @@
    <widget class="QLabel" name="connStatusLabel">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>410</x>
       <y>10</y>
-      <width>111</width>
+      <width>70</width>
       <height>21</height>
      </rect>
     </property>
@@ -295,7 +295,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Conn stat</string>
+     <string>BBB+/-</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -304,7 +304,7 @@
    <widget class="QLabel" name="ai0">
     <property name="geometry">
      <rect>
-      <x>480</x>
+      <x>520</x>
       <y>60</y>
       <width>59</width>
       <height>17</height>
@@ -326,7 +326,7 @@
    <widget class="QLabel" name="ai1">
     <property name="geometry">
      <rect>
-      <x>480</x>
+      <x>520</x>
       <y>80</y>
       <width>59</width>
       <height>17</height>
@@ -350,7 +350,7 @@
      <rect>
       <x>420</x>
       <y>60</y>
-      <width>61</width>
+      <width>91</width>
       <height>17</height>
      </rect>
     </property>
@@ -361,7 +361,7 @@
      <enum>Qt::RichText</enum>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
@@ -369,7 +369,7 @@
      <rect>
       <x>420</x>
       <y>80</y>
-      <width>61</width>
+      <width>91</width>
       <height>17</height>
      </rect>
     </property>
@@ -378,6 +378,29 @@
     </property>
     <property name="textFormat">
      <enum>Qt::RichText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="DBconnStatusLabel">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>10</y>
+      <width>70</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <italic>true</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>DB+/-</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -390,7 +413,7 @@
      <x>0</x>
      <y>0</y>
      <width>613</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>

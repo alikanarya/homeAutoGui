@@ -14,8 +14,10 @@
 QString MSG_SERVER_INIT = "Server is listening...";
 QString MSG_CLIENT_CONN = "Client connected";
 QString MSG_HI = "Hi by Windows";
-QString MSG_CONN_YES = "Connected";
-QString MSG_CONN_NO = "DisConnected";
+QString MSG_BBB_CON_YES = "BBB+";
+QString MSG_BBB_CON_NO = "BBB-";
+QString MSG_DB_CON_YES = "DB+";
+QString MSG_DB_CON_NO = "DB-";
 
 extern const int dInpSize = 8;
 extern const int dOutSize = 4;
