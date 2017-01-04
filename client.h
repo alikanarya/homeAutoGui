@@ -14,10 +14,13 @@ public:
 
     Client(QObject* parent = 0);
     ~Client();
+    void setHost(QString hostAddress, quint16 hostPort);
     void start();
 
     QTcpSocket clientSocket;
     quint16 clientPort = 8889;
+    QString clientAddress = "locahost";
+    QHostAddress host;
     //QString clientAddress = "192.168.1.235"; // BBB
     //QString clientAddress = "192.168.1.124"; // BBBak
     //QString clientAddress = "192.168.2.232"; // BBB
@@ -25,7 +28,6 @@ public:
     //QString clientAddress = "192.168.2.222"; // Windows
 
     bool connected = false;
-    QHostAddress host;
     QByteArray datagram;
 
 public slots:

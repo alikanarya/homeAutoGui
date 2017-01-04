@@ -4,6 +4,13 @@
 #include "server.h"
 #include "client.h"
 
+#define INIFILENAME         "settings.ini"
+#define _CLIENT_ADR         "localhost"
+#define _CLIENT_PORT        8888
+#define _DB_NAME            "homeAutoDB"
+#define _DB_USER            "ali"
+#define _DB_PASS            "reyhan"
+
 QString MSG_SERVER_INIT = "Server is listening...";
 QString MSG_CLIENT_CONN = "Client connected";
 QString MSG_HI = "Hi by Windows";
@@ -29,7 +36,13 @@ float aInpArrVal[aInpSize];
 
 int aOutArr[aOutSize];
 
-QString clientAddress = "192.168.2.232"; // BBB ***
+QString clientAddress = "";
+quint16 clientPort = 0;
+QString dbName;
+QString dbUser;
+QString dbPass;
+
+//QString clientAddress = "192.168.2.232"; // BBB ***
 //QString clientAddress = "192.168.1.235"; // BBB ***
 //QString clientAddress = "192.168.1.124"; // BBBak
 

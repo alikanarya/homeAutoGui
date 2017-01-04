@@ -14,12 +14,16 @@ class MainWindow;
 }
 
 class MainWindow : public QMainWindow{
+
     Q_OBJECT
 
 public:
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    bool readSettings();
 
+    QSettings *settings;                // settings: to read/write ini file
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
 
 private:

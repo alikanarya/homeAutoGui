@@ -19,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     clientx = new Client();
     checkClientX = new checkClient();
 
+    settings = new QSettings(INIFILENAME, QSettings::IniFormat);
+    readSettings();
+    clientx->setHost(clientAddress, clientPort);
+
     for (int i = 0; i < dInpSize; i++) dInpArr[i] = '0';
     dInpArr[dInpSize] = '\0';
 
@@ -33,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     for (int i = 0; i < aOutSize; i++) aOutArr[i] = 0;
 
+
     // 1sec timer
     QTimer *timerSec = new QTimer();
     QObject::connect(timerSec, SIGNAL(timeout()), checkClientX, SLOT(connect()));
@@ -43,10 +48,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(checkClientX, SIGNAL(notConnected()),this, SLOT(NotConnectedToServer()));
     connect(this, SIGNAL(sendData()),this, SLOT(transferData()));
 
-    db.setHostName("192.168.1.235");
-    db.setDatabaseName("homeAutoDB");
-    db.setUserName("ali");
-    db.setPassword("reyhan");
+    db.setHostName(clientAddress);
+    db.setDatabaseName(dbName);
+    db.setUserName(dbUser);
+    db.setPassword(dbPass);
     if (!db.open()) {
         qDebug() <<  db.lastError().text() << db.lastError().number();
     } else
@@ -58,6 +63,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow(){
 
     delete ui;
+}
+
+bool MainWindow::readSettings(){
+
+    if (QFile::exists(INIFILENAME)){
+
+        clientAddress = settings->value("clientAddress", _CLIENT_ADR).toString();
+        clientPort = settings->value("clientPort", _CLIENT_PORT).toInt();
+        dbName = settings->value("dbName", _DB_NAME).toString();
+        dbUser = settings->value("dbUser", _DB_USER).toString();
+        dbPass = settings->value("dbPass", _DB_PASS).toString();
+
+        //cout << clientAddress.toUtf8().constData() << endl;
+        return true;
+
+    } else {
+        cout << "ini file not found" << endl;
+        return false;
+
+    }
 }
 
 void MainWindow::ConnectedToServer(){
