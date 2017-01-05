@@ -205,8 +205,10 @@ void MainWindow::on_pushButton_clicked(){
 
     if (db.open()) {
 
+        bool verbose = true;
         QSqlQuery qry;
         qry.prepare( qryStr );
+
 
         if( !qry.exec() )
 
@@ -214,25 +216,65 @@ void MainWindow::on_pushButton_clicked(){
 
         else {
 
-            qDebug( "Selected!" );
+            //qDebug( "Selected!" );
 
-            QSqlRecord rec = qry.record();
-            int cols = rec.count();
-
-            QString temp;
-            for( int c=0; c<cols; c++ )
-              temp += rec.fieldName(c) + ((c<cols-1)?"\t":"");
-            qDebug() << temp;
-
-            while( qry.next() )
-            {
-              temp = "";
-              for( int c=0; c<cols; c++ )
-                temp += qry.value(c).toString() + ((c<cols-1)?"\t":"");
-              qDebug() << temp;
+            for (int i=0; i<zoneNumber; i++){
+                statTotalActiveZones[i]=0;
+                statTotalActiveZonesDurations[i]=0;
             }
 
+            QSqlRecord rec = qry.record();
+            int colNum = rec.count();
 
+
+            QString temp = "";
+            if (verbose){
+                for( int c=0; c<colNum; c++ )
+                    temp += rec.fieldName(c) + " ";
+                qDebug() << temp;
+            }
+
+            QStringList timeList;
+            QList<int> totalActiveZoneList;
+
+            qry.last();
+            do {
+                timeList.append(qry.value(2).toString());
+
+                int count = 0;
+                for( int c=3; c<colNum; c++ )
+                    if ( qry.value(c).toString() == "1") count++;
+                statTotalActiveZones[count]++;
+                totalActiveZoneList.append(count);
+
+                if (verbose){
+                    temp = "";
+                    for( int c=0; c<colNum; c++ )
+                        temp += qry.value(c).toString() + " ";
+                    qDebug() << temp << count;
+                }
+            } while( qry.previous() && qry.value(3).toString() != "*");
+
+
+
+            QTime last, first;
+            qint64 diff = 0;
+            for (int i=0; i<timeList.count()-1; i++) {
+                last = QTime::fromString(timeList.at(i), "hh:mm:ss");
+                first = QTime::fromString(timeList.at(i+1), "hh:mm:ss");
+                diff = first.msecsTo(last) / 1000;
+                statTotalActiveZonesDurations[ totalActiveZoneList.at(i+1)] += diff;
+                qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
+            }
+
+            for (int i=0; i<zoneNumber; i++)
+                qDebug() << "Active zone count" << i << ": " << statTotalActiveZones[i] << "  Duration: " << statTotalActiveZonesDurations[i];
+            /*
+            QTime last = QTime::fromString(timeList.at(0), "hh:mm:ss");
+            QTime first = QTime::fromString(timeList.at(1), "hh:mm:ss");
+            qint64 diff = first.msecsTo(last) / 1000;
+            qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
+            */
         }
 
     }

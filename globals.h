@@ -28,6 +28,7 @@ char dInpArr[dInpSize+1];
 int dInpGpioMap[dInpSize] = {45, 44, 26, 47, 46, 27, 65, 61};
 
 int dInpNum = 7;
+extern const int zoneNumber = 7;
 
 char dOutArr[dOutSize+1];
 char dOutReadArr[dOutSize+1];
@@ -44,10 +45,13 @@ QString dbName;
 QString dbUser;
 QString dbPass;
 
+int statTotalActiveZones[zoneNumber];
+int statTotalActiveZonesDurations[zoneNumber];
+
+
 //QString clientAddress = "192.168.2.232"; // BBB ***
 //QString clientAddress = "192.168.1.235"; // BBB ***
 //QString clientAddress = "192.168.1.124"; // BBBak
-
 //QString clientAddress = "192.168.2.241"; // DebianVB
 //QString clientAddress = "192.168.2.222"; // Windows
 
