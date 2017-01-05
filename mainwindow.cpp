@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "globals.h"
 #include "checkclient.h"
+#include "dbthread.h"
 #include <iostream>
 
 using namespace std;
@@ -9,6 +10,7 @@ using namespace std;
 Server *serverx;
 Client *clientx;
 checkClient *checkClientX;
+dbThread *dbThreadX;
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
@@ -40,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     for (int i = 0; i < aOutSize; i++) aOutArr[i] = 0;
 
+    dbThreadX = new dbThread();
 
     // 1sec timer
     QTimer *timerSec = new QTimer();
@@ -50,9 +53,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(checkClientX, SIGNAL(Connected()),this, SLOT(ConnectedToServer()));
     connect(checkClientX, SIGNAL(notConnected()),this, SLOT(NotConnectedToServer()));
     connect(this, SIGNAL(sendData()),this, SLOT(transferData()));
+    connect(dbThreadX, SIGNAL(connected()), this, SLOT(connectedToDB()));
+    connect(dbThreadX, SIGNAL(unconnected()), this, SLOT(unconnectedToDB()));
 
+    progress = new ThreadProgressDialog (this);
+    connect (dbThreadX, SIGNAL(started()), progress, SLOT(threadStarted()));
+    connect (dbThreadX, SIGNAL(finished()), progress, SLOT(threadFinished()));
+    //progress->setWindowModality(Qt::WindowModal);
 
-    connectToDB();
+    dbThreadX->cmdConnect = true;
+    dbThreadX->start();
 
 }
 
@@ -81,20 +91,16 @@ bool MainWindow::readSettings(){
     }
 }
 
-void MainWindow::connectToDB(){
+void MainWindow::connectedToDB(){
 
-    db.setHostName(clientAddress);
-    db.setDatabaseName(dbName);
-    db.setUserName(dbUser);
-    db.setPassword(dbPass);
-    if (!db.open()) {
-        qDebug() <<  db.lastError().text() << db.lastError().number();
-        ui->DBconnStatusLabel->setText(MSG_DB_CON_NO);
-        ui->DBconnStatusLabel->setStyleSheet("color: red");
-    } else {
-        ui->DBconnStatusLabel->setText(MSG_DB_CON_YES);
-        ui->DBconnStatusLabel->setStyleSheet("color: green");
-    }
+    ui->DBconnStatusLabel->setText(MSG_DB_CON_YES);
+    ui->DBconnStatusLabel->setStyleSheet("color: green");
+}
+
+void MainWindow::unconnectedToDB(){
+
+    ui->DBconnStatusLabel->setText(MSG_DB_CON_NO);
+    ui->DBconnStatusLabel->setStyleSheet("color: red");
 }
 
 void MainWindow::ConnectedToServer(){
@@ -194,89 +200,18 @@ void MainWindow::transferData(){
 
 void MainWindow::on_pushButton_clicked(){
 
-    QString beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
-    QString endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
-    QString beginTime = ui->timeEdit_BEGIN->time().toString();
-    QString endTime = ui->timeEdit_END->time().toString();
-
-    QString qryStr = QString( "SELECT * FROM zones WHERE date <= '%1' AND date >= '%2' AND time <= '%3' AND time >= '%4'").arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
-    cout << qryStr.toUtf8().constData() << endl;
-
-
-    if (db.open()) {
-
-        bool verbose = true;
-        QSqlQuery qry;
-        qry.prepare( qryStr );
-
-
-        if( !qry.exec() )
-
-            qDebug() << qry.lastError();
-
-        else {
-
-            //qDebug( "Selected!" );
-
-            for (int i=0; i<zoneNumber; i++){
-                statTotalActiveZones[i]=0;
-                statTotalActiveZonesDurations[i]=0;
-            }
-
-            QSqlRecord rec = qry.record();
-            int colNum = rec.count();
-
-
-            QString temp = "";
-            if (verbose){
-                for( int c=0; c<colNum; c++ )
-                    temp += rec.fieldName(c) + " ";
-                qDebug() << temp;
-            }
-
-            QStringList timeList;
-            QList<int> totalActiveZoneList;
-
-            qry.last();
-            do {
-                timeList.append(qry.value(2).toString());
-
-                int count = 0;
-                for( int c=3; c<colNum; c++ )
-                    if ( qry.value(c).toString() == "1") count++;
-                statTotalActiveZones[count]++;
-                totalActiveZoneList.append(count);
-
-                if (verbose){
-                    temp = "";
-                    for( int c=0; c<colNum; c++ )
-                        temp += qry.value(c).toString() + " ";
-                    qDebug() << temp << count;
-                }
-            } while( qry.previous() && qry.value(3).toString() != "*");
-
-
-
-            QTime last, first;
-            qint64 diff = 0;
-            for (int i=0; i<timeList.count()-1; i++) {
-                last = QTime::fromString(timeList.at(i), "hh:mm:ss");
-                first = QTime::fromString(timeList.at(i+1), "hh:mm:ss");
-                diff = first.msecsTo(last) / 1000;
-                statTotalActiveZonesDurations[ totalActiveZoneList.at(i+1)] += diff;
-                qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
-            }
-
-            for (int i=0; i<zoneNumber; i++)
-                qDebug() << "Active zone count" << i << ": " << statTotalActiveZones[i] << "  Duration: " << statTotalActiveZonesDurations[i];
-            /*
-            QTime last = QTime::fromString(timeList.at(0), "hh:mm:ss");
-            QTime first = QTime::fromString(timeList.at(1), "hh:mm:ss");
-            qint64 diff = first.msecsTo(last) / 1000;
-            qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
-            */
-        }
-
-    }
-
+    dbThreadX-> beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+    dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
+    dbThreadX->endTime = ui->timeEdit_END->time().toString();
+    dbThreadX->verbose = true;
+    dbThreadX->cmdAnalyzeAllZones = true;
+    dbThreadX->start();
 }
+
+/*
+QTime last = QTime::fromString(timeList.at(0), "hh:mm:ss");
+QTime first = QTime::fromString(timeList.at(1), "hh:mm:ss");
+qint64 diff = first.msecsTo(last) / 1000;
+qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
+*/

@@ -3,15 +3,14 @@
 
 #include <QMainWindow>
 #include <QtNetwork>
-#include <QtSql>
-#include <QtSql/QSql>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlDriver>
 #include <QDebug>
+#include <QProgressDialog>
 
 namespace Ui {
 class MainWindow;
 }
+
+class ThreadProgressDialog;
 
 class MainWindow : public QMainWindow{
 
@@ -22,10 +21,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     bool readSettings();
-    void connectToDB();
 
     QSettings *settings;                // settings: to read/write ini file
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    ThreadProgressDialog *progress;
 
 private:
 
@@ -36,6 +34,8 @@ private slots:
 
     void ConnectedToServer();
     void NotConnectedToServer();
+    void connectedToDB();
+    void unconnectedToDB();
 
     void displayInputs();
     void transferData();
@@ -47,6 +47,51 @@ signals:
 
     void connectTo();
     void sendData();
+};
+
+
+
+
+class ThreadProgressDialog : public QProgressDialog {
+
+    Q_OBJECT
+
+public:
+
+    explicit ThreadProgressDialog(QWidget* parent = 0) : QProgressDialog(parent), m_timer(new QTimer(this)) {
+
+        setRange(0, 0);
+        setCancelButton(0);
+//        setWindowFlags(this->windowFlags() & ~Qt::WindowCloseButtonHint);
+//        setWindowFlags(Qt:: Dialog | Qt:: FramelessWindowHint | Qt:: WindowTitleHint | Qt:: CustomizeWindowHint);
+        setWindowFlags(Qt:: Dialog | Qt:: WindowTitleHint | Qt:: CustomizeWindowHint);
+        setWindowModality(Qt::WindowModal);
+        m_timer->setInterval(500);
+        connect(m_timer, SIGNAL(timeout()), this, SLOT(advance()));
+    }
+
+public slots:
+
+    void threadStarted() {
+        m_timer->start();
+        show();
+    }
+
+    void threadFinished() {
+        m_timer->stop();
+        hide();
+    }
+
+private:
+
+    QTimer *m_timer;
+
+private slots:
+
+    void advance() {
+        setValue(value() + 1);
+    }
+
 };
 
 #endif // MAINWINDOW_H

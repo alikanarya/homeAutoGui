@@ -19,12 +19,14 @@ SOURCES += main.cpp\
     client.cpp \
     server.cpp \
     checkclient.cpp \
+    dbthread.cpp
 
 HEADERS  += mainwindow.h \
     server.h \
     client.h \
     globals.h \
     checkclient.h \
+    dbthread.h
 
 FORMS    += mainwindow.ui
 
