@@ -21,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     bool readSettings();
+    void zoneQuery(int zoneNumber);
 
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
@@ -40,11 +41,12 @@ private slots:
     void displayInputs();
     void transferData();
     void allZonesTable();
-
+    void zoneTable();
 
     void on_pushButton_clicked();
-
     void on_saveAllZonesButton_clicked();
+    void on_zoneButton_clicked();
+    void on_zoneSaveButton_clicked();
 
 signals:
 

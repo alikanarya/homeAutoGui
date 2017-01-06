@@ -13,6 +13,7 @@ Client *clientx;
 checkClient *checkClientX;
 dbThread *dbThreadX;
 
+int currentZone=0;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
 
@@ -21,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->dateEdit_BEGIN->setDate(QDate::currentDate());
     ui->dateEdit_END->setDate(QDate::currentDate());
     ui->tableAllZones->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableZone->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     serverx = new Server();
     clientx = new Client();
@@ -64,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(finished()), progress, SLOT(threadFinished()));
 
     connect(dbThreadX, SIGNAL(allZonesProcessed()), this, SLOT(allZonesTable()));
+    connect(dbThreadX, SIGNAL(zoneProcessed()), this, SLOT(zoneTable()));
 
     dbThreadX->cmdConnect = true;
     dbThreadX->start();
@@ -206,7 +209,7 @@ void MainWindow::on_pushButton_clicked(){
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    dbThreadX->verbose = true;
+    //dbThreadX->verbose = true;
     dbThreadX->cmdAnalyzeAllZones = true;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
@@ -215,7 +218,7 @@ void MainWindow::on_pushButton_clicked(){
 void MainWindow::allZonesTable(){
 
     ui->tableAllZones->setRowCount(zoneNumber+1);
-    ui->tableAllZones->verticalHeader()->setDefaultSectionSize(16);
+    ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
 
     for (int i=0; i<zoneNumber+1; i++) {
         ui->tableAllZones->setItem( i, 0, new QTableWidgetItem( QString::number( i )) );
@@ -237,7 +240,7 @@ qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
 
 void MainWindow::on_saveAllZonesButton_clicked(){
 
-    QFile file(zoneFileNames[0]);
+    QFile file(zoneAllFileName);
 
     QSqlRecord allZonesRecord;
     allZonesRecord = dbThreadX->qry.record();
@@ -279,4 +282,54 @@ void MainWindow::on_saveAllZonesButton_clicked(){
         }
 
     }
+}
+
+void MainWindow::on_zoneButton_clicked(){
+
+    if ( currentZone>=7 ) currentZone = 0;
+    currentZone++;
+    if ( currentZone == 3 )   currentZone++;  // skip balkon
+    zoneQuery(currentZone);
+
+
+}
+
+void MainWindow::zoneQuery(int zoneNumber){
+
+    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+    dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
+    dbThreadX->endTime = ui->timeEdit_END->time().toString();
+    dbThreadX->verbose = true;
+
+    dbThreadX->cmdAnalyzeZone = true;
+    dbThreadX->currentZone = zoneNumber;
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
+}
+
+void MainWindow::zoneTable(){
+
+    //ui->tableAllZones->setRowCount(zoneNumber+1);
+    //ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
+
+    int rowNum = dbThreadX->currentZone - 1;
+    if (dbThreadX->qry.size() > 0) {
+        ui->tableZone->setItem( rowNum, 0, new QTableWidgetItem( QString::number(dbThreadX->ONcount) ) );
+        ui->tableZone->setItem( rowNum, 1, new QTableWidgetItem( QString::number(dbThreadX->OFFcount) ) );
+        ui->tableZone->setItem( rowNum, 2, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") ) );
+        ui->tableZone->setItem( rowNum, 3, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") ) );
+    } else {
+        for (int c=0; c<4; c++)
+            ui->tableZone->setItem( rowNum, 0, new QTableWidgetItem( "0" ) );
+    }
+    for (int c=0; c<4; c++)
+        ui->tableZone->item(rowNum, c)->setTextAlignment(Qt::AlignHCenter);
+}
+
+void MainWindow::on_zoneSaveButton_clicked(){
+
+    QFile *zoneFile;
+    zoneFile = new QFile[1];
+
 }
