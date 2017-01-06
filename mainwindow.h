@@ -39,9 +39,12 @@ private slots:
 
     void displayInputs();
     void transferData();
+    void allZonesTable();
 
 
     void on_pushButton_clicked();
+
+    void on_saveAllZonesButton_clicked();
 
 signals:
 

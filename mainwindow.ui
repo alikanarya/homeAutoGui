@@ -542,6 +542,62 @@
      <string>Bütün Bölgeler</string>
     </property>
    </widget>
+   <widget class="QTableWidget" name="tableAllZones">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>300</y>
+      <width>331</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>200</width>
+      <height>0</height>
+     </size>
+    </property>
+    <attribute name="horizontalHeaderMinimumSectionSize">
+     <number>37</number>
+    </attribute>
+    <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="horizontalHeaderStretchLastSection">
+     <bool>false</bool>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
+    <column>
+     <property name="text">
+      <string>Aktif Bölge Top</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Adet</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Toplam Süre</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="saveAllZonesButton">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>270</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Kaydet</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -549,7 +605,7 @@
      <x>0</x>
      <y>0</y>
      <width>641</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

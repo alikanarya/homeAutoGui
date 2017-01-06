@@ -4,6 +4,8 @@
 #include "server.h"
 #include "client.h"
 
+using namespace std;
+
 #define INIFILENAME         "settings.ini"
 #define _CLIENT_ADR         "localhost"
 #define _CLIENT_PORT        8888
@@ -45,9 +47,10 @@ QString dbName;
 QString dbUser;
 QString dbPass;
 
-int statTotalActiveZones[zoneNumber];
-int statTotalActiveZonesDurations[zoneNumber];
+int statTotalActiveZones[zoneNumber+1];
+int statTotalActiveZonesDurations[zoneNumber+1];
 
+QString zoneFileNames[8] = {"zones.csv", "z1_oto.csv", "z2_sln.csv", "z3_blk.csv", "z4_mut.csv", "z5_eyo.csv", "z6_cyo.csv", "z7_yod.csv"};
 
 //QString clientAddress = "192.168.2.232"; // BBB ***
 //QString clientAddress = "192.168.1.235"; // BBB ***

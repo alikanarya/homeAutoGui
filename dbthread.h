@@ -31,7 +31,7 @@ public:
     void analyzeAllZones();
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-    QSqlRecord allZonesRecord;
+    QSqlQuery qry;
     QList<int> totalActiveZoneList;
 
     QString beginDate;
@@ -58,6 +58,7 @@ signals:
 
     void connected();
     void unconnected();
+    void allZonesProcessed();
 
 };
 

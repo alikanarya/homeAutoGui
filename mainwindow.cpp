@@ -5,6 +5,7 @@
 #include "dbthread.h"
 #include <iostream>
 
+
 using namespace std;
 
 Server *serverx;
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->dateEdit_BEGIN->setDate(QDate::currentDate());
     ui->dateEdit_END->setDate(QDate::currentDate());
+    ui->tableAllZones->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     serverx = new Server();
     clientx = new Client();
@@ -57,9 +59,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(unconnected()), this, SLOT(unconnectedToDB()));
 
     progress = new ThreadProgressDialog (this);
-    connect (dbThreadX, SIGNAL(started()), progress, SLOT(threadStarted()));
-    connect (dbThreadX, SIGNAL(finished()), progress, SLOT(threadFinished()));
-    //progress->setWindowModality(Qt::WindowModal);
+    progress->setWindowTitle("DB Bağlantısı Bekleniyor");
+    connect(dbThreadX, SIGNAL(started()), progress, SLOT(threadStarted()));
+    connect(dbThreadX, SIGNAL(finished()), progress, SLOT(threadFinished()));
+
+    connect(dbThreadX, SIGNAL(allZonesProcessed()), this, SLOT(allZonesTable()));
 
     dbThreadX->cmdConnect = true;
     dbThreadX->start();
@@ -191,10 +195,8 @@ void MainWindow::transferData(){
         }
         clientx->datagram.append( 'Z' );
 
-
         clientx->startTransfer();
     }
-
 }
 
 
@@ -206,8 +208,25 @@ void MainWindow::on_pushButton_clicked(){
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
     dbThreadX->verbose = true;
     dbThreadX->cmdAnalyzeAllZones = true;
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
 }
+
+void MainWindow::allZonesTable(){
+
+    ui->tableAllZones->setRowCount(zoneNumber+1);
+    ui->tableAllZones->verticalHeader()->setDefaultSectionSize(16);
+
+    for (int i=0; i<zoneNumber+1; i++) {
+        ui->tableAllZones->setItem( i, 0, new QTableWidgetItem( QString::number( i )) );
+        ui->tableAllZones->setItem( i, 1, new QTableWidgetItem( QString::number( statTotalActiveZones[i] )) );
+        ui->tableAllZones->setItem( i, 2, new QTableWidgetItem( QDateTime::fromTime_t( statTotalActiveZonesDurations[i] ).toUTC().toString("hh:mm:ss") ) );
+        ui->tableAllZones->item(i, 0)->setTextAlignment(Qt::AlignHCenter);
+        ui->tableAllZones->item(i, 1)->setTextAlignment(Qt::AlignHCenter);
+        ui->tableAllZones->item(i, 2)->setTextAlignment(Qt::AlignHCenter);
+    }
+}
+
 
 /*
 QTime last = QTime::fromString(timeList.at(0), "hh:mm:ss");
@@ -215,3 +234,49 @@ QTime first = QTime::fromString(timeList.at(1), "hh:mm:ss");
 qint64 diff = first.msecsTo(last) / 1000;
 qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
 */
+
+void MainWindow::on_saveAllZonesButton_clicked(){
+
+    QFile file(zoneFileNames[0]);
+
+    QSqlRecord allZonesRecord;
+    allZonesRecord = dbThreadX->qry.record();
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)){
+
+        if ( dbThreadX->qry.size() > 0 ) {
+
+            QTextStream out(&file);
+
+            int colNum = allZonesRecord.count();
+            for (int i=0; i<colNum;i++)
+                out << allZonesRecord.fieldName(i) << ",";
+            out << "#" << endl;
+
+            dbThreadX->qry.last();
+            dbThreadX->totalActiveZoneList.last();
+            int c = 0;
+            do {
+
+                for (int i=0; i<colNum;i++)
+                    out << dbThreadX->qry.value(i).toString() << ",";
+                out << dbThreadX->totalActiveZoneList[c] << endl;
+                c++;
+
+            } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "*" );
+
+            out << endl << " ,İstatistik" << endl << endl;
+
+            out << " ,Aktif Bölge Top,Adet,Süre" << endl;
+
+            for (int i=0; i<zoneNumber+1; i++) {
+                out << " ," << i << "," << statTotalActiveZones[i] << "," << statTotalActiveZonesDurations[i] << endl;
+            }
+
+            file.close();
+
+            qDebug() << "file saved";
+        }
+
+    }
+}
