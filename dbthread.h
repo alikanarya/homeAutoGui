@@ -43,7 +43,10 @@ public:
     QString endDate;
     QString beginTime;
     QString endTime;
+    QString beginTimeDelimiter;
+    QString endTimeDelimiter;
 
+    bool delimiterEncountered;
     int currentZone = 0;
     int ONtime;
     int OFFtime;

@@ -228,6 +228,10 @@ void MainWindow::allZonesTable(){
         ui->tableAllZones->item(i, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui->tableAllZones->item(i, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
+
+    if (dbThreadX->delimiterEncountered){
+        ui->textBrowser->append("Başlangıç: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
+    }
 }
 
 
@@ -286,12 +290,13 @@ void MainWindow::on_saveAllZonesButton_clicked(){
 
 void MainWindow::on_zoneButton_clicked(){
 
+    //currentZone = 1;
+
     if ( currentZone>=7 ) currentZone = 0;
     currentZone++;
-    if ( currentZone == 3 )   currentZone++;  // skip balkon
+    if ( currentZone == 3 )   currentZone++;  // skip "balkon"
+
     zoneQuery(currentZone);
-
-
 }
 
 void MainWindow::zoneQuery(int zoneNumber){
@@ -325,6 +330,10 @@ void MainWindow::zoneTable(){
     }
     for (int c=0; c<4; c++)
         ui->tableZone->item(rowNum, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    if (dbThreadX->delimiterEncountered){
+        ui->textBrowser->append("Başlangıç: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
+    }
 }
 
 void MainWindow::on_zoneSaveButton_clicked(){

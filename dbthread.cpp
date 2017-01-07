@@ -64,7 +64,6 @@ void dbThread::analyzeAllZones(){
         else {
 
             QSqlRecord allZonesRecord;
-            //allZonesRecord.clear();
             allZonesRecord = qry.record();
 
             if ( qry.size() > 0 ) {
@@ -85,7 +84,10 @@ void dbThread::analyzeAllZones(){
 
                 QStringList timeList;
 
+                stateList.clear();//
                 qry.last();
+                QString queryEndTime = qry.value(2).toString();//
+                delimiterEncountered = false;//
                 do {
                     timeList.append(qry.value(2).toString());
 
@@ -94,6 +96,7 @@ void dbThread::analyzeAllZones(){
                         if ( qry.value(c).toString() == "1") count++;
                     statTotalActiveZones[count]++;
                     totalActiveZoneList.append(count);
+                    stateList.append(count);//
 
                     if (verbose){
                         temp = "";
@@ -102,6 +105,20 @@ void dbThread::analyzeAllZones(){
                         qDebug() << temp << count;
                     }
                 } while( qry.previous() && qry.value(3).toString() != "*");
+
+                //
+                QString queryBeginTime;
+
+                if ( qry.size() != stateList.count()) {
+                    beginTimeDelimiter = qry.value(2).toString();
+                    qry.next();
+                    queryBeginTime = qry.value(2).toString();
+                    delimiterEncountered = true;
+                } else {
+                    qry.first();
+                    queryBeginTime = qry.value(2).toString();
+                }
+                //
 
                 QTime last, first;
                 qint64 diff = 0;
@@ -114,6 +131,27 @@ void dbThread::analyzeAllZones(){
                     statTotalActiveZonesDurations[ totalActiveZoneList.at(i+1)] += diff;
                     //if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff; }
                 }
+
+                //
+                last = QTime::fromString(endTime, "hh:mm:ss");
+                first = QTime::fromString(queryEndTime, "hh:mm:ss");
+                diff = first.msecsTo(last) / 1000;
+
+                statTotalActiveZonesDurations [ totalActiveZoneList.at(0) ] += diff;
+
+
+                last = QTime::fromString(queryBeginTime, "hh:mm:ss");
+
+                if (!delimiterEncountered){
+                    first = QTime::fromString(beginTime, "hh:mm:ss");
+                    diff = first.msecsTo(last) / 1000;
+                    statTotalActiveZonesDurations [ totalActiveZoneList.at(totalActiveZoneList.count()-1) ] += diff;
+                } else {
+                    first = QTime::fromString(beginTimeDelimiter, "hh:mm:ss");
+                    diff = first.msecsTo(last) / 1000;
+                    statTotalActiveZonesDurations [ totalActiveZoneList.at(totalActiveZoneList.count()-1) ] += diff;
+                }
+                //
 
                 if (verbose){
                     for (int i=0; i<zoneNumber+1; i++)
@@ -161,10 +199,10 @@ void dbThread::analyzeZone(){
 
                 QStringList timeList;
 
-
+                stateList.clear();
                 qry.last();
                 QString queryEndTime = qry.value(2).toString();
-
+                delimiterEncountered = false;
                 do {
                     timeList.append(qry.value(2).toString());
                     stateList.append(qry.value(3).toInt());
@@ -178,9 +216,10 @@ void dbThread::analyzeZone(){
                 } while( qry.previous() && qry.value(3).toString() != "*");
 
                 QString queryBeginTime;
-//                if ( qry.value(3).toString() == "*")
-                bool delimiterEncountered = false;
+
                 if ( qry.size() != stateList.count()) {
+                    beginTimeDelimiter = qry.value(2).toString();
+                    qry.next();
                     queryBeginTime = qry.value(2).toString();
                     delimiterEncountered = true;
                 } else {
@@ -238,7 +277,7 @@ void dbThread::analyzeZone(){
                         OFFtime += diff;
                     }
                 } else {
-                    first = QTime::fromString(beginTime, "hh:mm:ss");
+                    first = QTime::fromString(beginTimeDelimiter, "hh:mm:ss");
                     diff = first.msecsTo(last) / 1000;
                     if (stateList.last()==1) {
                         ONtime += diff;
