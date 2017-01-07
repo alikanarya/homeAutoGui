@@ -150,6 +150,8 @@ void dbThread::analyzeZone(){
 
                 int colNum = record.count();
 
+                if (verbose) qDebug() << tableNames[currentZone];
+
                 QString temp = "";
                 if (verbose){
                     for( int c=0; c<colNum; c++ )
@@ -159,7 +161,10 @@ void dbThread::analyzeZone(){
 
                 QStringList timeList;
 
+
                 qry.last();
+                QString queryEndTime = qry.value(2).toString();
+
                 do {
                     timeList.append(qry.value(2).toString());
                     stateList.append(qry.value(3).toInt());
@@ -171,6 +176,17 @@ void dbThread::analyzeZone(){
                         qDebug() << temp;
                     }
                 } while( qry.previous() && qry.value(3).toString() != "*");
+
+                QString queryBeginTime;
+//                if ( qry.value(3).toString() == "*")
+                bool delimiterEncountered = false;
+                if ( qry.size() != stateList.count()) {
+                    queryBeginTime = qry.value(2).toString();
+                    delimiterEncountered = true;
+                } else {
+                    qry.first();
+                    queryBeginTime = qry.value(2).toString();
+                }
 
 
                 QTime last, first;
@@ -198,8 +214,39 @@ void dbThread::analyzeZone(){
                         OFFtime += diff;
                         OFFcount++;
                     }
-                    if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff; }
+                    //if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff; }
                 }
+
+                last = QTime::fromString(endTime, "hh:mm:ss");
+                first = QTime::fromString(queryEndTime, "hh:mm:ss");
+                diff = first.msecsTo(last) / 1000;
+
+                if (stateList.first()==1) {
+                    ONtime += diff;
+                } else {
+                    OFFtime += diff;
+                }
+
+                last = QTime::fromString(queryBeginTime, "hh:mm:ss");
+
+                if (!delimiterEncountered){
+                    first = QTime::fromString(beginTime, "hh:mm:ss");
+                    diff = first.msecsTo(last) / 1000;
+                    if (stateList.last()==0) {
+                        ONtime += diff;
+                    } else {
+                        OFFtime += diff;
+                    }
+                } else {
+                    first = QTime::fromString(beginTime, "hh:mm:ss");
+                    diff = first.msecsTo(last) / 1000;
+                    if (stateList.last()==1) {
+                        ONtime += diff;
+                    } else {
+                        OFFtime += diff;
+                    }
+                }
+
 
                 if (verbose){
                     qDebug() << "ON times:";
@@ -210,10 +257,10 @@ void dbThread::analyzeZone(){
                         qDebug() << timeDiffListOff.at(i);
                 }
 
-                emit zoneProcessed();
-
             } else
                 qDebug() << "no record returned";
+
+            emit zoneProcessed();
         }
     }
 }

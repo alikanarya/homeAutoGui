@@ -224,9 +224,9 @@ void MainWindow::allZonesTable(){
         ui->tableAllZones->setItem( i, 0, new QTableWidgetItem( QString::number( i )) );
         ui->tableAllZones->setItem( i, 1, new QTableWidgetItem( QString::number( statTotalActiveZones[i] )) );
         ui->tableAllZones->setItem( i, 2, new QTableWidgetItem( QDateTime::fromTime_t( statTotalActiveZonesDurations[i] ).toUTC().toString("hh:mm:ss") ) );
-        ui->tableAllZones->item(i, 0)->setTextAlignment(Qt::AlignHCenter);
-        ui->tableAllZones->item(i, 1)->setTextAlignment(Qt::AlignHCenter);
-        ui->tableAllZones->item(i, 2)->setTextAlignment(Qt::AlignHCenter);
+        ui->tableAllZones->item(i, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        ui->tableAllZones->item(i, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        ui->tableAllZones->item(i, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
 }
 
@@ -321,10 +321,10 @@ void MainWindow::zoneTable(){
         ui->tableZone->setItem( rowNum, 3, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") ) );
     } else {
         for (int c=0; c<4; c++)
-            ui->tableZone->setItem( rowNum, 0, new QTableWidgetItem( "0" ) );
+            ui->tableZone->setItem( rowNum, c, new QTableWidgetItem( "0" ) );
     }
     for (int c=0; c<4; c++)
-        ui->tableZone->item(rowNum, c)->setTextAlignment(Qt::AlignHCenter);
+        ui->tableZone->item(rowNum, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 }
 
 void MainWindow::on_zoneSaveButton_clicked(){
