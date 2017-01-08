@@ -49,6 +49,8 @@ QString dbPass;
 
 int statTotalActiveZones[zoneNumber+1];
 int statTotalActiveZonesDurations[zoneNumber+1];
+int totalTime;
+int statTotalActiveZonesPercent[zoneNumber+1];
 
 QString zoneFileNames[8] = {"zones.csv", "z1_oto.csv", "z2_sln.csv", "z3_blk.csv", "z4_mut.csv", "z5_eyo.csv", "z6_cyo.csv", "z7_yod.csv"};
 QString zoneAllFileName = "zoneCombibed.csv";

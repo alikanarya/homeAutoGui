@@ -15,6 +15,9 @@ extern QString dbPass;
 extern const int zoneNumber;
 extern int statTotalActiveZones[];
 extern int statTotalActiveZonesDurations[];
+extern int totalTime;
+extern int statTotalActiveZonesPercent[];
+
 extern QString tableNames[];
 
 class dbThread: public QThread{

@@ -26,6 +26,8 @@ public:
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
 
+    QFont fontBold;
+
 private:
 
     Ui::MainWindow *ui;

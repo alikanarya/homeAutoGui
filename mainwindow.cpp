@@ -21,8 +21,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->dateEdit_BEGIN->setDate(QDate::currentDate());
     ui->dateEdit_END->setDate(QDate::currentDate());
+    ui->timeEdit_END->setTime(QTime::currentTime());
     ui->tableAllZones->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableZone->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    fontBold.setBold(true);
 
     serverx = new Server();
     clientx = new Client();
@@ -217,17 +219,31 @@ void MainWindow::on_pushButton_clicked(){
 
 void MainWindow::allZonesTable(){
 
-    ui->tableAllZones->setRowCount(zoneNumber+1);
+    ui->tableAllZones->setRowCount(zoneNumber+2);
     ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
+
 
     for (int i=0; i<zoneNumber+1; i++) {
         ui->tableAllZones->setItem( i, 0, new QTableWidgetItem( QString::number( i )) );
         ui->tableAllZones->setItem( i, 1, new QTableWidgetItem( QString::number( statTotalActiveZones[i] )) );
         ui->tableAllZones->setItem( i, 2, new QTableWidgetItem( QDateTime::fromTime_t( statTotalActiveZonesDurations[i] ).toUTC().toString("hh:mm:ss") ) );
-        ui->tableAllZones->item(i, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui->tableAllZones->item(i, 1)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui->tableAllZones->item(i, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        ui->tableAllZones->setItem( i, 3, new QTableWidgetItem( QString::number( statTotalActiveZonesPercent[i] )) );
+        ui->tableAllZones->item(i, 3)->setFont(fontBold);
+        ui->tableAllZones->item(i, 3)->setForeground(QColor::fromRgb(255,0,0));
+
+        for (int c=0; c<4; c++)
+           ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
+
+    ui->tableAllZones->setItem( zoneNumber+1, 0, new QTableWidgetItem( "Toplam" ) );
+    ui->tableAllZones->setItem( zoneNumber+1, 2, new QTableWidgetItem( QDateTime::fromTime_t( totalTime ).toUTC().toString("hh:mm:ss") ) );
+
+    ui->tableAllZones->item(zoneNumber+1, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    ui->tableAllZones->item(zoneNumber+1, 0)->setFont(fontBold);
+    ui->tableAllZones->item(zoneNumber+1, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    ui->tableAllZones->item(zoneNumber+1, 2)->setFont(fontBold);
+    ui->tableAllZones->item(zoneNumber+1, 2)->setForeground(QColor::fromRgb(255,0,0));
+
 
     if (dbThreadX->delimiterEncountered){
         ui->textBrowser->append("Başlangıç: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
@@ -294,7 +310,7 @@ void MainWindow::on_zoneButton_clicked(){
 
     if ( currentZone>=7 ) currentZone = 0;
     currentZone++;
-    if ( currentZone == 3 )   currentZone++;  // skip "balkon"
+    //if ( currentZone == 3 )   currentZone++;  // skip "balkon"
 
     zoneQuery(currentZone);
 }
@@ -305,7 +321,7 @@ void MainWindow::zoneQuery(int zoneNumber){
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    dbThreadX->verbose = true;
+    dbThreadX->verbose = false;
 
     dbThreadX->cmdAnalyzeZone = true;
     dbThreadX->currentZone = zoneNumber;
@@ -319,16 +335,25 @@ void MainWindow::zoneTable(){
     //ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
 
     int rowNum = dbThreadX->currentZone - 1;
+    int rate, total;
     if (dbThreadX->qry.size() > 0) {
         ui->tableZone->setItem( rowNum, 0, new QTableWidgetItem( QString::number(dbThreadX->ONcount) ) );
         ui->tableZone->setItem( rowNum, 1, new QTableWidgetItem( QString::number(dbThreadX->OFFcount) ) );
         ui->tableZone->setItem( rowNum, 2, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") ) );
         ui->tableZone->setItem( rowNum, 3, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") ) );
+        total = dbThreadX->ONtime + dbThreadX->OFFtime;
+        rate = 0;
+        if (total != 0)
+            rate = 100 * dbThreadX->ONtime / total;
+        ui->tableZone->setItem( rowNum, 4, new QTableWidgetItem( QString::number(rate) ));
+        ui->tableZone->item(rowNum, 4)->setFont(fontBold);
+        ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
+
     } else {
-        for (int c=0; c<4; c++)
+        for (int c=0; c<5; c++)
             ui->tableZone->setItem( rowNum, c, new QTableWidgetItem( "0" ) );
     }
-    for (int c=0; c<4; c++)
+    for (int c=0; c<5; c++)
         ui->tableZone->item(rowNum, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     if (dbThreadX->delimiterEncountered){

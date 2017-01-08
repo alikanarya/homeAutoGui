@@ -153,6 +153,13 @@ void dbThread::analyzeAllZones(){
                 }
                 //
 
+                totalTime = 0;
+                for (int i=0; i<zoneNumber+1; i++)
+                    totalTime += statTotalActiveZonesDurations[i];
+
+                for (int i=0; i<zoneNumber+1; i++)
+                    statTotalActiveZonesPercent[i] = statTotalActiveZonesDurations[i] * 100 / totalTime;
+
                 if (verbose){
                     for (int i=0; i<zoneNumber+1; i++)
                         qDebug() << "Active zone count" << i << ": " << statTotalActiveZones[i] << "  Duration: " << statTotalActiveZonesDurations[i];
