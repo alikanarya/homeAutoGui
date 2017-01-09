@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1139</width>
-    <height>682</height>
+    <width>1274</width>
+    <height>811</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -548,8 +548,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>270</y>
+      <x>620</x>
+      <y>20</y>
       <width>111</width>
       <height>29</height>
      </rect>
@@ -561,10 +561,10 @@
    <widget class="QTableWidget" name="tableAllZones">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>300</y>
+      <x>620</x>
+      <y>60</y>
       <width>531</width>
-      <height>311</height>
+      <height>501</height>
      </rect>
     </property>
     <property name="minimumSize">
@@ -637,8 +637,8 @@
    <widget class="QPushButton" name="saveAllZonesButton">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>270</y>
+      <x>1080</x>
+      <y>30</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -650,7 +650,7 @@
    <widget class="QTableWidget" name="tableZone">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>10</x>
       <y>310</y>
       <width>521</width>
       <height>251</height>
@@ -813,8 +813,8 @@
    <widget class="QPushButton" name="zoneButton">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>280</y>
+      <x>10</x>
+      <y>270</y>
       <width>151</width>
       <height>29</height>
      </rect>
@@ -826,7 +826,7 @@
    <widget class="QPushButton" name="zoneSaveButton">
     <property name="geometry">
      <rect>
-      <x>900</x>
+      <x>380</x>
       <y>270</y>
       <width>151</width>
       <height>29</height>
@@ -839,10 +839,10 @@
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>10</y>
-      <width>256</width>
-      <height>192</height>
+      <x>10</x>
+      <y>610</y>
+      <width>521</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="readOnly">
@@ -855,7 +855,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1139</width>
+     <width>1274</width>
      <height>27</height>
     </rect>
    </property>

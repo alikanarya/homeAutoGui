@@ -95,8 +95,7 @@ void dbThread::analyzeAllZones(){
                     for( int c=3; c<colNum; c++ )
                         if ( qry.value(c).toString() == "1") count++;
                     statTotalActiveZones[count]++;
-                    totalActiveZoneList.append(count);
-                    stateList.append(count);//
+                    stateList.append(count);
 
                     if (verbose){
                         temp = "";
@@ -106,8 +105,6 @@ void dbThread::analyzeAllZones(){
                     }
                 } while( qry.previous() && qry.value(3).toString() != "*");
 
-                //
-                QString queryBeginTime;
 
                 if ( qry.size() != stateList.count()) {
                     beginTimeDelimiter = qry.value(2).toString();
@@ -122,14 +119,28 @@ void dbThread::analyzeAllZones(){
 
                 QTime last, first;
                 qint64 diff = 0;
+                zeroStateLowTime = 0;
+                zeroStateLowCount = 0;
+                zeroStateHighTime = 0;
+                zeroStateHighCount = 0;
 
                 for (int i=0; i<timeList.count()-1; i++) {
 
                     last = QTime::fromString(timeList.at(i), "hh:mm:ss");
                     first = QTime::fromString(timeList.at(i+1), "hh:mm:ss");
                     diff = first.msecsTo(last) / 1000;
-                    statTotalActiveZonesDurations[ totalActiveZoneList.at(i+1)] += diff;
-                    //if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff; }
+                    statTotalActiveZonesDurations[ stateList.at(i+1) ] += diff;
+                    if (stateList.at(i+1)==0){
+                        if (diff < zeroStateLowThreshold){
+                            zeroStateLowTime += diff;
+                            zeroStateLowCount++;
+                        } else {
+                            zeroStateHighTime += diff;
+                            zeroStateHighCount++;
+                        }
+                    }
+
+                    if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff <<"."<<stateList.at(i+1); }
                 }
 
                 //
@@ -137,21 +148,45 @@ void dbThread::analyzeAllZones(){
                 first = QTime::fromString(queryEndTime, "hh:mm:ss");
                 diff = first.msecsTo(last) / 1000;
 
-                statTotalActiveZonesDurations [ totalActiveZoneList.at(0) ] += diff;
+                statTotalActiveZonesDurations [ stateList.at(0) ] += diff;
 
-
+/*
                 last = QTime::fromString(queryBeginTime, "hh:mm:ss");
 
                 if (!delimiterEncountered){
                     first = QTime::fromString(beginTime, "hh:mm:ss");
                     diff = first.msecsTo(last) / 1000;
-                    statTotalActiveZonesDurations [ totalActiveZoneList.at(totalActiveZoneList.count()-1) ] += diff;
+                    statTotalActiveZonesDurations [ stateList.at(stateList.count()-1) ] += diff;
                 } else {
                     first = QTime::fromString(beginTimeDelimiter, "hh:mm:ss");
                     diff = first.msecsTo(last) / 1000;
-                    statTotalActiveZonesDurations [ totalActiveZoneList.at(totalActiveZoneList.count()-1) ] += diff;
+                    statTotalActiveZonesDurations [ stateList.at(stateList.count()-1) ] += diff;
                 }
-                //
+
+                if (!delimiterEncountered){
+                    if (stateList.at(stateList.count()-1) == 1){
+                        if (diff < zeroStateLowThreshold){
+                            zeroStateLowTime += diff;
+                            zeroStateLowCount++;
+                        } else {
+                            zeroStateHighTime += diff;
+                            zeroStateHighCount++;
+                        }
+                    }
+                }
+
+                else {
+                    if (stateList.at(stateList.count()-1) == 0){
+                        if (diff < zeroStateLowThreshold){
+                            zeroStateLowTime += diff;
+                            zeroStateLowCount++;
+                        } else {
+                            zeroStateHighTime += diff;
+                            zeroStateHighCount++;
+                        }
+                    }
+                }
+*/
 
                 totalTime = 0;
                 for (int i=0; i<zoneNumber+1; i++)

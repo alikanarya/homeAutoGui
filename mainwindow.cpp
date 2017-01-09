@@ -211,7 +211,8 @@ void MainWindow::on_pushButton_clicked(){
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    //dbThreadX->verbose = true;
+    dbThreadX->verbose = true;
+    dbThreadX->zeroStateLowThreshold = 300;
     dbThreadX->cmdAnalyzeAllZones = true;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
@@ -219,7 +220,9 @@ void MainWindow::on_pushButton_clicked(){
 
 void MainWindow::allZonesTable(){
 
-    ui->tableAllZones->setRowCount(zoneNumber+2);
+    int totalRowNum = zoneNumber+1;
+    totalRowNum += 3;
+    ui->tableAllZones->setRowCount(totalRowNum);
     ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
 
 
@@ -231,22 +234,39 @@ void MainWindow::allZonesTable(){
         ui->tableAllZones->item(i, 3)->setFont(fontBold);
         ui->tableAllZones->item(i, 3)->setForeground(QColor::fromRgb(255,0,0));
 
-        for (int c=0; c<4; c++)
-           ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        //for (int c=0; c<4; c++)
+           //ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
 
     ui->tableAllZones->setItem( zoneNumber+1, 0, new QTableWidgetItem( "Toplam" ) );
+    ui->tableAllZones->setItem( zoneNumber+1, 1, new QTableWidgetItem( " " ) );
     ui->tableAllZones->setItem( zoneNumber+1, 2, new QTableWidgetItem( QDateTime::fromTime_t( totalTime ).toUTC().toString("hh:mm:ss") ) );
+    ui->tableAllZones->setItem( zoneNumber+1, 3, new QTableWidgetItem( " " ) );
 
-    ui->tableAllZones->item(zoneNumber+1, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    //ui->tableAllZones->item(zoneNumber+1, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     ui->tableAllZones->item(zoneNumber+1, 0)->setFont(fontBold);
-    ui->tableAllZones->item(zoneNumber+1, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    //ui->tableAllZones->item(zoneNumber+1, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     ui->tableAllZones->item(zoneNumber+1, 2)->setFont(fontBold);
     ui->tableAllZones->item(zoneNumber+1, 2)->setForeground(QColor::fromRgb(255,0,0));
 
+    ui->tableAllZones->setItem( zoneNumber+2, 0, new QTableWidgetItem( "0 Aktif <Th" ) );
+    ui->tableAllZones->setItem( zoneNumber+2, 1, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateLowTime ).toUTC().toString("hh:mm:ss") ) );
+    ui->tableAllZones->setItem( zoneNumber+2, 2, new QTableWidgetItem( QString::number( dbThreadX->zeroStateLowCount )) );
+    ui->tableAllZones->setItem( zoneNumber+2, 3, new QTableWidgetItem( " " ) );
+
+    ui->tableAllZones->setItem( zoneNumber+3, 0, new QTableWidgetItem( "0 Aktif >=Th" ) );
+    ui->tableAllZones->setItem( zoneNumber+3, 1, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss") ) );
+    ui->tableAllZones->setItem( zoneNumber+3, 2, new QTableWidgetItem( QString::number( dbThreadX->zeroStateHighCount )) );
+    ui->tableAllZones->setItem( zoneNumber+3, 3, new QTableWidgetItem( " " ) );
+
+    for (int i=0; i<totalRowNum; i++)
+        for (int c=0; c<4; c++)
+           ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     if (dbThreadX->delimiterEncountered){
         ui->textBrowser->append("Başlangıç: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
+    } else {
+        ui->textBrowser->append("Başlangıç: " + dbThreadX->queryBeginTime);// + ", Bitiş: " + dbThreadX->endTime);
     }
 }
 
@@ -277,13 +297,13 @@ void MainWindow::on_saveAllZonesButton_clicked(){
             out << "#" << endl;
 
             dbThreadX->qry.last();
-            dbThreadX->totalActiveZoneList.last();
+            dbThreadX->stateList.last();
             int c = 0;
             do {
 
                 for (int i=0; i<colNum;i++)
                     out << dbThreadX->qry.value(i).toString() << ",";
-                out << dbThreadX->totalActiveZoneList[c] << endl;
+                out << dbThreadX->stateList[c] << endl;
                 c++;
 
             } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "*" );

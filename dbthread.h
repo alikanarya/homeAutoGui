@@ -36,7 +36,7 @@ public:
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
-    QList<int> totalActiveZoneList;
+    //QList<int> totalActiveZoneList;
     QList<int> timeDiffList;
     QList<int> timeDiffListOn;
     QList<int> timeDiffListOff;
@@ -48,6 +48,7 @@ public:
     QString endTime;
     QString beginTimeDelimiter;
     QString endTimeDelimiter;
+    QString queryBeginTime;
 
     bool delimiterEncountered;
     int currentZone = 0;
@@ -55,6 +56,11 @@ public:
     int OFFtime;
     int ONcount;
     int OFFcount;
+    int zeroStateLowThreshold = 0;
+    int zeroStateLowTime = 0;
+    int zeroStateLowCount = 0;
+    int zeroStateHighTime = 0;
+    int zeroStateHighCount = 0;
 
     bool verbose = false;
     bool cmdConnect = false;
