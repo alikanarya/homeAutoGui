@@ -50,6 +50,10 @@ private slots:
     void on_zoneButton_clicked();
     void on_zoneSaveButton_clicked();
 
+    void on_timeUpButton_clicked();
+
+    void on_timeDownButton_clicked();
+
 signals:
 
     void connectTo();

@@ -207,7 +207,7 @@ void MainWindow::transferData(){
 
 void MainWindow::on_pushButton_clicked(){
 
-    dbThreadX-> beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
@@ -250,14 +250,18 @@ void MainWindow::allZonesTable(){
     ui->tableAllZones->item(zoneNumber+1, 2)->setForeground(QColor::fromRgb(255,0,0));
 
     ui->tableAllZones->setItem( zoneNumber+2, 0, new QTableWidgetItem( "0 Aktif <Th" ) );
-    ui->tableAllZones->setItem( zoneNumber+2, 1, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateLowTime ).toUTC().toString("hh:mm:ss") ) );
-    ui->tableAllZones->setItem( zoneNumber+2, 2, new QTableWidgetItem( QString::number( dbThreadX->zeroStateLowCount )) );
+    ui->tableAllZones->setItem( zoneNumber+2, 1, new QTableWidgetItem( QString::number( dbThreadX->zeroStateLowCount )) );
+    ui->tableAllZones->setItem( zoneNumber+2, 2, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateLowTime ).toUTC().toString("hh:mm:ss") ) );
     ui->tableAllZones->setItem( zoneNumber+2, 3, new QTableWidgetItem( " " ) );
 
     ui->tableAllZones->setItem( zoneNumber+3, 0, new QTableWidgetItem( "0 Aktif >=Th" ) );
-    ui->tableAllZones->setItem( zoneNumber+3, 1, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss") ) );
-    ui->tableAllZones->setItem( zoneNumber+3, 2, new QTableWidgetItem( QString::number( dbThreadX->zeroStateHighCount )) );
+    ui->tableAllZones->setItem( zoneNumber+3, 1, new QTableWidgetItem( QString::number( dbThreadX->zeroStateHighCount )) );
+    ui->tableAllZones->setItem( zoneNumber+3, 2, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss") ) );
     ui->tableAllZones->setItem( zoneNumber+3, 3, new QTableWidgetItem( " " ) );
+    ui->tableAllZones->item(zoneNumber+3, 1)->setFont(fontBold);
+    ui->tableAllZones->item(zoneNumber+3, 1)->setForeground(QColor::fromRgb(255,0,0));
+    ui->tableAllZones->item(zoneNumber+3, 2)->setFont(fontBold);
+    ui->tableAllZones->item(zoneNumber+3, 2)->setForeground(QColor::fromRgb(255,0,0));
 
     for (int i=0; i<totalRowNum; i++)
         for (int c=0; c<4; c++)
@@ -279,7 +283,11 @@ qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
 
 void MainWindow::on_saveAllZonesButton_clicked(){
 
-    QFile file(zoneAllFileName);
+    QString fileName = zoneAllFileName +
+            ui->dateEdit_BEGIN->date().toString("yyMMdd") + "_" + ui->timeEdit_BEGIN->time().toString("hhmmss") + "-" +
+            ui->dateEdit_END->date().toString("yyMMdd") + "_" + ui->timeEdit_END->time().toString("hhmmss") + ".csv";
+
+    QFile file(fileName);
 
     QSqlRecord allZonesRecord;
     allZonesRecord = dbThreadX->qry.record();
@@ -298,28 +306,44 @@ void MainWindow::on_saveAllZonesButton_clicked(){
             dbThreadX->qry.last();
             dbThreadX->stateList.last();
             int c = 0;
+            int thresholdIndex = dbThreadX->thresholdIndexList.at(0);
+            int x = 0;
+
             do {
 
                 for (int i=0; i<colNum;i++)
                     out << dbThreadX->qry.value(i).toString() << ",";
-                out << dbThreadX->stateList[c] << endl;
+                out << dbThreadX->stateList[c];
+
+                if (c == thresholdIndex){
+                    out << ",*";
+                    x++;
+                    if (x < dbThreadX->thresholdIndexList.count())
+                        thresholdIndex = dbThreadX->thresholdIndexList.at(x);
+                }
+                out << endl;
                 c++;
 
             } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "*" );
 
             out << endl << " ,İstatistik" << endl << endl;
 
-            out << " ,Aktif Bölge Top,Adet,Süre" << endl;
+            out << " ,Aktif Bölge Top,Adet,Süre,Saat" << endl;
 
             for (int i=0; i<zoneNumber+1; i++) {
-                out << " ," << i << "," << statTotalActiveZones[i] << "," << statTotalActiveZonesDurations[i] << endl;
+                out << " ," << i << "," << statTotalActiveZones[i] << "," << statTotalActiveZonesDurations[i] << ","
+                    << QDateTime::fromTime_t( statTotalActiveZonesDurations[i] ).toUTC().toString("hh:mm:ss") << endl;
             }
+
+            out << endl;
+            out << "Threshold,Adet,Süre" << endl;
+            out << "0 Aktif <Th," << dbThreadX->zeroStateLowCount << "," << QDateTime::fromTime_t( dbThreadX->zeroStateLowTime ).toUTC().toString("hh:mm:ss") << endl;
+            out << "0 Aktif >=Th," << dbThreadX->zeroStateHighCount << "," << QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss") << endl;
 
             file.close();
 
             qDebug() << "file saved";
         }
-
     }
 }
 
@@ -382,7 +406,75 @@ void MainWindow::zoneTable(){
 
 void MainWindow::on_zoneSaveButton_clicked(){
 
-    QFile *zoneFile;
-    zoneFile = new QFile[1];
 
+    QString fileName = zoneFileNames[currentZone-1] +
+            ui->dateEdit_BEGIN->date().toString("yyMMdd") + "_" + ui->timeEdit_BEGIN->time().toString("hhmmss") + "-" +
+            ui->dateEdit_END->date().toString("yyMMdd") + "_" + ui->timeEdit_END->time().toString("hhmmss") + ".csv";
+
+    QFile file(fileName);
+
+    QSqlRecord record;
+    record = dbThreadX->qry.record();
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)){
+
+        if ( dbThreadX->qry.size() > 0 ) {
+
+            QTextStream out(&file);
+
+            int colNum = record.count();
+            for (int i=0; i<colNum;i++)
+                out << record.fieldName(i) << ",";
+            out << endl;
+
+            dbThreadX->qry.last();
+
+            do {
+
+                for (int i=0; i<colNum;i++)
+                    out << dbThreadX->qry.value(i).toString() << ",";
+                out << endl;
+            } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "*" );
+
+            int total = dbThreadX->ONtime + dbThreadX->OFFtime;
+            int rate = 0;
+            if (total != 0)
+                rate = 100 * dbThreadX->ONtime / total;
+
+            out << endl << " ,İstatistik" << endl << endl;
+            out << ",ON#,OFF#,ON Süresi,OFF Süresi,% ON" << endl;
+            out << "," << dbThreadX->ONcount << "," << dbThreadX->OFFcount << ","
+                << QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") <<  ","
+                << QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") << ","
+                << rate << endl << endl;
+
+
+            dbThreadX->qry.last();
+            QString prevTime = "for graph";
+            do {
+
+
+                out << prevTime << ","
+                    << dbThreadX->qry.value(3).toString() << endl;
+
+                out << dbThreadX->qry.value(2).toString() << ","
+                    << dbThreadX->qry.value(3).toString() << endl;
+
+                prevTime = dbThreadX->qry.value(2).toString();
+
+            } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "*" );
+
+            file.close();
+
+            qDebug() << "file saved";
+        }
+    }
+}
+
+void MainWindow::on_timeUpButton_clicked(){
+    ui->timeEdit_END->setTime(QTime::fromString("23:59:59", "hh:mm:ss"));
+}
+
+void MainWindow::on_timeDownButton_clicked(){
+    ui->timeEdit_BEGIN->setTime(QTime::fromString("00:00:00", "hh:mm:ss"));
 }

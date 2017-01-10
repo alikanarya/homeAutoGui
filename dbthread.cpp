@@ -124,25 +124,7 @@ void dbThread::analyzeAllZones(){
                 zeroStateLowCount = 0;
                 zeroStateHighTime = 0;
                 zeroStateHighCount = 0;
-
-                for (int i=0; i<timeList.count()-1; i++) {
-
-                    last = QTime::fromString(timeList.at(i), "hh:mm:ss");
-                    first = QTime::fromString(timeList.at(i+1), "hh:mm:ss");
-                    diff = first.msecsTo(last) / 1000;
-                    statTotalActiveZonesDurations[ stateList.at(i+1) ] += diff;
-                    if (stateList.at(i+1)==0){
-                        if (diff < zeroStateLowThreshold){
-                            zeroStateLowTime += diff;
-                            zeroStateLowCount++;
-                        } else {
-                            zeroStateHighTime += diff;
-                            zeroStateHighCount++;
-                        }
-                    }
-
-                    if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff <<"."<<stateList.at(i+1); }
-                }
+                thresholdIndexList.clear();
 
                 //calc for between [query end time - end time]
                 last = QTime::fromString(endTime, "hh:mm:ss");
@@ -158,10 +140,30 @@ void dbThread::analyzeAllZones(){
                     } else {
                         zeroStateHighTime += diff;
                         zeroStateHighCount++;
+                        thresholdIndexList.append(0);
                     }
                 }
                 //---
 
+                for (int i=0; i<timeList.count()-1; i++) {
+
+                    last = QTime::fromString(timeList.at(i), "hh:mm:ss");
+                    first = QTime::fromString(timeList.at(i+1), "hh:mm:ss");
+                    diff = first.msecsTo(last) / 1000;
+                    statTotalActiveZonesDurations[ stateList.at(i+1) ] += diff;
+                    if (stateList.at(i+1)==0){
+                        if (diff < zeroStateLowThreshold){
+                            zeroStateLowTime += diff;
+                            zeroStateLowCount++;
+                        } else {
+                            zeroStateHighTime += diff;
+                            zeroStateHighCount++;
+                            thresholdIndexList.append(i+1);
+                        }
+                    }
+
+                    if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff <<"."<<stateList.at(i+1); }
+                }
 
                 totalTime = 0;
                 for (int i=0; i<zoneNumber+1; i++)

@@ -41,6 +41,7 @@ public:
     QList<int> timeDiffListOn;
     QList<int> timeDiffListOff;
     QList<int> stateList;
+    QList<int> thresholdIndexList;
 
     QString beginDate;
     QString endDate;

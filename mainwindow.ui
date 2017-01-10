@@ -849,6 +849,32 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="timeUpButton">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>190</y>
+      <width>41</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reset</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="timeDownButton">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>230</y>
+      <width>41</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reset</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -856,7 +882,7 @@
      <x>0</x>
      <y>0</y>
      <width>1274</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

@@ -52,8 +52,8 @@ int statTotalActiveZonesDurations[zoneNumber+1];
 int totalTime;
 int statTotalActiveZonesPercent[zoneNumber+1];
 
-QString zoneFileNames[8] = {"zones.csv", "z1_oto.csv", "z2_sln.csv", "z3_blk.csv", "z4_mut.csv", "z5_eyo.csv", "z6_cyo.csv", "z7_yod.csv"};
-QString zoneAllFileName = "zoneCombibed.csv";
+QString zoneFileNames[7] = {"z1_oto--", "z2_sln--", "z3_blk--", "z4_mut--", "z5_eyo--", "z6_cyo--", "z7_yod--"};
+QString zoneAllFileName = "zoneAll--";
 QString zonesFileName = "zones.csv";
 QString tableNames[8] = {"zones", "oto", "sln", "blk", "mut", "eyo", "cyo", "yod"};
 
