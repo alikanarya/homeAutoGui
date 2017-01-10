@@ -274,12 +274,6 @@ void MainWindow::allZonesTable(){
 }
 
 
-/*
-QTime last = QTime::fromString(timeList.at(0), "hh:mm:ss");
-QTime first = QTime::fromString(timeList.at(1), "hh:mm:ss");
-qint64 diff = first.msecsTo(last) / 1000;
-qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
-*/
 
 void MainWindow::on_saveAllZonesButton_clicked(){
 
@@ -477,4 +471,10 @@ void MainWindow::on_timeUpButton_clicked(){
 
 void MainWindow::on_timeDownButton_clicked(){
     ui->timeEdit_BEGIN->setTime(QTime::fromString("00:00:00", "hh:mm:ss"));
+/*
+    QTime last = QTime::fromString("00:15:00", "hh:mm:ss");
+    QTime first = QTime::fromString("23:44:00", "hh:mm:ss");
+    qint64 diff = first.msecsTo(last) / 1000;
+    qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
+*/
 }
