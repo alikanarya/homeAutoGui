@@ -211,7 +211,7 @@ void MainWindow::on_pushButton_clicked(){
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    dbThreadX->verbose = true;
+    //dbThreadX->verbose = true;
     dbThreadX->zeroStateLowThreshold = 300;
     dbThreadX->cmdAnalyzeAllZones = true;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
@@ -264,10 +264,9 @@ void MainWindow::allZonesTable(){
            ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     if (dbThreadX->delimiterEncountered){
-        ui->textBrowser->append("Başlangıç: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
-    } else {
-        ui->textBrowser->append("Başlangıç: " + dbThreadX->queryBeginTime);// + ", Bitiş: " + dbThreadX->endTime);
+        ui->textBrowser->append("Delimiter: " + dbThreadX->beginTimeDelimiter);
     }
+    ui->textBrowser->append("Başlangıç: " + dbThreadX->queryBeginTime);
 }
 
 
@@ -377,7 +376,7 @@ void MainWindow::zoneTable(){
         ui->tableZone->item(rowNum, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     if (dbThreadX->delimiterEncountered){
-        ui->textBrowser->append("Başlangıç: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
+        ui->textBrowser->append("Başlangıç-Delimiter: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
     }
 }
 
