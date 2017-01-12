@@ -416,12 +416,27 @@ void MainWindow::on_zoneSaveButton_clicked(){
 
             QTextStream out(&file);
 
+            int total = dbThreadX->ONtime + dbThreadX->OFFtime;
+            float rate = 0;
+            if (total != 0)
+                rate = 100.0 * dbThreadX->ONtime / total;
+
+            out << "ON#,ON Süresi,OFF Süresi,OFF#,% ON" << endl;
+            out << dbThreadX->ONcount << ","
+                << QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") << ","
+                << QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") <<  ","
+                << dbThreadX->OFFcount << ","
+                << QString::number(rate,'f',1) << endl << endl;
+
+            //---
             int colNum = record.count();
             for (int i=0; i<colNum;i++)
                 out << record.fieldName(i) << ",";
-            out << endl;
+            out << "diff" << endl;
 
             dbThreadX->qry.last();
+
+            out << "X,,23:59:59," << dbThreadX->qry.value(3).toString() << endl;
 
             do {
 
@@ -430,33 +445,59 @@ void MainWindow::on_zoneSaveButton_clicked(){
                 out << endl;
             } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "*" );
 
-            int total = dbThreadX->ONtime + dbThreadX->OFFtime;
-            int rate = 0;
-            if (total != 0)
-                rate = 100 * dbThreadX->ONtime / total;
+            if (!dbThreadX->delimiterEncountered){
+                out << "X,,00:00:00,";
+                dbThreadX->qry.next();
+                if (dbThreadX->qry.value(3) == 1)
+                    out << "0" << endl;
+                else
+                    out << "1" << endl;
+            } else {
+                out << "X,," << dbThreadX->qry.value(2).toString() << ",";
+                dbThreadX->qry.next();
+                out << dbThreadX->qry.value(3).toString() << endl;
+            }
+            //---
 
-            out << endl << " ,İstatistik" << endl << endl;
-            out << ",ON#,OFF#,ON Süresi,OFF Süresi,% ON" << endl;
-            out << "," << dbThreadX->ONcount << "," << dbThreadX->OFFcount << ","
-                << QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") <<  ","
-                << QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") << ","
-                << rate << endl << endl;
 
-
+            //---
+            out << "-,-,-,-,-" << endl;
             dbThreadX->qry.last();
-            QString prevTime = "for graph";
+            QString prevTime = "23:59:59";
+
+            //out << "X,Graph,23:59:59," << dbThreadX->qry.value(3).toString() << endl;
+
             do {
 
-
+                out << ",,";
                 out << prevTime << ","
                     << dbThreadX->qry.value(3).toString() << endl;
 
+                out << ",,";
                 out << dbThreadX->qry.value(2).toString() << ","
                     << dbThreadX->qry.value(3).toString() << endl;
 
                 prevTime = dbThreadX->qry.value(2).toString();
 
             } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "*" );
+
+            if (!dbThreadX->delimiterEncountered){
+                dbThreadX->qry.next();
+                int lastState = 0;
+                if (dbThreadX->qry.value(3) == 1)
+                    lastState = 0;
+                else
+                    lastState = 1;
+                out << "X,," << dbThreadX->qry.value(2).toString() << "," << lastState << endl;
+
+                out << "X,,00:00:00," << lastState << endl;
+            }
+/*            else {
+                dbThreadX->qry.previous();
+                out << "X,," << dbThreadX->qry.value(2).toString() << "," << dbThreadX->qry.value(3).toString() << endl;
+            }
+*/
+            //---
 
             file.close();
 
