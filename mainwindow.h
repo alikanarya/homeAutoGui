@@ -44,16 +44,14 @@ private slots:
     void transferData();
     void allZonesTable();
     void zoneTable();
+    void summaryResult();
 
     void on_pushButton_clicked();
     void on_saveAllZonesButton_clicked();
     void on_zoneButton_clicked();
     void on_zoneSaveButton_clicked();
-
     void on_timeUpButton_clicked();
-
     void on_timeDownButton_clicked();
-
     void on_report2DBButton_clicked();
 
 signals:

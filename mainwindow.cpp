@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     connect(dbThreadX, SIGNAL(allZonesProcessed()), this, SLOT(allZonesTable()));
     connect(dbThreadX, SIGNAL(zoneProcessed()), this, SLOT(zoneTable()));
+    connect(dbThreadX, SIGNAL(summaryReportDone()), this, SLOT(summaryResult()));
 
     dbThreadX->cmdConnect = true;
     dbThreadX->start();
@@ -230,7 +231,7 @@ void MainWindow::allZonesTable(){
         ui->tableAllZones->setItem( i, 0, new QTableWidgetItem( QString::number( i )) );
         ui->tableAllZones->setItem( i, 1, new QTableWidgetItem( QString::number( statTotalActiveZones[i] )) );
         ui->tableAllZones->setItem( i, 2, new QTableWidgetItem( QDateTime::fromTime_t( statTotalActiveZonesDurations[i] ).toUTC().toString("hh:mm:ss") ) );
-        ui->tableAllZones->setItem( i, 3, new QTableWidgetItem( QString::number( statTotalActiveZonesPercent[i] )) );
+        ui->tableAllZones->setItem( i, 3, new QTableWidgetItem( QString::number( statTotalActiveZonesPercent[i], 'f', 1 )) );
         ui->tableAllZones->item(i, 3)->setFont(fontBold);
         ui->tableAllZones->item(i, 3)->setForeground(QColor::fromRgb(255,0,0));
 
@@ -521,5 +522,29 @@ void MainWindow::on_timeDownButton_clicked(){
 }
 
 void MainWindow::on_report2DBButton_clicked(){
+
+    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+    dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
+    dbThreadX->endTime = ui->timeEdit_END->time().toString();
+    //dbThreadX->verbose = true;
+    dbThreadX->zeroStateLowThreshold = 300;
+    //dbThreadX->cmdSummaryReport = true;
+    dbThreadX->cmdAnalyzeAllZones = true;
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
+
+}
+
+void MainWindow::summaryResult(){
+
+
+    cout << dbThreadX->endDate.toUtf8().constData() << "-";
+
+    for (int i=0; i<zoneNumber+1; i++)
+             cout << QString::number(statTotalActiveZonesPercent[i],'f',1).toUtf8().constData() << "-";
+
+    cout << dbThreadX->zeroStateHighCount << "," << QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss").toUtf8().constData() << endl;
+//    cout << dbThreadX->zeroStateHighCount << "," << QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss") << endl;
 
 }

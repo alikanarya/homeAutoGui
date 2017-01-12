@@ -50,12 +50,18 @@ QString dbPass;
 int statTotalActiveZones[zoneNumber+1];
 int statTotalActiveZonesDurations[zoneNumber+1];
 int totalTime;
-int statTotalActiveZonesPercent[zoneNumber+1];
+float statTotalActiveZonesPercent[zoneNumber+1];
 
 QString zoneFileNames[7] = {"z1_oto--", "z2_sln--", "z3_blk--", "z4_mut--", "z5_eyo--", "z6_cyo--", "z7_yod--"};
 QString zoneAllFileName = "zoneAll--";
 QString zonesFileName = "zones.csv";
 QString tableNames[8] = {"zones", "oto", "sln", "blk", "mut", "eyo", "cyo", "yod"};
+QString tableSummary = "summary";
+QString tblSummaryFiels[19] =
+    {"index", "date",
+     "0_zone_rate", "1_zone_rate", "2_zone_rate", "3_zone_rate", "4_zone_rate", "5_zone_rate", "6_zone_rate", "7_zone_rate",
+     "0_zone_thr_count", "0_zone_thr_time",
+     "on_rate_oto", "on_rate_sln", "on_rate_blk", "on_rate_mut", "on_rate_eyo", "on_rate_çyo", "on_rate_yod" };
 
 //QString clientAddress = "192.168.2.232"; // BBB ***
 //QString clientAddress = "192.168.1.235"; // BBB ***

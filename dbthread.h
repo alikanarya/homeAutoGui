@@ -16,7 +16,7 @@ extern const int zoneNumber;
 extern int statTotalActiveZones[];
 extern int statTotalActiveZonesDurations[];
 extern int totalTime;
-extern int statTotalActiveZonesPercent[];
+extern float statTotalActiveZonesPercent[];
 
 extern QString tableNames[];
 
@@ -33,6 +33,7 @@ public:
     void connectToDB();
     void analyzeAllZones();
     void analyzeZone();
+    void summaryReport();
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
@@ -67,6 +68,7 @@ public:
     bool cmdConnect = false;
     bool cmdAnalyzeAllZones = false;
     bool cmdAnalyzeZone = false;
+    bool cmdSummaryReport = false;
 
 public slots:
 
@@ -85,7 +87,7 @@ signals:
     void unconnected();
     void allZonesProcessed();
     void zoneProcessed();
-
+    void summaryReportDone();
 };
 
 #endif // DBTHREAD_H
