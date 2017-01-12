@@ -54,6 +54,8 @@ private slots:
 
     void on_timeDownButton_clicked();
 
+    void on_report2DBButton_clicked();
+
 signals:
 
     void connectTo();

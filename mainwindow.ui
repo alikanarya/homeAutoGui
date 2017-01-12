@@ -548,7 +548,7 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>960</x>
       <y>20</y>
       <width>111</width>
       <height>29</height>
@@ -638,9 +638,9 @@
     <property name="geometry">
      <rect>
       <x>1080</x>
-      <y>30</y>
+      <y>20</y>
       <width>75</width>
-      <height>23</height>
+      <height>29</height>
      </rect>
     </property>
     <property name="text">
@@ -873,6 +873,19 @@
     </property>
     <property name="text">
      <string>Reset</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="report2DBButton">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>20</y>
+      <width>75</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rapor2DB</string>
     </property>
    </widget>
   </widget>

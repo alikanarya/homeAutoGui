@@ -519,3 +519,7 @@ void MainWindow::on_timeDownButton_clicked(){
     qDebug() << last.toString() << " - " << first.toString() << " is " << diff;
 */
 }
+
+void MainWindow::on_report2DBButton_clicked(){
+
+}
