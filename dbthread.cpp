@@ -406,16 +406,16 @@ void dbThread::insertToSummaryTable(){
             .arg(summaryData.zone0_thr_count).arg(summaryData.zone0_thr_time)
             .arg(summaryData.on_rate_oto).arg(summaryData.on_rate_sln).arg(summaryData.on_rate_blk).arg(summaryData.on_rate_mut).arg(summaryData.on_rate_eyo).arg(summaryData.on_rate_cyo).arg(summaryData.on_rate_yod);
 
+    //qDebug() << qryStr.toUtf8().constData() << endl;
 
-
-    qDebug() << qryStr.toUtf8().constData() << endl;
-//"INSERT INTO names (id, firstname, lastname) VALUES (2, 'Jane', 'Doe')"
     if (db.open()) {
 
         qry.prepare( qryStr );
 
-        if( !qry.exec() )
-            qDebug() << qry.lastError();
+        if( !qry.exec() ){
+            qDebug() << qry.lastError().type();
+            qDebug() << qry.lastError().databaseText();
+        }
         else {
             qDebug( "Inserted!" );
         }
