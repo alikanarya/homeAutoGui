@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->dateEdit_BEGIN->setDate(QDate::currentDate());
     ui->dateEdit_END->setDate(QDate::currentDate());
     ui->timeEdit_END->setTime(QTime::currentTime());
+    ui->thresholdEdit->setText("300");
 
     ui->tableAllZones->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableZone->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -228,7 +229,7 @@ void MainWindow::on_pushButton_clicked(){
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
     //dbThreadX->verbose = true;
-    dbThreadX->zeroStateLowThreshold = 300;
+    dbThreadX->zeroStateLowThreshold = ui->thresholdEdit->text().toInt();
     dbThreadX->cmdAnalyzeAllZones = true;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
@@ -389,38 +390,7 @@ void MainWindow::zoneTable(){
         ui->textBrowser->append("Başlangıç-Delimiter: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
     }
 }
-/*
-void MainWindow::zoneTable(){
 
-    //ui->tableAllZones->setRowCount(zoneNumber+1);
-    //ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
-    int rowNum = dbThreadX->currentZone - 1;
-    float rate, total;
-    if (dbThreadX->qry.size() > 0) {
-        ui->tableZone->setItem( rowNum, 0, new QTableWidgetItem( QString::number(dbThreadX->ONcount) ) );
-        ui->tableZone->setItem( rowNum, 1, new QTableWidgetItem( QString::number(dbThreadX->OFFcount) ) );
-        ui->tableZone->setItem( rowNum, 2, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") ) );
-        ui->tableZone->setItem( rowNum, 3, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") ) );
-        total = dbThreadX->ONtime + dbThreadX->OFFtime;
-        rate = 0;
-        if (total != 0)
-            rate = 100.0 * dbThreadX->ONtime / total;
-        ui->tableZone->setItem( rowNum, 4, new QTableWidgetItem( QString::number(rate, 'f', 1) ));
-        ui->tableZone->item(rowNum, 4)->setFont(fontBold);
-        ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
-
-    } else {
-        for (int c=0; c<5; c++)
-            ui->tableZone->setItem( rowNum, c, new QTableWidgetItem( "0" ) );
-    }
-    for (int c=0; c<5; c++)
-        ui->tableZone->item(rowNum, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-    if (dbThreadX->delimiterEncountered){
-        ui->textBrowser->append("Başlangıç-Delimiter: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
-    }
-}
-*/
 void MainWindow::on_zoneSaveButton_clicked(){
 
 
@@ -550,7 +520,7 @@ void MainWindow::on_report2DBButton_clicked(){
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
     //dbThreadX->verbose = true;
-    dbThreadX->zeroStateLowThreshold = 300;
+    dbThreadX->zeroStateLowThreshold = ui->thresholdEdit->text().toInt();
     dbThreadX->cmdSummaryReport = true;
     //dbThreadX->cmdAnalyzeAllZones = true;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
@@ -592,24 +562,9 @@ void MainWindow::summaryResult(){
     ui->tableZone->item(5, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_cyo, 'f', 1) );
     ui->tableZone->item(6, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_yod, 'f', 1) );
 
-    cout << dbThreadX->summaryData.date.toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone0_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone1_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone2_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone3_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone4_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone5_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone6_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.zone7_rate, 'f', 1).toUtf8().constData() << " ";
-    cout << dbThreadX->summaryData.zone0_thr_count << " ";
-    cout << dbThreadX->summaryData.zone0_thr_time.toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.on_rate_oto, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.on_rate_sln, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.on_rate_blk, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.on_rate_mut, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.on_rate_eyo, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.on_rate_cyo, 'f', 1).toUtf8().constData() << " ";
-    cout << QString::number(dbThreadX->summaryData.on_rate_yod, 'f', 1).toUtf8().constData() << endl;
+    dbThreadX->cmdInsertToSummaryTable = true;
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
 
 
 }

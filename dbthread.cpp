@@ -36,6 +36,11 @@ void dbThread::run(){
         summaryReport();
         cmdSummaryReport = false;
     }
+
+    if (cmdInsertToSummaryTable) {
+        insertToSummaryTable();
+        cmdInsertToSummaryTable = false;
+    }
 }
 
 void dbThread::stop(){}
@@ -351,10 +356,22 @@ void dbThread::analyzeZone(){
                     default:
                         break;
                 }
-                summaryData.zone0_thr_time = QDateTime::fromTime_t( zeroStateHighTime ).toUTC().toString("hh:mm:ss");
 
-            } else
+            } else {
+
+                switch (currentZone) {
+                    case 1: summaryData.on_rate_oto = 0; break;
+                    case 2: summaryData.on_rate_sln = 0; break;
+                    case 3: summaryData.on_rate_blk = 0; break;
+                    case 4: summaryData.on_rate_mut = 0; break;
+                    case 5: summaryData.on_rate_eyo = 0; break;
+                    case 6: summaryData.on_rate_cyo = 0; break;
+                    case 7: summaryData.on_rate_yod = 0; break;
+                    default:break;
+                }
+
                 qDebug() << "no record returned";
+            }
 
             if (cmdAnalyzeZone)
                 emit zoneProcessed();
@@ -376,5 +393,34 @@ void dbThread::summaryReport(){
     }
 
     emit summaryReportDone();
-
 }
+
+void dbThread::insertToSummaryTable(){
+
+    QString qryStr = QString( "INSERT INTO summary (date, "
+                              "0_zone_rate, 1_zone_rate, 2_zone_rate, 3_zone_rate, 4_zone_rate, 5_zone_rate, 6_zone_rate, 7_zone_rate, "
+                              "0_zone_thr_count, 0_zone_thr_time, "
+                              "on_rate_oto, on_rate_sln, on_rate_blk, on_rate_mut, on_rate_eyo, on_rate_cyo, on_rate_yod) VALUES ('%1', %2, %3, %4, %5, %6, %7, %8, %9, %10, '%11', %12, %13, %14, %15, %16, %17, %18)"
+                              ).arg(summaryData.date)
+            .arg(summaryData.zone0_rate).arg(summaryData.zone1_rate).arg(summaryData.zone2_rate).arg(summaryData.zone3_rate).arg(summaryData.zone4_rate).arg(summaryData.zone5_rate).arg(summaryData.zone6_rate).arg(summaryData.zone7_rate)
+            .arg(summaryData.zone0_thr_count).arg(summaryData.zone0_thr_time)
+            .arg(summaryData.on_rate_oto).arg(summaryData.on_rate_sln).arg(summaryData.on_rate_blk).arg(summaryData.on_rate_mut).arg(summaryData.on_rate_eyo).arg(summaryData.on_rate_cyo).arg(summaryData.on_rate_yod);
+
+
+
+    qDebug() << qryStr.toUtf8().constData() << endl;
+//"INSERT INTO names (id, firstname, lastname) VALUES (2, 'Jane', 'Doe')"
+    if (db.open()) {
+
+        qry.prepare( qryStr );
+
+        if( !qry.exec() )
+            qDebug() << qry.lastError();
+        else {
+            qDebug( "Inserted!" );
+        }
+    }
+}
+
+
+

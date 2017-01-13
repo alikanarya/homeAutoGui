@@ -19,6 +19,8 @@ extern int totalTime;
 extern float statTotalActiveZonesPercent[];
 
 extern QString tableNames[];
+extern QString tableSummary;
+extern QString tblSummaryFiels[];
 
 class dbThread: public QThread{
 
@@ -34,6 +36,7 @@ public:
     void analyzeAllZones();
     void analyzeZone();
     void summaryReport();
+    void insertToSummaryTable();
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
@@ -69,6 +72,7 @@ public:
     bool cmdAnalyzeAllZones = false;
     bool cmdAnalyzeZone = false;
     bool cmdSummaryReport = false;
+    bool cmdInsertToSummaryTable = false;
 
     struct summaryTable {
         QString date;
