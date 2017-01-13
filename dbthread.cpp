@@ -38,9 +38,7 @@ void dbThread::run(){
     }
 }
 
-void dbThread::stop(){
-
-}
+void dbThread::stop(){}
 
 void dbThread::connectToDB(){
 
@@ -181,8 +179,23 @@ void dbThread::analyzeAllZones(){
                         qDebug() << "Active zone count" << i << ": " << statTotalActiveZones[i] << "  Duration: " << statTotalActiveZonesDurations[i];
                 }
 
-                emit allZonesProcessed();
-                emit summaryReportDone();
+                summaryData.date = endDate;
+                summaryData.zone0_rate = statTotalActiveZonesPercent[0];
+                summaryData.zone1_rate = statTotalActiveZonesPercent[1];
+                summaryData.zone2_rate = statTotalActiveZonesPercent[2];
+                summaryData.zone3_rate = statTotalActiveZonesPercent[3];
+                summaryData.zone4_rate = statTotalActiveZonesPercent[4];
+                summaryData.zone5_rate = statTotalActiveZonesPercent[5];
+                summaryData.zone6_rate = statTotalActiveZonesPercent[6];
+                summaryData.zone7_rate = statTotalActiveZonesPercent[7];
+                summaryData.zone0_thr_count = zeroStateHighCount;
+                summaryData.zone0_thr_time = QDateTime::fromTime_t( zeroStateHighTime ).toUTC().toString("hh:mm:ss");
+
+                if (cmdAnalyzeAllZones)
+                    emit allZonesProcessed();
+
+                if (cmdSummaryReport)
+                    emit summaryReportProcess();
 
             } else
                 qDebug() << "no record returned";
@@ -322,128 +335,46 @@ void dbThread::analyzeZone(){
                         qDebug() << timeDiffListOff.at(i);
                 }
 
+                int total = ONtime + OFFtime;
+                float rate = 0;
+                if (total != 0)
+                    rate = 100.0 * ONtime / total;
+
+                switch (currentZone) {
+                    case 1: summaryData.on_rate_oto = rate; break;
+                    case 2: summaryData.on_rate_sln = rate; break;
+                    case 3: summaryData.on_rate_blk = rate; break;
+                    case 4: summaryData.on_rate_mut = rate; break;
+                    case 5: summaryData.on_rate_eyo = rate; break;
+                    case 6: summaryData.on_rate_cyo = rate; break;
+                    case 7: summaryData.on_rate_yod = rate; break;
+                    default:
+                        break;
+                }
+                summaryData.zone0_thr_time = QDateTime::fromTime_t( zeroStateHighTime ).toUTC().toString("hh:mm:ss");
+
             } else
                 qDebug() << "no record returned";
 
-            emit zoneProcessed();
+            if (cmdAnalyzeZone)
+                emit zoneProcessed();
+
+            if (cmdSummaryReport)
+                emit summaryReportProcess();
         }
     }
 }
 
 void dbThread::summaryReport(){
 
-    QString qryStr = QString( "SELECT * FROM zones WHERE date <= '%1' AND date >= '%2' AND time <= '%3' AND time >= '%4'").arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
-    //qDebug() << qryStr.toUtf8().constData() << endl;
+    currentZone = 0;
+    analyzeAllZones();
 
-    if (db.open()) {
-
-        qry.prepare( qryStr );
-
-        if( !qry.exec() )
-
-            qDebug() << qry.lastError();
-
-        else {
-
-            QSqlRecord allZonesRecord;
-            allZonesRecord = qry.record();
-
-            if ( qry.size() > 0 ) {
-
-                int colNum = allZonesRecord.count();
-
-                for (int i=0; i<zoneNumber+1; i++){
-                    statTotalActiveZones[i]=0;
-                    statTotalActiveZonesDurations[i]=0;
-                }
-
-                QStringList timeList;
-
-                stateList.clear();
-                qry.last();
-                QString queryEndTime = qry.value(2).toString();
-                delimiterEncountered = false;
-                do {
-                    timeList.append(qry.value(2).toString());
-
-                    int count = 0;
-                    for( int c=3; c<colNum; c++ )
-                        if ( qry.value(c).toString() == "1") count++;
-                    statTotalActiveZones[count]++;
-                    stateList.append(count);
-                } while( qry.previous() && qry.value(3).toString() != "*");
-
-                // is there a delimiter
-                if ( qry.size() != stateList.count()) {
-                    beginTimeDelimiter = qry.value(2).toString();
-                    qry.next();
-                    queryBeginTime = qry.value(2).toString();
-                    delimiterEncountered = true;
-                } else {
-                    qry.first();
-                    queryBeginTime = qry.value(2).toString();
-                }
-                //---
-
-                QTime last, first;
-                qint64 diff = 0;
-                zeroStateLowTime = 0;
-                zeroStateLowCount = 0;
-                zeroStateHighTime = 0;
-                zeroStateHighCount = 0;
-                thresholdIndexList.clear();
-
-                //calc for between [query end time - end time]
-                last = QTime::fromString(endTime, "hh:mm:ss");
-                first = QTime::fromString(queryEndTime, "hh:mm:ss");
-                diff = first.msecsTo(last) / 1000;
-
-                statTotalActiveZonesDurations [ stateList.at(0) ] += diff;
-
-                if (stateList.at(0)==0){
-                    if (diff < zeroStateLowThreshold){
-                        zeroStateLowTime += diff;
-                        zeroStateLowCount++;
-                    } else {
-                        zeroStateHighTime += diff;
-                        zeroStateHighCount++;
-                        thresholdIndexList.append(0);
-                    }
-                }
-                //---
-
-                for (int i=0; i<timeList.count()-1; i++) {
-
-                    last = QTime::fromString(timeList.at(i), "hh:mm:ss");
-                    first = QTime::fromString(timeList.at(i+1), "hh:mm:ss");
-                    diff = first.msecsTo(last) / 1000;
-                    statTotalActiveZonesDurations[ stateList.at(i+1) ] += diff;
-                    if (stateList.at(i+1)==0){
-                        if (diff < zeroStateLowThreshold){
-                            zeroStateLowTime += diff;
-                            zeroStateLowCount++;
-                        } else {
-                            zeroStateHighTime += diff;
-                            zeroStateHighCount++;
-                            thresholdIndexList.append(i+1);
-                        }
-                    }
-                }
-
-                totalTime = 0;
-                for (int i=0; i<zoneNumber+1; i++)
-                    totalTime += statTotalActiveZonesDurations[i];
-
-                for (int i=0; i<zoneNumber+1; i++)
-                    statTotalActiveZonesPercent[i] = statTotalActiveZonesDurations[i] * 100.0 / totalTime;
-
-                //emit allZonesProcessed();
-                emit summaryReportDone();
-
-            } else
-                qDebug() << "no record returned";
-        }
+    for (int i=0; i<zoneNumber; i++) {
+        currentZone = i+1;
+        analyzeZone();
     }
-    //--zone all
+
+    emit summaryReportDone();
 
 }

@@ -70,6 +70,28 @@ public:
     bool cmdAnalyzeZone = false;
     bool cmdSummaryReport = false;
 
+    struct summaryTable {
+        QString date;
+        float zone0_rate;
+        float zone1_rate;
+        float zone2_rate;
+        float zone3_rate;
+        float zone4_rate;
+        float zone5_rate;
+        float zone6_rate;
+        float zone7_rate;
+        int zone0_thr_count;
+        QString zone0_thr_time;
+        float on_rate_oto;
+        float on_rate_sln;
+        float on_rate_blk;
+        float on_rate_mut;
+        float on_rate_eyo;
+        float on_rate_cyo;
+        float on_rate_yod;
+    } summaryData;
+
+
 public slots:
 
 
@@ -87,6 +109,7 @@ signals:
     void unconnected();
     void allZonesProcessed();
     void zoneProcessed();
+    void summaryReportProcess();
     void summaryReportDone();
 };
 

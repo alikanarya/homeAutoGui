@@ -61,7 +61,8 @@ QString tblSummaryFiels[19] =
     {"index", "date",
      "0_zone_rate", "1_zone_rate", "2_zone_rate", "3_zone_rate", "4_zone_rate", "5_zone_rate", "6_zone_rate", "7_zone_rate",
      "0_zone_thr_count", "0_zone_thr_time",
-     "on_rate_oto", "on_rate_sln", "on_rate_blk", "on_rate_mut", "on_rate_eyo", "on_rate_çyo", "on_rate_yod" };
+     "on_rate_oto", "on_rate_sln", "on_rate_blk", "on_rate_mut", "on_rate_eyo", "on_rate_cyo", "on_rate_yod" };
+
 
 //QString clientAddress = "192.168.2.232"; // BBB ***
 //QString clientAddress = "192.168.1.235"; // BBB ***

@@ -22,9 +22,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->dateEdit_BEGIN->setDate(QDate::currentDate());
     ui->dateEdit_END->setDate(QDate::currentDate());
     ui->timeEdit_END->setTime(QTime::currentTime());
+
     ui->tableAllZones->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableZone->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     fontBold.setBold(true);
+
+    ui->tableAllZones->setRowCount(15);
+    ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
+    for (int i=0; i<15; i++)
+        for (int c=0; c<4; c++){
+            ui->tableAllZones->setItem(i, c, new QTableWidgetItem( " " ) );
+            ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        }
+
+    for (int i=0; i<7; i++)
+        for (int c=0; c<5; c++){
+            ui->tableZone->setItem(i, c, new QTableWidgetItem( " " ) );
+            ui->tableZone->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        }
 
     serverx = new Server();
     clientx = new Client();
@@ -221,59 +236,41 @@ void MainWindow::on_pushButton_clicked(){
 
 void MainWindow::allZonesTable(){
 
-    int totalRowNum = zoneNumber+1;
-    totalRowNum += 3;
-    ui->tableAllZones->setRowCount(totalRowNum);
-    ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
-
-
     for (int i=0; i<zoneNumber+1; i++) {
-        ui->tableAllZones->setItem( i, 0, new QTableWidgetItem( QString::number( i )) );
-        ui->tableAllZones->setItem( i, 1, new QTableWidgetItem( QString::number( statTotalActiveZones[i] )) );
-        ui->tableAllZones->setItem( i, 2, new QTableWidgetItem( QDateTime::fromTime_t( statTotalActiveZonesDurations[i] ).toUTC().toString("hh:mm:ss") ) );
-        ui->tableAllZones->setItem( i, 3, new QTableWidgetItem( QString::number( statTotalActiveZonesPercent[i], 'f', 1 )) );
+        ui->tableAllZones->item(i, 0)->setText( QString::number(i) );
+        ui->tableAllZones->item(i, 1)->setText( QString::number(statTotalActiveZones[i]) );
+        ui->tableAllZones->item(i, 2)->setText( QDateTime::fromTime_t(statTotalActiveZonesDurations[i]).toUTC().toString("hh:mm:ss") );
+        ui->tableAllZones->item(i, 3)->setText( QString::number(statTotalActiveZonesPercent[i], 'f', 1) );
+
         ui->tableAllZones->item(i, 3)->setFont(fontBold);
         ui->tableAllZones->item(i, 3)->setForeground(QColor::fromRgb(255,0,0));
-
-        //for (int c=0; c<4; c++)
-           //ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
 
-    ui->tableAllZones->setItem( zoneNumber+1, 0, new QTableWidgetItem( "Toplam" ) );
-    ui->tableAllZones->setItem( zoneNumber+1, 1, new QTableWidgetItem( " " ) );
-    ui->tableAllZones->setItem( zoneNumber+1, 2, new QTableWidgetItem( QDateTime::fromTime_t( totalTime ).toUTC().toString("hh:mm:ss") ) );
-    ui->tableAllZones->setItem( zoneNumber+1, 3, new QTableWidgetItem( " " ) );
+    ui->tableAllZones->item(zoneNumber+1, 0)->setText( "Toplam" );
+    ui->tableAllZones->item(zoneNumber+1, 2)->setText( QDateTime::fromTime_t( totalTime ).toUTC().toString("hh:mm:ss") );
 
-    //ui->tableAllZones->item(zoneNumber+1, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     ui->tableAllZones->item(zoneNumber+1, 0)->setFont(fontBold);
-    //ui->tableAllZones->item(zoneNumber+1, 2)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     ui->tableAllZones->item(zoneNumber+1, 2)->setFont(fontBold);
     ui->tableAllZones->item(zoneNumber+1, 2)->setForeground(QColor::fromRgb(255,0,0));
 
-    ui->tableAllZones->setItem( zoneNumber+2, 0, new QTableWidgetItem( "0 Aktif <Th" ) );
-    ui->tableAllZones->setItem( zoneNumber+2, 1, new QTableWidgetItem( QString::number( dbThreadX->zeroStateLowCount )) );
-    ui->tableAllZones->setItem( zoneNumber+2, 2, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateLowTime ).toUTC().toString("hh:mm:ss") ) );
-    ui->tableAllZones->setItem( zoneNumber+2, 3, new QTableWidgetItem( " " ) );
+    ui->tableAllZones->item(zoneNumber+2, 0)->setText( "0 Aktif <Th" );
+    ui->tableAllZones->item(zoneNumber+2, 1)->setText( QString::number(dbThreadX->zeroStateLowCount) );
+    ui->tableAllZones->item(zoneNumber+2, 2)->setText( QDateTime::fromTime_t(dbThreadX->zeroStateLowTime).toUTC().toString("hh:mm:ss") );
 
-    ui->tableAllZones->setItem( zoneNumber+3, 0, new QTableWidgetItem( "0 Aktif >=Th" ) );
-    ui->tableAllZones->setItem( zoneNumber+3, 1, new QTableWidgetItem( QString::number( dbThreadX->zeroStateHighCount )) );
-    ui->tableAllZones->setItem( zoneNumber+3, 2, new QTableWidgetItem( QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss") ) );
-    ui->tableAllZones->setItem( zoneNumber+3, 3, new QTableWidgetItem( " " ) );
+    ui->tableAllZones->item(zoneNumber+3, 0)->setText( "0 Aktif >=Th" );
+    ui->tableAllZones->item(zoneNumber+3, 1)->setText( QString::number(dbThreadX->zeroStateHighCount) );
+    ui->tableAllZones->item(zoneNumber+3, 2)->setText( QDateTime::fromTime_t(dbThreadX->zeroStateHighTime).toUTC().toString("hh:mm:ss") );
+
     ui->tableAllZones->item(zoneNumber+3, 1)->setFont(fontBold);
     ui->tableAllZones->item(zoneNumber+3, 1)->setForeground(QColor::fromRgb(255,0,0));
     ui->tableAllZones->item(zoneNumber+3, 2)->setFont(fontBold);
     ui->tableAllZones->item(zoneNumber+3, 2)->setForeground(QColor::fromRgb(255,0,0));
-
-    for (int i=0; i<totalRowNum; i++)
-        for (int c=0; c<4; c++)
-           ui->tableAllZones->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
     if (dbThreadX->delimiterEncountered){
         ui->textBrowser->append("Delimiter: " + dbThreadX->beginTimeDelimiter);
     }
     ui->textBrowser->append("Başlangıç: " + dbThreadX->queryBeginTime);
 }
-
 
 
 void MainWindow::on_saveAllZonesButton_clicked(){
@@ -345,11 +342,9 @@ void MainWindow::on_saveAllZonesButton_clicked(){
 void MainWindow::on_zoneButton_clicked(){
 
     //currentZone = 1;
-
     if ( currentZone>=7 ) currentZone = 0;
     currentZone++;
     //if ( currentZone == 3 )   currentZone++;  // skip "balkon"
-
     zoneQuery(currentZone);
 }
 
@@ -369,11 +364,38 @@ void MainWindow::zoneQuery(int zoneNumber){
 
 void MainWindow::zoneTable(){
 
+    int rowNum = dbThreadX->currentZone - 1;
+    float rate, total;
+
+    if (dbThreadX->qry.size() > 0) {
+        ui->tableZone->item(rowNum, 0)->setText( QString::number(dbThreadX->ONcount) );
+        ui->tableZone->item(rowNum, 1)->setText( QString::number(dbThreadX->OFFcount) );
+        ui->tableZone->item(rowNum, 2)->setText( QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") );
+        ui->tableZone->item(rowNum, 3)->setText( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") );
+        total = dbThreadX->ONtime + dbThreadX->OFFtime;
+        rate = 0;
+        if (total != 0)
+            rate = 100.0 * dbThreadX->ONtime / total;
+        ui->tableZone->item(rowNum, 4)->setText( QString::number(rate, 'f', 1) );
+        ui->tableZone->item(rowNum, 4)->setFont(fontBold);
+        ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
+
+    } else {
+        for (int c=0; c<5; c++)
+            ui->tableZone->item(rowNum, c)->setText( "0" );
+    }
+
+    if (dbThreadX->delimiterEncountered){
+        ui->textBrowser->append("Başlangıç-Delimiter: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
+    }
+}
+/*
+void MainWindow::zoneTable(){
+
     //ui->tableAllZones->setRowCount(zoneNumber+1);
     //ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
-
     int rowNum = dbThreadX->currentZone - 1;
-    int rate, total;
+    float rate, total;
     if (dbThreadX->qry.size() > 0) {
         ui->tableZone->setItem( rowNum, 0, new QTableWidgetItem( QString::number(dbThreadX->ONcount) ) );
         ui->tableZone->setItem( rowNum, 1, new QTableWidgetItem( QString::number(dbThreadX->OFFcount) ) );
@@ -382,8 +404,8 @@ void MainWindow::zoneTable(){
         total = dbThreadX->ONtime + dbThreadX->OFFtime;
         rate = 0;
         if (total != 0)
-            rate = 100 * dbThreadX->ONtime / total;
-        ui->tableZone->setItem( rowNum, 4, new QTableWidgetItem( QString::number(rate) ));
+            rate = 100.0 * dbThreadX->ONtime / total;
+        ui->tableZone->setItem( rowNum, 4, new QTableWidgetItem( QString::number(rate, 'f', 1) ));
         ui->tableZone->item(rowNum, 4)->setFont(fontBold);
         ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
 
@@ -398,7 +420,7 @@ void MainWindow::zoneTable(){
         ui->textBrowser->append("Başlangıç-Delimiter: " + dbThreadX->beginTimeDelimiter);// + ", Bitiş: " + dbThreadX->endTime);
     }
 }
-
+*/
 void MainWindow::on_zoneSaveButton_clicked(){
 
 
@@ -529,8 +551,8 @@ void MainWindow::on_report2DBButton_clicked(){
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
     //dbThreadX->verbose = true;
     dbThreadX->zeroStateLowThreshold = 300;
-    //dbThreadX->cmdSummaryReport = true;
-    dbThreadX->cmdAnalyzeAllZones = true;
+    dbThreadX->cmdSummaryReport = true;
+    //dbThreadX->cmdAnalyzeAllZones = true;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
 
@@ -538,13 +560,56 @@ void MainWindow::on_report2DBButton_clicked(){
 
 void MainWindow::summaryResult(){
 
-
-    cout << dbThreadX->endDate.toUtf8().constData() << "-";
+    for (int i=0; i<15; i++)
+        for (int c=0; c<4; c++)
+            ui->tableAllZones->item(i, c)->setText( " " );
 
     for (int i=0; i<zoneNumber+1; i++)
-             cout << QString::number(statTotalActiveZonesPercent[i],'f',1).toUtf8().constData() << "-";
+        ui->tableAllZones->item(i, 0)->setText( QString::number(i) );
 
-    cout << dbThreadX->zeroStateHighCount << "," << QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss").toUtf8().constData() << endl;
-//    cout << dbThreadX->zeroStateHighCount << "," << QDateTime::fromTime_t( dbThreadX->zeroStateHighTime ).toUTC().toString("hh:mm:ss") << endl;
+    ui->tableAllZones->item(0, 3)->setText( QString::number(dbThreadX->summaryData.zone0_rate, 'f', 1) );
+    ui->tableAllZones->item(1, 3)->setText( QString::number(dbThreadX->summaryData.zone1_rate, 'f', 1) );
+    ui->tableAllZones->item(2, 3)->setText( QString::number(dbThreadX->summaryData.zone2_rate, 'f', 1) );
+    ui->tableAllZones->item(3, 3)->setText( QString::number(dbThreadX->summaryData.zone3_rate, 'f', 1) );
+    ui->tableAllZones->item(4, 3)->setText( QString::number(dbThreadX->summaryData.zone4_rate, 'f', 1) );
+    ui->tableAllZones->item(5, 3)->setText( QString::number(dbThreadX->summaryData.zone5_rate, 'f', 1) );
+    ui->tableAllZones->item(6, 3)->setText( QString::number(dbThreadX->summaryData.zone6_rate, 'f', 1) );
+    ui->tableAllZones->item(7, 3)->setText( QString::number(dbThreadX->summaryData.zone7_rate, 'f', 1) );
+
+    ui->tableAllZones->item(8, 0)->setText( "0 Aktif >=Th" );
+    ui->tableAllZones->item(8, 1)->setText( QString::number(dbThreadX->summaryData.zone0_thr_count) );
+    ui->tableAllZones->item(8, 2)->setText( dbThreadX->summaryData.zone0_thr_time );
+
+    for (int i=0; i<7; i++)
+        for (int c=0; c<5; c++)
+            ui->tableZone->item(i, c)->setText( " " );
+
+    ui->tableZone->item(0, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_oto, 'f', 1) );
+    ui->tableZone->item(1, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_sln, 'f', 1) );
+    ui->tableZone->item(2, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_blk, 'f', 1) );
+    ui->tableZone->item(3, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_mut, 'f', 1) );
+    ui->tableZone->item(4, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_eyo, 'f', 1) );
+    ui->tableZone->item(5, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_cyo, 'f', 1) );
+    ui->tableZone->item(6, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_yod, 'f', 1) );
+
+    cout << dbThreadX->summaryData.date.toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone0_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone1_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone2_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone3_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone4_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone5_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone6_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.zone7_rate, 'f', 1).toUtf8().constData() << " ";
+    cout << dbThreadX->summaryData.zone0_thr_count << " ";
+    cout << dbThreadX->summaryData.zone0_thr_time.toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.on_rate_oto, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.on_rate_sln, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.on_rate_blk, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.on_rate_mut, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.on_rate_eyo, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.on_rate_cyo, 'f', 1).toUtf8().constData() << " ";
+    cout << QString::number(dbThreadX->summaryData.on_rate_yod, 'f', 1).toUtf8().constData() << endl;
+
 
 }
