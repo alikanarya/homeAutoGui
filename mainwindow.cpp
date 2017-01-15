@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     fontBold.setBold(true);
 
     ui->tableAllZones->setRowCount(15);
-    ui->tableAllZones->verticalHeader()->setDefaultSectionSize(30);
+    ui->tableAllZones->verticalHeader()->setDefaultSectionSize(20);
     for (int i=0; i<15; i++)
         for (int c=0; c<4; c++){
             ui->tableAllZones->setItem(i, c, new QTableWidgetItem( " " ) );
@@ -90,6 +90,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     dbThreadX->cmdConnect = true;
     dbThreadX->start();
 
+    // init deviation trend
+    scene = new QGraphicsScene();
+    ui->graphicsView->setScene(scene);
+    penAxis.setColor(Qt::red);
+    penAxis.setWidth(1);
+    sceneRect = ui->graphicsView->geometry();
+    sceneZoneStep = sceneRect.height() / zoneNumber;
+    //qDebug() << sceneRect.width() << "," << sceneRect.height() << "," << sceneZoneStep;
+    addAxis();
 }
 
 MainWindow::~MainWindow(){
@@ -193,8 +202,8 @@ void MainWindow::displayInputs(){
     aInpArrVal[0] = aInpArr[0] / 22.755555;
     ui->ai0->setText(QString::number(aInpArrVal[0],'f',1));
 
-    aInpArrVal[1] = aInpArr[1] / 22.755555;
-    ui->ai1->setText(QString::number(aInpArrVal[1],'f',1));
+    //aInpArrVal[1] = aInpArr[1] / 22.755555;
+    //ui->ai1->setText(QString::number(aInpArrVal[1],'f',1));
 }
 
 void MainWindow::transferData(){
@@ -342,7 +351,7 @@ void MainWindow::on_saveAllZonesButton_clicked(){
 
 void MainWindow::on_zoneButton_clicked(){
 
-    //currentZone = 1;
+    //currentZone = 6;
     if ( currentZone>=7 ) currentZone = 0;
     currentZone++;
     //if ( currentZone == 3 )   currentZone++;  // skip "balkon"
@@ -566,5 +575,22 @@ void MainWindow::summaryResult(){
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
 
+}
 
+
+void MainWindow::addAxis(){
+
+    for (int i=1; i <zoneNumber+1; i++){
+        scene->addLine(0, sceneZoneStep*i, sceneRect.width()-5, sceneZoneStep*i, penAxis);
+
+    }
+
+}
+
+
+void MainWindow::clearGraph(){
+
+    scene->clear();
+    addAxis();
+    ui->graphicsView->show();
 }

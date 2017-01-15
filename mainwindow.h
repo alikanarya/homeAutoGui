@@ -5,6 +5,9 @@
 #include <QtNetwork>
 #include <QDebug>
 #include <QProgressDialog>
+//#include <QtGui>
+//#include <QPixmap>
+#include <QGraphicsScene>
 
 namespace Ui {
 class MainWindow;
@@ -23,10 +26,18 @@ public:
     bool readSettings();
     void zoneQuery(int zoneNumber);
 
+    void addAxis();
+    void clearGraph();
+
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
 
     QFont fontBold;
+
+    QGraphicsScene *scene;      // to show devitation trend
+    QPen penAxis;               // pen for dev. trend axis
+    QRect sceneRect;
+    int sceneZoneStep;
 
 private:
 
