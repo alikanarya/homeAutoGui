@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1249</width>
-    <height>894</height>
+    <height>849</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -925,8 +925,8 @@
      <rect>
       <x>10</x>
       <y>570</y>
-      <width>1204</width>
-      <height>210</height>
+      <width>1202</width>
+      <height>212</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -949,6 +949,22 @@
       <height>210.000000000000000</height>
      </rectf>
     </property>
+    <property name="transformationAnchor">
+     <enum>QGraphicsView::AnchorUnderMouse</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="graphUpdateButton">
+    <property name="geometry">
+     <rect>
+      <x>1140</x>
+      <y>530</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Güncelle</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -957,7 +973,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

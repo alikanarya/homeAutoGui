@@ -5,7 +5,6 @@
 #include "dbthread.h"
 #include <iostream>
 
-
 using namespace std;
 
 Server *serverx;
@@ -86,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(allZonesProcessed()), this, SLOT(allZonesTable()));
     connect(dbThreadX, SIGNAL(zoneProcessed()), this, SLOT(zoneTable()));
     connect(dbThreadX, SIGNAL(summaryReportDone()), this, SLOT(summaryResult()));
+    connect(dbThreadX, SIGNAL(graphDataDone()), this, SLOT(drawGraph()));
 
     dbThreadX->cmdConnect = true;
     dbThreadX->start();
@@ -95,9 +95,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->graphicsView->setScene(scene);
     penAxis.setColor(Qt::red);
     penAxis.setWidth(1);
+    penZone.setColor(Qt::blue);
+    penZone.setWidth(1);
     sceneRect = ui->graphicsView->geometry();
     sceneZoneStep = sceneRect.height() / zoneNumber;
-    //qDebug() << sceneRect.width() << "," << sceneRect.height() << "," << sceneZoneStep;
+    sceneWidth = sceneRect.width() - 2;
+    xMax = sceneWidth - 1;
+    sceneHeight = sceneRect.height() - 2;
+    yMax = sceneHeight - 1;
+
+    qDebug() << sceneWidth << "," << sceneHeight << "," << xMax << "," << yMax;
     addAxis();
 }
 
@@ -160,7 +167,6 @@ void MainWindow::NotConnectedToServer(){
     ui->dINP7->setStyleSheet("background-color: light gray");
 
 }
-
 
 void MainWindow::displayInputs(){
 
@@ -230,7 +236,6 @@ void MainWindow::transferData(){
     }
 }
 
-
 void MainWindow::on_pushButton_clicked(){
 
     dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
@@ -281,7 +286,6 @@ void MainWindow::allZonesTable(){
     }
     ui->textBrowser->append("Başlangıç: " + dbThreadX->queryBeginTime);
 }
-
 
 void MainWindow::on_saveAllZonesButton_clicked(){
 
@@ -577,20 +581,80 @@ void MainWindow::summaryResult(){
 
 }
 
-
 void MainWindow::addAxis(){
 
     for (int i=1; i <zoneNumber+1; i++){
-        scene->addLine(0, sceneZoneStep*i, sceneRect.width()-5, sceneZoneStep*i, penAxis);
-
+        scene->addLine(0, sceneZoneStep*i-1, xMax, sceneZoneStep*i-1, penAxis);
     }
-
 }
-
 
 void MainWindow::clearGraph(){
 
     scene->clear();
     addAxis();
     ui->graphicsView->show();
+}
+
+void MainWindow::on_graphUpdateButton_clicked(){
+
+    dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    //-dbThreadX->endDate = QDate::currentDate().toString("dd/MM/yy");
+    dbThreadX->beginDate = dbThreadX->endDate;
+    dbThreadX->endTime = ui->timeEdit_END->time().toString();
+    //-dbThreadX->endTime = QTime::currentTime().toString("hh:mm:ss");
+    //dbThreadX->endTime = "00:59:59";
+
+    QTime last, first;
+    qint64 diff = 0;
+    last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
+    first = QTime::fromString("00:00:00");
+    diff = first.secsTo(last);
+
+    if (diff < 3600)
+        dbThreadX->beginTime = "00:00:00";
+    else{
+        first = last.addSecs(-3600);
+    }
+
+    dbThreadX->beginTime = first.toString("hh:mm:ss");
+
+    qDebug() << dbThreadX->endDate << "," << dbThreadX->endTime << "," << dbThreadX->beginDate << "," << dbThreadX->beginTime;
+
+    dbThreadX->verbose = true;
+    dbThreadX->cmdGraphData = true;
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
+
+
+}
+
+void MainWindow::drawGraph(){
+
+    clearGraph();
+    addAxis();
+
+    for (int i=1; i<zoneNumber+1; i++){
+
+        int yRef0 = sceneZoneStep*i-1;
+        int yRef1 = yRef0 - 20;
+        int x1, x2, y;
+
+        if (!dbThreadX->graphList[i].isEmpty()){
+            for (int j=0; j<dbThreadX->graphList[i].count()-1; j++){
+
+                x1 = dbThreadX->graphList[i].at(j).timeDiff / 3;
+                x2 = dbThreadX->graphList[i].at(j+1).timeDiff / 3;
+
+                if (dbThreadX->graphList[i].at(j+1).state == 0)
+                    y = yRef0;
+                else
+                    y = yRef1;
+
+                scene->addLine(x1, y, x2, y, penZone);
+                scene->addLine(x2, yRef0, x2, yRef1, penZone);
+            }
+        }
+
+    }
+
 }

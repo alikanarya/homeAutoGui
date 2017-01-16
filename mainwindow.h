@@ -34,9 +34,12 @@ public:
 
     QFont fontBold;
 
-    QGraphicsScene *scene;      // to show devitation trend
-    QPen penAxis;               // pen for dev. trend axis
+    QGraphicsScene *scene;
+    QPen penAxis;
+    QPen penZone;
     QRect sceneRect;
+    int sceneWidth, sceneHeight, xMax, yMax;
+
     int sceneZoneStep;
 
 private:
@@ -56,6 +59,7 @@ private slots:
     void allZonesTable();
     void zoneTable();
     void summaryResult();
+    void drawGraph();
 
     void on_pushButton_clicked();
     void on_saveAllZonesButton_clicked();
@@ -64,6 +68,8 @@ private slots:
     void on_timeUpButton_clicked();
     void on_timeDownButton_clicked();
     void on_report2DBButton_clicked();
+
+    void on_graphUpdateButton_clicked();
 
 signals:
 

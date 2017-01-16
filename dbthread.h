@@ -37,6 +37,8 @@ public:
     void analyzeZone();
     void summaryReport();
     void insertToSummaryTable();
+    void analyzeZonesForGraph();
+    void getGraphData();
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
@@ -73,6 +75,7 @@ public:
     bool cmdAnalyzeZone = false;
     bool cmdSummaryReport = false;
     bool cmdInsertToSummaryTable = false;
+    bool cmdGraphData = false;
 
     struct summaryTable {
         QString date;
@@ -95,6 +98,12 @@ public:
         float on_rate_yod;
     } summaryData;
 
+    struct graphData {
+        int timeDiff;
+        int state;
+    };
+
+    QList<graphData> graphList[7];
 
 public slots:
 
@@ -115,6 +124,7 @@ signals:
     void zoneProcessed();
     void summaryReportProcess();
     void summaryReportDone();
+    void graphDataDone();
 };
 
 #endif // DBTHREAD_H

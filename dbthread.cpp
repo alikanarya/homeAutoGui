@@ -41,6 +41,12 @@ void dbThread::run(){
         insertToSummaryTable();
         cmdInsertToSummaryTable = false;
     }
+
+    if (cmdGraphData) {
+        getGraphData();
+        cmdGraphData = false;
+    }
+
 }
 
 void dbThread::stop(){}
@@ -422,5 +428,133 @@ void dbThread::insertToSummaryTable(){
     }
 }
 
+void dbThread::analyzeZonesForGraph(){
+
+    QString qryStr = QString( "SELECT * FROM %1 WHERE date <= '%2' AND date >= '%3' AND time <= '%4' AND time >= '%5'").arg(tableNames[currentZone]).arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+    //qDebug() << qryStr.toUtf8().constData() << endl;
+
+    if (db.open()) {
+
+        qry.prepare( qryStr );
+
+        if( !qry.exec() )
+
+            qDebug() << qry.lastError();
+
+        else {
+
+            QSqlRecord record;
+            record = qry.record();
+
+            if ( qry.size() > 0 ) {
+
+                int colNum = record.count();
+
+                if (verbose) qDebug() << tableNames[currentZone];
+
+                QString temp = "";
+                if (verbose){
+                    for( int c=0; c<colNum; c++ )
+                        temp += record.fieldName(c) + " ";
+                    qDebug() << temp;
+                }
+
+                QTime last, first;
+                qint64 diff = 0;
+
+                qry.last();
+
+                graphData start;
+                start.state = qry.value(3).toInt();
+                start.timeDiff = 0;
+                graphList[currentZone].append(start);
+
+                if (verbose)
+                    qDebug() << graphList[currentZone].at(0).state << "," << graphList[currentZone].at(0).timeDiff;
+
+                last = QTime::fromString(endTime, "hh:mm:ss");
+
+                delimiterEncountered = false;
+                int index=0;
+                do {
+                    first = QTime::fromString(qry.value(2).toString(), "hh:mm:ss");
+                    diff = first.secsTo(last);
+
+                    graphData x;
+                    x.state = qry.value(3).toInt();
+                    x.timeDiff = diff;
+                    graphList[currentZone].append(x);
+
+                    index++;
+                    if (verbose){
+                        temp = "";
+                        for( int c=0; c<colNum; c++ )
+                            temp += qry.value(c).toString() + " ";
+                        qDebug() << temp << graphList[currentZone].at(index).state << "," << graphList[currentZone].at(index).timeDiff;
+                    }
+                } while( qry.previous() && qry.value(3).toString() != "*");
+
+                QString queryBeginTime;
+
+                if ( qry.size() != (graphList[currentZone].count()-1)) {
+                    beginTimeDelimiter = qry.value(2).toString();
+                    qry.next();
+                    queryBeginTime = qry.value(2).toString();
+                    delimiterEncountered = true;
+                } else {
+                    qry.first();
+                    queryBeginTime = qry.value(2).toString();
+                }
+
+
+                if (!delimiterEncountered){
+                    first = QTime::fromString(beginTime, "hh:mm:ss");
+                    diff = first.secsTo(last);
+                    int _state = 0;
+                    if (graphList[currentZone].last().state==0) {
+                        _state = 1;
+                    } else {
+                        _state = 0;
+                    }
+                    graphData x;
+                    x.state = _state;
+                    x.timeDiff = diff;
+                    graphList[currentZone].append(x);
+
+                } else {
+                    first = QTime::fromString(beginTimeDelimiter, "hh:mm:ss");
+                    diff = first.secsTo(last);
+                    graphData x;
+                    x.state = qry.value(3).toInt();
+                    x.timeDiff = diff;
+                    graphList[currentZone].append(x);
+                }
+
+                if (verbose)
+                    qDebug() << graphList[currentZone].last().state << "," << graphList[currentZone].last().timeDiff;
+
+            } else {
+
+                qDebug() << "no record returned";
+            }
+
+            //emit summaryReportProcess();
+        }
+    }
+
+}
+
+void dbThread::getGraphData(){
+
+    for (int i=0; i<zoneNumber; i++)
+        graphList[i].clear();
+
+    for (int i=1; i<zoneNumber+1; i++) {
+        currentZone = i;
+        analyzeZonesForGraph();
+    }
+
+    emit graphDataDone();
+}
 
 
