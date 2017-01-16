@@ -35,7 +35,8 @@ public:
     QFont fontBold;
 
     QGraphicsScene *scene;
-    QPen penAxis;
+    QPen penAxisSolid;
+    QPen penAxisDash;
     QPen penZone;
     QRect sceneRect;
     int sceneWidth, sceneHeight, xMax, yMax;

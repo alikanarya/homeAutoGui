@@ -93,10 +93,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // init deviation trend
     scene = new QGraphicsScene();
     ui->graphicsView->setScene(scene);
-    penAxis.setColor(Qt::red);
-    penAxis.setWidth(1);
+
+    penAxisSolid.setColor(Qt::gray);
+    penAxisSolid.setWidth(1);
+
+    penAxisDash.setColor(Qt::gray);
+    penAxisDash.setWidth(1);
+    penAxisDash.setStyle(Qt::DashLine);
+
     penZone.setColor(Qt::blue);
     penZone.setWidth(1);
+
     sceneRect = ui->graphicsView->geometry();
     sceneZoneStep = sceneRect.height() / zoneNumber;
     sceneWidth = sceneRect.width() - 2;
@@ -104,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     sceneHeight = sceneRect.height() - 2;
     yMax = sceneHeight - 1;
 
-    qDebug() << sceneWidth << "," << sceneHeight << "," << xMax << "," << yMax;
+    //qDebug() << sceneWidth << "," << sceneHeight << "," << xMax << "," << yMax;
     addAxis();
 }
 
@@ -584,7 +591,15 @@ void MainWindow::summaryResult(){
 void MainWindow::addAxis(){
 
     for (int i=1; i <zoneNumber+1; i++){
-        scene->addLine(0, sceneZoneStep*i-1, xMax, sceneZoneStep*i-1, penAxis);
+        scene->addLine(0, sceneZoneStep*i-1, xMax, sceneZoneStep*i-1, penAxisSolid);
+    }
+
+    for (int i=1; i <12; i++){
+
+        if (i % 2 == 0)
+            scene->addLine(100*i-1, 0, 100*i-1, yMax, penAxisSolid);
+        else
+            scene->addLine(100*i-1, 0, 100*i-1, yMax, penAxisDash);
     }
 }
 
@@ -631,15 +646,16 @@ void MainWindow::on_graphUpdateButton_clicked(){
 void MainWindow::drawGraph(){
 
     clearGraph();
-    addAxis();
+    //addAxis();
 
-    for (int i=1; i<zoneNumber+1; i++){
+    for (int i=0; i<zoneNumber; i++){
 
-        int yRef0 = sceneZoneStep*i-1;
+        int yRef0 = sceneZoneStep*(i+1) - 1;
         int yRef1 = yRef0 - 20;
         int x1, x2, y;
 
         if (!dbThreadX->graphList[i].isEmpty()){
+
             for (int j=0; j<dbThreadX->graphList[i].count()-1; j++){
 
                 x1 = dbThreadX->graphList[i].at(j).timeDiff / 3;
