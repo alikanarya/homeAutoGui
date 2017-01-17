@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1303</width>
-    <height>849</height>
+    <width>1301</width>
+    <height>838</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,9 @@
       <weight>75</weight>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0);</string>
     </property>
     <property name="text">
      <string>homeAuto</string>
@@ -281,7 +284,7 @@
    <widget class="QLabel" name="connStatusLabel">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>370</x>
       <y>10</y>
       <width>70</width>
       <height>21</height>
@@ -304,7 +307,7 @@
    <widget class="QLabel" name="ai0">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>480</x>
       <y>60</y>
       <width>59</width>
       <height>17</height>
@@ -326,7 +329,7 @@
    <widget class="QLabel" name="ai1">
     <property name="geometry">
      <rect>
-      <x>520</x>
+      <x>480</x>
       <y>80</y>
       <width>59</width>
       <height>17</height>
@@ -348,7 +351,7 @@
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>380</x>
       <y>60</y>
       <width>91</width>
       <height>17</height>
@@ -367,7 +370,7 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>380</x>
       <y>80</y>
       <width>91</width>
       <height>17</height>
@@ -386,7 +389,7 @@
    <widget class="QLabel" name="DBconnStatusLabel">
     <property name="geometry">
      <rect>
-      <x>510</x>
+      <x>470</x>
       <y>10</y>
       <width>70</width>
       <height>21</height>
@@ -409,8 +412,8 @@
    <widget class="QLabel" name="statusLabel_2">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>150</y>
+      <x>610</x>
+      <y>10</y>
       <width>121</width>
       <height>17</height>
      </rect>
@@ -429,8 +432,8 @@
    <widget class="QDateEdit" name="dateEdit_END">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>190</y>
+      <x>740</x>
+      <y>50</y>
       <width>110</width>
       <height>23</height>
      </rect>
@@ -445,8 +448,8 @@
    <widget class="QTimeEdit" name="timeEdit_END">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>190</y>
+      <x>870</x>
+      <y>50</y>
       <width>81</width>
       <height>23</height>
      </rect>
@@ -478,8 +481,8 @@
    <widget class="QTimeEdit" name="timeEdit_BEGIN">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>230</y>
+      <x>870</x>
+      <y>90</y>
       <width>81</width>
       <height>23</height>
      </rect>
@@ -494,8 +497,8 @@
    <widget class="QDateEdit" name="dateEdit_BEGIN">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>230</y>
+      <x>740</x>
+      <y>90</y>
       <width>110</width>
       <height>23</height>
      </rect>
@@ -510,8 +513,8 @@
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>190</y>
+      <x>610</x>
+      <y>50</y>
       <width>121</width>
       <height>17</height>
      </rect>
@@ -529,8 +532,8 @@
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>230</y>
+      <x>610</x>
+      <y>90</y>
       <width>121</width>
       <height>17</height>
      </rect>
@@ -548,8 +551,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>930</x>
-      <y>20</y>
+      <x>1090</x>
+      <y>150</y>
       <width>111</width>
       <height>29</height>
      </rect>
@@ -561,8 +564,8 @@
    <widget class="QTableWidget" name="tableAllZones">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>60</y>
+      <x>610</x>
+      <y>150</y>
       <width>471</width>
       <height>341</height>
      </rect>
@@ -640,8 +643,8 @@
    <widget class="QPushButton" name="saveAllZonesButton">
     <property name="geometry">
      <rect>
-      <x>1060</x>
-      <y>20</y>
+      <x>1090</x>
+      <y>180</y>
       <width>75</width>
       <height>29</height>
      </rect>
@@ -654,16 +657,16 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>310</y>
-      <width>521</width>
-      <height>251</height>
+      <y>150</y>
+      <width>471</width>
+      <height>171</height>
      </rect>
     </property>
     <attribute name="horizontalHeaderDefaultSectionSize">
      <number>70</number>
     </attribute>
     <attribute name="verticalHeaderDefaultSectionSize">
-     <number>30</number>
+     <number>20</number>
     </attribute>
     <attribute name="verticalHeaderMinimumSectionSize">
      <number>20</number>
@@ -816,9 +819,9 @@
    <widget class="QPushButton" name="zoneButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>270</y>
-      <width>151</width>
+      <x>490</x>
+      <y>150</y>
+      <width>111</width>
       <height>29</height>
      </rect>
     </property>
@@ -829,9 +832,9 @@
    <widget class="QPushButton" name="zoneSaveButton">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>270</y>
-      <width>151</width>
+      <x>490</x>
+      <y>180</y>
+      <width>111</width>
       <height>29</height>
      </rect>
     </property>
@@ -842,11 +845,14 @@
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>410</y>
+      <x>10</x>
+      <y>330</y>
       <width>471</width>
       <height>151</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(223, 223, 111);</string>
     </property>
     <property name="readOnly">
      <bool>false</bool>
@@ -855,48 +861,48 @@
    <widget class="QPushButton" name="timeUpButton">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>190</y>
+      <x>960</x>
+      <y>50</y>
       <width>41</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Reset</string>
+     <string>Max</string>
     </property>
    </widget>
    <widget class="QPushButton" name="timeDownButton">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>230</y>
+      <x>960</x>
+      <y>90</y>
       <width>41</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Reset</string>
+     <string>Min</string>
     </property>
    </widget>
    <widget class="QPushButton" name="report2DBButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>20</y>
+      <x>1090</x>
+      <y>290</y>
       <width>75</width>
       <height>29</height>
      </rect>
     </property>
     <property name="text">
-     <string>Rapor2DB</string>
+     <string>Özet Rapor</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>30</y>
-      <width>121</width>
+      <x>1090</x>
+      <y>220</y>
+      <width>91</width>
       <height>17</height>
      </rect>
     </property>
@@ -907,14 +913,14 @@
      <enum>Qt::RichText</enum>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLineEdit" name="thresholdEdit">
     <property name="geometry">
      <rect>
-      <x>840</x>
-      <y>30</y>
+      <x>1090</x>
+      <y>240</y>
       <width>71</width>
       <height>20</height>
      </rect>
@@ -923,8 +929,8 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>570</y>
+      <x>70</x>
+      <y>500</y>
       <width>1202</width>
       <height>212</height>
      </rect>
@@ -956,8 +962,8 @@
    <widget class="QPushButton" name="graphUpdateButton">
     <property name="geometry">
      <rect>
-      <x>1140</x>
-      <y>530</y>
+      <x>630</x>
+      <y>740</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -969,8 +975,8 @@
    <widget class="QLabel" name="label_14">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>577</y>
+      <x>-10</x>
+      <y>507</y>
       <width>59</width>
       <height>17</height>
      </rect>
@@ -994,8 +1000,8 @@
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>607</y>
+      <x>-10</x>
+      <y>537</y>
       <width>59</width>
       <height>17</height>
      </rect>
@@ -1019,8 +1025,8 @@
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>637</y>
+      <x>-10</x>
+      <y>567</y>
       <width>59</width>
       <height>17</height>
      </rect>
@@ -1044,8 +1050,8 @@
    <widget class="QLabel" name="label_17">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>667</y>
+      <x>-10</x>
+      <y>597</y>
       <width>59</width>
       <height>17</height>
      </rect>
@@ -1069,8 +1075,8 @@
    <widget class="QLabel" name="label_18">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>697</y>
+      <x>-10</x>
+      <y>627</y>
       <width>59</width>
       <height>17</height>
      </rect>
@@ -1094,8 +1100,8 @@
    <widget class="QLabel" name="label_19">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>727</y>
+      <x>-10</x>
+      <y>657</y>
       <width>59</width>
       <height>17</height>
      </rect>
@@ -1119,8 +1125,8 @@
    <widget class="QLabel" name="label_20">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>757</y>
+      <x>-10</x>
+      <y>687</y>
       <width>59</width>
       <height>17</height>
      </rect>
@@ -1141,14 +1147,430 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="labelT0">
+    <property name="geometry">
+     <rect>
+      <x>45</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT1">
+    <property name="geometry">
+     <rect>
+      <x>145</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT2">
+    <property name="geometry">
+     <rect>
+      <x>245</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT3">
+    <property name="geometry">
+     <rect>
+      <x>345</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT4">
+    <property name="geometry">
+     <rect>
+      <x>445</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT5">
+    <property name="geometry">
+     <rect>
+      <x>545</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT6">
+    <property name="geometry">
+     <rect>
+      <x>645</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT7">
+    <property name="geometry">
+     <rect>
+      <x>745</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT8">
+    <property name="geometry">
+     <rect>
+      <x>845</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT9">
+    <property name="geometry">
+     <rect>
+      <x>945</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT10">
+    <property name="geometry">
+     <rect>
+      <x>1045</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT11">
+    <property name="geometry">
+     <rect>
+      <x>1145</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelT12">
+    <property name="geometry">
+     <rect>
+      <x>1245</x>
+      <y>720</y>
+      <width>50</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HH:MM</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="forwardSmallButton">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>740</y>
+      <width>51</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;&lt; 5dk</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="forwardLargeButton">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>740</y>
+      <width>51</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;&lt; 1sa</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="backwardLargeButton">
+    <property name="geometry">
+     <rect>
+      <x>1220</x>
+      <y>740</y>
+      <width>51</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1sa &gt;&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="backwardSmallButton">
+    <property name="geometry">
+     <rect>
+      <x>1160</x>
+      <y>740</y>
+      <width>51</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>5dk &gt;&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="timeNow1Button">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>50</y>
+      <width>41</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Now</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="timeNow2Button">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>90</y>
+      <width>41</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Now</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxDB">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>320</y>
+      <width>41</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DB</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1303</width>
-     <height>27</height>
+     <width>1301</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

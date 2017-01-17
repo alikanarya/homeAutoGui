@@ -43,10 +43,13 @@ public:
 
     int sceneZoneStep;
 
+    QLabel *timeLabels[13];
+
 private:
 
     Ui::MainWindow *ui;
     QUdpSocket *udpSocket;
+    bool reportToDB = false;
 
 private slots:
 
@@ -71,6 +74,18 @@ private slots:
     void on_report2DBButton_clicked();
 
     void on_graphUpdateButton_clicked();
+
+    void on_forwardLargeButton_clicked();
+
+    void on_forwardSmallButton_clicked();
+
+    void on_backwardLargeButton_clicked();
+
+    void on_backwardSmallButton_clicked();
+
+    void on_timeNow1Button_clicked();
+
+    void on_timeNow2Button_clicked();
 
 signals:
 

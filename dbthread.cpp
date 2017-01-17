@@ -11,9 +11,7 @@ dbThread::dbThread(){
     db.setPassword(dbPass);
 }
 
-dbThread::~dbThread(){
-
-}
+dbThread::~dbThread(){}
 
 void dbThread::run(){
 

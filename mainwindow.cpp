@@ -101,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     penAxisDash.setWidth(1);
     penAxisDash.setStyle(Qt::DashLine);
 
-    penZone.setColor(Qt::blue);
+    penZone.setColor(Qt::red);
     penZone.setWidth(1);
 
     sceneRect = ui->graphicsView->geometry();
@@ -113,6 +113,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     //qDebug() << sceneWidth << "," << sceneHeight << "," << xMax << "," << yMax;
     addAxis();
+
+    timeLabels[0] = ui->labelT0;
+    timeLabels[1] = ui->labelT1;
+    timeLabels[2] = ui->labelT2;
+    timeLabels[3] = ui->labelT3;
+    timeLabels[4] = ui->labelT4;
+    timeLabels[5] = ui->labelT5;
+    timeLabels[6] = ui->labelT6;
+    timeLabels[7] = ui->labelT7;
+    timeLabels[8] = ui->labelT8;
+    timeLabels[9] = ui->labelT9;
+    timeLabels[10] = ui->labelT10;
+    timeLabels[11] = ui->labelT11;
+    timeLabels[12] = ui->labelT12;
+
 }
 
 MainWindow::~MainWindow(){
@@ -533,17 +548,28 @@ void MainWindow::on_timeDownButton_clicked(){
 */
 }
 
+void MainWindow::on_timeNow1Button_clicked(){
+    ui->timeEdit_END->setTime(QTime::currentTime());
+}
+
+void MainWindow::on_timeNow2Button_clicked(){
+    ui->timeEdit_BEGIN->setTime(QTime::currentTime());
+}
+
 void MainWindow::on_report2DBButton_clicked(){
 
     dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    //dbThreadX->verbose = true;
+
+    dbThreadX->verbose = false;
     dbThreadX->zeroStateLowThreshold = ui->thresholdEdit->text().toInt();
     dbThreadX->cmdSummaryReport = true;
-    //dbThreadX->cmdAnalyzeAllZones = true;
+
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    reportToDB = ui->checkBoxDB->isChecked();
+    //qDebug() << reportToDB;
     dbThreadX->start();
 
 }
@@ -582,10 +608,11 @@ void MainWindow::summaryResult(){
     ui->tableZone->item(5, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_cyo, 'f', 1) );
     ui->tableZone->item(6, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_yod, 'f', 1) );
 
-    dbThreadX->cmdInsertToSummaryTable = true;
-    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
-    dbThreadX->start();
-
+    if (reportToDB) {
+        dbThreadX->cmdInsertToSummaryTable = true;
+        progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+        dbThreadX->start();
+    }
 }
 
 void MainWindow::addAxis(){
@@ -633,33 +660,36 @@ void MainWindow::on_graphUpdateButton_clicked(){
 
     dbThreadX->beginTime = first.toString("hh:mm:ss");
 
-    qDebug() << dbThreadX->endDate << "," << dbThreadX->endTime << "," << dbThreadX->beginDate << "," << dbThreadX->beginTime;
+    //qDebug() << dbThreadX->endDate << "," << dbThreadX->endTime << "," << dbThreadX->beginDate << "," << dbThreadX->beginTime;
 
-    dbThreadX->verbose = true;
+    dbThreadX->verbose = false;
     dbThreadX->cmdGraphData = true;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
-
-
 }
 
 void MainWindow::drawGraph(){
 
     clearGraph();
-    //addAxis();
+
+    ui->textBrowser->append("-----");
 
     for (int i=0; i<zoneNumber; i++){
 
         int yRef0 = sceneZoneStep*(i+1) - 1;
         int yRef1 = yRef0 - 20;
-        int x1, x2, y;
+        int x1, x2, y, t1, t2, diff;
 
         if (!dbThreadX->graphList[i].isEmpty()){
 
+            QString temp = tableNames[i+1];
+
             for (int j=0; j<dbThreadX->graphList[i].count()-1; j++){
 
-                x1 = dbThreadX->graphList[i].at(j).timeDiff / 3;
-                x2 = dbThreadX->graphList[i].at(j+1).timeDiff / 3;
+                t1 = dbThreadX->graphList[i].at(j).timeDiff;
+                x1 = t1 / 3;
+                t2 = dbThreadX->graphList[i].at(j+1).timeDiff;
+                x2 = t2 / 3;
 
                 if (dbThreadX->graphList[i].at(j+1).state == 0)
                     y = yRef0;
@@ -668,9 +698,98 @@ void MainWindow::drawGraph(){
 
                 scene->addLine(x1, y, x2, y, penZone);
                 scene->addLine(x2, yRef0, x2, yRef1, penZone);
-            }
-        }
 
+                diff = t2 - t1;
+                if (diff < 3600)
+                    temp += " ," + QDateTime::fromTime_t(t2-t1).toUTC().toString("mm:ss");
+                else
+                    temp += " ," + QDateTime::fromTime_t(t2-t1).toUTC().toString("hh:mm:ss");
+            }
+            ui->textBrowser->append(temp);
+        }
     }
 
+    QTime last, first;
+    last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
+
+    timeLabels[0]->setText(ui->timeEdit_END->time().toString("hh:mm"));
+
+    for (int i=1; i<13; i++){
+        first = last.addSecs(-300*i);
+        timeLabels[i]->setText(first.toString("hh:mm"));
+    }
 }
+
+void MainWindow::on_forwardLargeButton_clicked(){
+
+    QString now = ui->timeEdit_END->time().toString();
+    QTime nowT = QTime::fromString(now, "hh:mm:ss");
+    QTime nextT = nowT.addSecs(3600);
+    QDate nowD =  ui->dateEdit_END->date();
+
+    ui->timeEdit_END->setTime(nextT);
+
+    if (nowT.hour() == 23){
+        QDate nextD = nowD.addDays(1);
+        ui->dateEdit_END->setDate(nextD);
+        ui->dateEdit_BEGIN->setDate(nextD);
+    }
+
+    on_graphUpdateButton_clicked();
+}
+
+void MainWindow::on_forwardSmallButton_clicked(){
+
+    QString now = ui->timeEdit_END->time().toString();
+    QTime nowT = QTime::fromString(now, "hh:mm:ss");
+    QTime nextT = nowT.addSecs(300);
+    QDate nowD =  ui->dateEdit_END->date();
+
+    ui->timeEdit_END->setTime(nextT);
+
+    if (nowT.hour() == 23){
+        QDate nextD = nowD.addDays(1);
+        ui->dateEdit_END->setDate(nextD);
+        ui->dateEdit_BEGIN->setDate(nextD);
+    }
+
+    on_graphUpdateButton_clicked();
+}
+
+void MainWindow::on_backwardLargeButton_clicked(){
+
+    QString now = ui->timeEdit_END->time().toString();
+    QTime nowT = QTime::fromString(now, "hh:mm:ss");
+    QTime nextT = nowT.addSecs(-3600);
+    QDate nowD =  ui->dateEdit_END->date();
+
+    ui->timeEdit_END->setTime(nextT);
+
+    if (nowT.hour() == 0){
+        QDate nextD = nowD.addDays(-1);
+        ui->dateEdit_END->setDate(nextD);
+        ui->dateEdit_BEGIN->setDate(nextD);
+    }
+
+    on_graphUpdateButton_clicked();
+}
+
+void MainWindow::on_backwardSmallButton_clicked(){
+
+    QString now = ui->timeEdit_END->time().toString();
+    QTime nowT = QTime::fromString(now, "hh:mm:ss");
+    QTime nextT = nowT.addSecs(-300);
+    QDate nowD =  ui->dateEdit_END->date();
+
+    ui->timeEdit_END->setTime(nextT);
+
+    if (nowT.hour() == 0){
+        QDate nextD = nowD.addDays(-1);
+        ui->dateEdit_END->setDate(nextD);
+        ui->dateEdit_BEGIN->setDate(nextD);
+    }
+
+    on_graphUpdateButton_clicked();
+}
+
+
