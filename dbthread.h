@@ -39,6 +39,7 @@ public:
     void insertToSummaryTable();
     void analyzeZonesForGraph();
     void getGraphData();
+    void getTemperature();
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
@@ -76,6 +77,7 @@ public:
     bool cmdSummaryReport = false;
     bool cmdInsertToSummaryTable = false;
     bool cmdGraphData = false;
+    bool cmdTempData = false;
 
     struct summaryTable {
         QString date;
@@ -105,6 +107,8 @@ public:
 
     QList<graphData> graphList[7];
 
+    float tempOut = -99;
+
 public slots:
 
 
@@ -125,6 +129,7 @@ signals:
     void summaryReportProcess();
     void summaryReportDone();
     void graphDataDone();
+    void tempOutDone();
 };
 
 #endif // DBTHREAD_H

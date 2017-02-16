@@ -7,18 +7,19 @@ int main(int argc, char *argv[]){
 
     QApplication a(argc, argv);
 
-
-
     begindialog *bd = new begindialog(NULL);
-
-
-
     bd->exec();
 
+    //qDebug() << clientAddress;
 
+    if (bd->state) {
+        MainWindow w;
+        w.show();
+        a.exec();
+    } else {
+        a.exit();
+    }
 
-    MainWindow w;
-    w.show();
-
-    return a.exec();
+    //return a.exec();
+    return 0;
 }

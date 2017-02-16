@@ -16,7 +16,9 @@ begindialog::begindialog(QWidget *parent) : QDialog(parent), ui(new Ui::begindia
     readSettings();
 
     ui->setupUi(this);
-    ui->comboBox->addItem(clientAddress);
+    ui->comboBox->addItem(clientAddress1);
+    ui->comboBox->addItem(clientAddress2);
+    ui->comboBox->addItem(clientAddress3);
 }
 
 begindialog::~begindialog(){
@@ -27,7 +29,9 @@ bool begindialog::readSettings(){
 
     if (QFile::exists(INIFILENAME)){
 
-        clientAddress = settings->value("clientAddress", _CLIENT_ADR).toString();
+        clientAddress1 = settings->value("clientAddress1", _CLIENT_ADR).toString();
+        clientAddress2 = settings->value("clientAddress2", _CLIENT_ADR).toString();
+        clientAddress3 = settings->value("clientAddress3", _CLIENT_ADR).toString();
         clientPort = settings->value("clientPort", _CLIENT_PORT).toInt();
         dbName = settings->value("dbName", _DB_NAME).toString();
         dbUser = settings->value("dbUser", _DB_USER).toString();
@@ -43,5 +47,7 @@ bool begindialog::readSettings(){
 }
 
 void begindialog::on_okButton_clicked(){
+    state = true;
+    clientAddress = ui->comboBox->currentText();
     this->close();
 }

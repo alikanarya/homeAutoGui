@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>129</height>
+    <width>295</width>
+    <height>70</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Server IP</string>
   </property>
   <widget class="QPushButton" name="okButton">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>80</y>
+     <x>190</x>
+     <y>20</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -29,9 +29,9 @@
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>50</y>
-     <width>221</width>
+     <x>30</x>
+     <y>20</y>
+     <width>141</width>
      <height>22</height>
     </rect>
    </property>

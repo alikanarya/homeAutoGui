@@ -45,6 +45,11 @@ void dbThread::run(){
         cmdGraphData = false;
     }
 
+    if (cmdTempData) {
+        getTemperature();
+        cmdTempData = false;
+    }
+
 }
 
 void dbThread::stop(){}
@@ -556,4 +561,40 @@ void dbThread::getGraphData(){
     emit graphDataDone();
 }
 
+void dbThread::getTemperature(){
+
+    QString qryStr = QString( "SELECT * FROM tempout ORDER BY `index` DESC LIMIT 1");
+    //qDebug() << qryStr.toUtf8().constData() << endl;
+
+
+    if (db.open()) {
+
+        qry.prepare( qryStr );
+
+        if( !qry.exec() )
+
+            qDebug() << qry.lastError();
+
+        else {
+
+            QSqlRecord record;
+            record = qry.record();
+
+            if ( qry.size() > 0 ) {
+
+                qry.last();
+
+                tempOut = qry.value(3).toFloat();
+
+
+            } else {
+
+                qDebug() << "no record returned";
+            }
+
+            emit tempOutDone();
+        }
+    }
+
+}
 

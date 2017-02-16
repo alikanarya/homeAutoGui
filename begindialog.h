@@ -35,6 +35,10 @@ public:
     QSettings *settings;                // settings: to read/write ini file
 
     QString clientAddress1 = "";
+    QString clientAddress2 = "";
+    QString clientAddress3 = "";
+
+    bool state = false;
 
 private slots:
     void on_okButton_clicked();

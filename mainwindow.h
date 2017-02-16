@@ -64,6 +64,8 @@ private slots:
     void zoneTable();
     void summaryResult();
     void drawGraph();
+    void updateTemp();
+    void updateTempGUI();
 
     void on_pushButton_clicked();
     void on_saveAllZonesButton_clicked();
@@ -72,19 +74,12 @@ private slots:
     void on_timeUpButton_clicked();
     void on_timeDownButton_clicked();
     void on_report2DBButton_clicked();
-
     void on_graphUpdateButton_clicked();
-
     void on_forwardLargeButton_clicked();
-
     void on_forwardSmallButton_clicked();
-
     void on_backwardLargeButton_clicked();
-
     void on_backwardSmallButton_clicked();
-
     void on_timeNow1Button_clicked();
-
     void on_timeNow2Button_clicked();
 
 signals:

@@ -86,6 +86,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(zoneProcessed()), this, SLOT(zoneTable()));
     connect(dbThreadX, SIGNAL(summaryReportDone()), this, SLOT(summaryResult()));
     connect(dbThreadX, SIGNAL(graphDataDone()), this, SLOT(drawGraph()));
+    connect(dbThreadX, SIGNAL(tempOutDone()), this, SLOT(updateTempGUI()));
+
+    QTimer *timerTemp = new QTimer();
+    QObject::connect(timerTemp, SIGNAL(timeout()), this, SLOT(updateTemp()));
+    timerTemp->start(60000);
 
     dbThreadX->cmdConnect = true;
     dbThreadX->start();
@@ -159,6 +164,8 @@ void MainWindow::connectedToDB(){
 
     ui->DBconnStatusLabel->setText(MSG_DB_CON_YES);
     ui->DBconnStatusLabel->setStyleSheet("color: green");
+
+    updateTemp();
 }
 
 void MainWindow::unconnectedToDB(){
@@ -792,4 +799,16 @@ void MainWindow::on_backwardSmallButton_clicked(){
     on_graphUpdateButton_clicked();
 }
 
+void MainWindow::updateTemp(){
+
+    dbThreadX->cmdTempData = true;
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
+}
+
+void MainWindow::updateTempGUI(){
+
+    ui->outTemp->setText( QString::number(dbThreadX->tempOut, 'f', 1) + "°C" );
+
+}
 
