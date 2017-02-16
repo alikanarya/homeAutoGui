@@ -19,15 +19,18 @@ SOURCES += main.cpp\
     client.cpp \
     server.cpp \
     checkclient.cpp \
-    dbthread.cpp
+    dbthread.cpp \
+    begindialog.cpp
 
 HEADERS  += mainwindow.h \
     server.h \
     client.h \
     globals.h \
     checkclient.h \
-    dbthread.h
+    dbthread.h \
+    begindialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    begindialog.ui
 
 

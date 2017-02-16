@@ -45,8 +45,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     clientx = new Client();
     checkClientX = new checkClient();
 
-    settings = new QSettings(INIFILENAME, QSettings::IniFormat);
-    readSettings();
+    //settings = new QSettings(INIFILENAME, QSettings::IniFormat);
+    //readSettings();
     clientx->setHost(clientAddress, clientPort);
 
     for (int i = 0; i < dInpSize; i++) dInpArr[i] = '0';

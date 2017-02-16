@@ -110,7 +110,7 @@ public:
 //        setWindowFlags(Qt:: Dialog | Qt:: FramelessWindowHint | Qt:: WindowTitleHint | Qt:: CustomizeWindowHint);
         setWindowFlags(Qt:: Dialog | Qt:: WindowTitleHint | Qt:: CustomizeWindowHint);
         setWindowModality(Qt::WindowModal);
-        m_timer->setInterval(500);
+        m_timer->setInterval(1000);
         connect(m_timer, SIGNAL(timeout()), this, SLOT(advance()));
     }
 
