@@ -37,6 +37,8 @@ public:
     QString clientAddress1 = "";
     QString clientAddress2 = "";
     QString clientAddress3 = "";
+    QString clientAddress4 = "";
+    QString clientAddress5 = "";
 
     bool state = false;
 

@@ -50,6 +50,10 @@ void dbThread::run(){
         cmdTempData = false;
     }
 
+    if (cmdAvgTempData) {
+        getAvgTemperature();
+        cmdAvgTempData = false;
+    }
 }
 
 void dbThread::stop(){}
@@ -566,7 +570,6 @@ void dbThread::getTemperature(){
     QString qryStr = QString( "SELECT * FROM tempout ORDER BY `index` DESC LIMIT 1");
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
-
     if (db.open()) {
 
         qry.prepare( qryStr );
@@ -574,7 +577,6 @@ void dbThread::getTemperature(){
         if( !qry.exec() )
 
             qDebug() << qry.lastError();
-
         else {
 
             QSqlRecord record;
@@ -583,18 +585,57 @@ void dbThread::getTemperature(){
             if ( qry.size() > 0 ) {
 
                 qry.last();
-
                 tempOut = qry.value(3).toFloat();
-
-
             } else {
-
                 qDebug() << "no record returned";
             }
 
             emit tempOutDone();
         }
     }
-
 }
 
+void dbThread::getAvgTemperature(){
+
+//    QString qryStr = QString( "SELECT * FROM tempout ORDER BY `index` DESC LIMIT 1");
+//    QString qryStr = QString( "SELECT * FROM tempout WHERE (date = '$today' AND time <= '$now') OR (date = '$yesterday' AND time > '$now') ORDER BY `index` DESC");
+    QString qryStr = QString( "SELECT * FROM tempout WHERE (date = '%1' AND time <= '%2') OR (date = '%3' AND time > '%4') ORDER BY `index` DESC").arg(endDate).arg(endTime).arg(beginDate).arg(beginTime);
+    //qDebug() << qryStr.toUtf8().constData() << endl;
+
+    if (db.open()) {
+
+        qry.prepare( qryStr );
+
+        if( !qry.exec() )
+
+            qDebug() << qry.lastError();
+        else {
+
+            QSqlRecord record;
+            record = qry.record();
+
+            if ( qry.size() > 0 ) {
+
+                int colNum = record.count();
+
+                QString temp = "";
+                qry.last();
+                //tempOut = qry.value(3).toFloat();
+                do {
+
+                    if (verbose){
+                        temp = "";
+                        for( int c=0; c<colNum; c++ )
+                            temp += qry.value(c).toString() + " ";
+                        qDebug() << temp ;
+                    }
+                } while( qry.previous() && qry.value(3).toString() != "-99");
+
+            } else {
+                qDebug() << "no record returned";
+            }
+
+            emit tempOutAvgDone();
+        }
+    }
+}

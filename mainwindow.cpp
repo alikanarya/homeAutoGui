@@ -802,7 +802,7 @@ void MainWindow::on_backwardSmallButton_clicked(){
 void MainWindow::updateTemp(){
 
     dbThreadX->cmdTempData = true;
-    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    progress->setWindowTitle("Sıcaklık Alınıyor");
     dbThreadX->start();
 }
 

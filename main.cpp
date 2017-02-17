@@ -2,6 +2,7 @@
 #include "begindialog.h"
 #include <QApplication>
 
+bool appState = false;
 
 int main(int argc, char *argv[]){
 
@@ -9,10 +10,9 @@ int main(int argc, char *argv[]){
 
     begindialog *bd = new begindialog(NULL);
     bd->exec();
-
     //qDebug() << clientAddress;
 
-    if (bd->state) {
+    if (appState) {
         MainWindow w;
         w.show();
         a.exec();
@@ -20,6 +20,6 @@ int main(int argc, char *argv[]){
         a.exit();
     }
 
-    //return a.exec();
     return 0;
+    //return a.exec();
 }
