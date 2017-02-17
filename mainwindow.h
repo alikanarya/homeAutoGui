@@ -28,6 +28,7 @@ public:
 
     void addAxis();
     void clearGraph();
+    void saveTempData();
 
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
@@ -50,6 +51,7 @@ private:
     Ui::MainWindow *ui;
     QUdpSocket *udpSocket;
     bool reportToDB = false;
+    bool tempSave = false;
 
 private slots:
 
@@ -66,6 +68,8 @@ private slots:
     void drawGraph();
     void updateTemp();
     void updateTempGUI();
+    void calcAvgTemp();
+    void avgTempGUI();
 
     void on_pushButton_clicked();
     void on_saveAllZonesButton_clicked();
@@ -81,6 +85,8 @@ private slots:
     void on_backwardSmallButton_clicked();
     void on_timeNow1Button_clicked();
     void on_timeNow2Button_clicked();
+
+    void on_saveTempData_clicked();
 
 signals:
 

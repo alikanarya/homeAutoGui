@@ -110,6 +110,9 @@ public:
     QList<graphData> graphList[7];
 
     float tempOut = -99;
+    float tempAvg = -99;
+    float tempMin = -99;
+    float tempMax = 99;
 
 public slots:
 

@@ -87,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(summaryReportDone()), this, SLOT(summaryResult()));
     connect(dbThreadX, SIGNAL(graphDataDone()), this, SLOT(drawGraph()));
     connect(dbThreadX, SIGNAL(tempOutDone()), this, SLOT(updateTempGUI()));
+    connect(dbThreadX, SIGNAL(tempOutAvgDone()), this, SLOT(avgTempGUI()));
 
     QTimer *timerTemp = new QTimer();
     QObject::connect(timerTemp, SIGNAL(timeout()), this, SLOT(updateTemp()));
@@ -166,6 +167,7 @@ void MainWindow::connectedToDB(){
     ui->DBconnStatusLabel->setStyleSheet("color: green");
 
     updateTemp();
+    calcAvgTemp();
 }
 
 void MainWindow::unconnectedToDB(){
@@ -809,6 +811,72 @@ void MainWindow::updateTemp(){
 void MainWindow::updateTempGUI(){
 
     ui->outTemp->setText( QString::number(dbThreadX->tempOut, 'f', 1) + "°C" );
-
 }
 
+void MainWindow::calcAvgTemp(){
+
+    dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().addDays(-1).toString("dd/MM/yy");
+    dbThreadX->endTime = ui->timeEdit_END->time().toString();
+    dbThreadX->beginTime = dbThreadX->endTime;
+
+    dbThreadX->verbose = false;
+    dbThreadX->cmdAvgTempData = true;
+
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
+}
+
+void MainWindow::avgTempGUI(){
+
+    ui->avgTemp->setText( QString::number(dbThreadX->tempMin, 'f', 1) + " // " + QString::number(dbThreadX->tempAvg, 'f', 1) + " // " + QString::number(dbThreadX->tempMax, 'f', 1) + " °C" );
+
+    if (tempSave)
+        saveTempData();
+}
+
+void MainWindow::on_saveTempData_clicked(){
+
+    calcAvgTemp();
+    tempSave = true;
+}
+
+void MainWindow::saveTempData(){
+
+    QString fileName = "temp--" +
+            //ui->dateEdit_BEGIN->date().toString("yyMMdd") + "_" + ui->timeEdit_BEGIN->time().toString("hhmmss") + "-" +
+            ui->dateEdit_END->date().toString("yyMMdd") + "_" + ui->timeEdit_END->time().toString("hhmmss") + ".csv";
+
+    QFile file(fileName);
+
+    QSqlRecord record;
+    record = dbThreadX->qry.record();
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)){
+
+        if ( dbThreadX->qry.size() > 0 ) {
+
+            //int colNum = record.count();
+
+            QTextStream out(&file);
+            out << "Date;Time;#;Temp" << endl;
+            dbThreadX->qry.last();
+
+            do {
+
+                out << dbThreadX->qry.value(1).toString() << ";";
+                out << dbThreadX->qry.value(2).toString() << ";";
+                out << dbThreadX->qry.value(0).toString() << ";";
+                out << dbThreadX->qry.value(3).toString().replace(".", ",");
+                //for (int i=0; i<colNum;i++) out << dbThreadX->qry.value(i).toString() << ",";
+                out << endl;
+            } while (dbThreadX->qry.previous() && dbThreadX->qry.value(3).toString() != "-99" );
+
+            file.close();
+
+            qDebug() << "file saved";
+        }
+    }
+
+    tempSave = false;
+}

@@ -54,6 +54,8 @@ void dbThread::run(){
         getAvgTemperature();
         cmdAvgTempData = false;
     }
+
+    verbose = false;
 }
 
 void dbThread::stop(){}
@@ -619,8 +621,14 @@ void dbThread::getAvgTemperature(){
                 int colNum = record.count();
 
                 QString temp = "";
-                qry.last();
-                //tempOut = qry.value(3).toFloat();
+                tempAvg = 0;
+                tempMax = -99;
+                tempMin =99;
+                int count = 0;
+                float val = 0;
+
+                qry.first();
+
                 do {
 
                     if (verbose){
@@ -629,8 +637,21 @@ void dbThread::getAvgTemperature(){
                             temp += qry.value(c).toString() + " ";
                         qDebug() << temp ;
                     }
-                } while( qry.previous() && qry.value(3).toString() != "-99");
 
+                    count++;
+                    val = qry.value(3).toFloat();
+                    tempAvg += val;
+
+                    if (val > tempMax)
+                        tempMax = val;
+
+                    if (val < tempMin)
+                        tempMin = val;
+
+                } while( qry.next() && qry.value(3).toString() != "-99");
+
+                if (count!=0)   tempAvg /= count;
+                if (verbose) qDebug() << tempAvg;
             } else {
                 qDebug() << "no record returned";
             }
