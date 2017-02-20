@@ -386,9 +386,9 @@ void MainWindow::on_saveAllZonesButton_clicked(){
 
 void MainWindow::on_zoneButton_clicked(){
 
-    //currentZone = 6;
-    if ( currentZone>=7 ) currentZone = 0;
-    currentZone++;
+    currentZone = 1;
+    //if ( currentZone>=7 ) currentZone = 0;
+    //currentZone++;
     //if ( currentZone == 3 )   currentZone++;  // skip "balkon"
     zoneQuery(currentZone);
 }
@@ -399,7 +399,7 @@ void MainWindow::zoneQuery(int zoneNumber){
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    dbThreadX->verbose = false;
+    dbThreadX->verbose = true;
 
     dbThreadX->cmdAnalyzeZone = true;
     dbThreadX->currentZone = zoneNumber;

@@ -225,7 +225,8 @@ void dbThread::analyzeAllZones(){
 
 void dbThread::analyzeZone(){
 
-    QString qryStr = QString( "SELECT * FROM %1 WHERE date <= '%2' AND date >= '%3' AND time <= '%4' AND time >= '%5'").arg(tableNames[currentZone]).arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+    QString qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') <= STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(date, '%d/%m/%y') >= STR_TO_DATE('%3', '%d/%m/%y'))").arg(tableNames[currentZone]).arg(endDate).arg(beginDate);
+//    QString qryStr = QString( "SELECT * FROM %1 WHERE date <= '%2' AND date >= '%3' AND time <= '%4' AND time >= '%5'").arg(tableNames[currentZone]).arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
     if (db.open()) {
@@ -345,7 +346,7 @@ void dbThread::analyzeZone(){
                     }
                 }
 
-
+                /*
                 if (verbose){
                     qDebug() << "ON times:";
                     for (int i=0; i<timeDiffListOn.count(); i++)
@@ -354,7 +355,7 @@ void dbThread::analyzeZone(){
                     for (int i=0; i<timeDiffListOff.count(); i++)
                         qDebug() << timeDiffListOff.at(i);
                 }
-
+                */
                 int total = ONtime + OFFtime;
                 float rate = 0;
                 if (total != 0)
