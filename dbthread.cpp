@@ -225,8 +225,15 @@ void dbThread::analyzeAllZones(){
 
 void dbThread::analyzeZone(){
 
-    QString qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') <= STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(date, '%d/%m/%y') >= STR_TO_DATE('%3', '%d/%m/%y'))").arg(tableNames[currentZone]).arg(endDate).arg(beginDate);
-//    QString qryStr = QString( "SELECT * FROM %1 WHERE date <= '%2' AND date >= '%3' AND time <= '%4' AND time >= '%5'").arg(tableNames[currentZone]).arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+    QString qryStr = "";
+    if (endDate == beginDate)
+        qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) AND"
+                                                 "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg(tableNames[currentZone]).arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+    else
+        qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') < STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(date, '%d/%m/%y') > STR_TO_DATE('%3', '%d/%m/%y')) OR"
+                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) OR"
+                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg(tableNames[currentZone]).arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+    //QString qryStr = QString( "SELECT * FROM %1 WHERE date <= '%2' AND date >= '%3' AND time <= '%4' AND time >= '%5'").arg(tableNames[currentZone]).arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
     if (db.open()) {
@@ -296,11 +303,27 @@ void dbThread::analyzeZone(){
                 OFFtime = 0;
                 ONcount = 0;
                 OFFcount = 0;
+                QTime zero = QTime::fromString("00:00:00", "hh:mm:ss");
+                //QTime max = QTime::fromString("23:59:59", "hh:mm:ss");
+
+                int lastSec = 0;
+                int firstSec = 0;
+
                 for (int i=0; i<timeList.count()-1; i++) {
 
                     last = QTime::fromString(timeList.at(i), "hh:mm:ss");
                     first = QTime::fromString(timeList.at(i+1), "hh:mm:ss");
-                    diff = first.msecsTo(last) / 1000;
+
+                    lastSec = -1*last.secsTo(zero);
+                    firstSec = -1*first.secsTo(zero);
+
+                    if (lastSec >= firstSec)
+                        diff = first.msecsTo(last) / 1000;
+                    else {
+                        diff = lastSec+86400-firstSec;
+                    }
+
+
                     timeDiffList.append(diff);
                     if (stateList.at(i+1)==1){
                         timeDiffListOn.append(diff);
@@ -311,7 +334,8 @@ void dbThread::analyzeZone(){
                         OFFtime += diff;
                         OFFcount++;
                     }
-                    //if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff; }
+                    if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff; }
+                   // if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << last.secsTo(zero); }
                 }
 
                 last = QTime::fromString(endTime, "hh:mm:ss");
@@ -346,16 +370,16 @@ void dbThread::analyzeZone(){
                     }
                 }
 
-                /*
+
                 if (verbose){
-                    qDebug() << "ON times:";
+                    qDebug() << "ON times: " << ONtime;
                     for (int i=0; i<timeDiffListOn.count(); i++)
                         qDebug() << timeDiffListOn.at(i);
-                    qDebug() << "OFF times:";
+                    qDebug() << "OFF times:" << OFFtime;
                     for (int i=0; i<timeDiffListOff.count(); i++)
                         qDebug() << timeDiffListOff.at(i);
                 }
-                */
+
                 int total = ONtime + OFFtime;
                 float rate = 0;
                 if (total != 0)

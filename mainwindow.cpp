@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     QTimer *timerTemp = new QTimer();
     QObject::connect(timerTemp, SIGNAL(timeout()), this, SLOT(updateTemp()));
-    timerTemp->start(60000);
+    timerTemp->start(600000);
 
     dbThreadX->cmdConnect = true;
     dbThreadX->start();
@@ -416,7 +416,7 @@ void MainWindow::zoneTable(){
         ui->tableZone->item(rowNum, 0)->setText( QString::number(dbThreadX->ONcount) );
         ui->tableZone->item(rowNum, 1)->setText( QString::number(dbThreadX->OFFcount) );
         ui->tableZone->item(rowNum, 2)->setText( QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") );
-        ui->tableZone->item(rowNum, 3)->setText( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("hh:mm:ss") );
+        ui->tableZone->item(rowNum, 3)->setText( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("d:hh:mm:ss") );
         total = dbThreadX->ONtime + dbThreadX->OFFtime;
         rate = 0;
         if (total != 0)
