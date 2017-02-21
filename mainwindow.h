@@ -29,6 +29,7 @@ public:
     void addAxis();
     void clearGraph();
     void saveTempData();
+    QString getTimeStr(int val);
 
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
@@ -87,6 +88,8 @@ private slots:
     void on_timeNow2Button_clicked();
 
     void on_saveTempData_clicked();
+
+    void on_yesterdayButton_clicked();
 
 signals:
 

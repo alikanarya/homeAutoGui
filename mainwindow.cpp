@@ -386,10 +386,10 @@ void MainWindow::on_saveAllZonesButton_clicked(){
 
 void MainWindow::on_zoneButton_clicked(){
 
-    currentZone = 1;
-    //if ( currentZone>=7 ) currentZone = 0;
-    //currentZone++;
-    //if ( currentZone == 3 )   currentZone++;  // skip "balkon"
+    //currentZone = 1;
+    if ( currentZone>=7 ) currentZone = 0;
+    currentZone++;
+    //  if ( currentZone == 3 )   currentZone++;  // skip "balkon"
     zoneQuery(currentZone);
 }
 
@@ -399,7 +399,7 @@ void MainWindow::zoneQuery(int zoneNumber){
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    dbThreadX->verbose = true;
+    dbThreadX->verbose = false;
 
     dbThreadX->cmdAnalyzeZone = true;
     dbThreadX->currentZone = zoneNumber;
@@ -416,7 +416,8 @@ void MainWindow::zoneTable(){
         ui->tableZone->item(rowNum, 0)->setText( QString::number(dbThreadX->ONcount) );
         ui->tableZone->item(rowNum, 1)->setText( QString::number(dbThreadX->OFFcount) );
         ui->tableZone->item(rowNum, 2)->setText( QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") );
-        ui->tableZone->item(rowNum, 3)->setText( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("d:hh:mm:ss") );
+//        ui->tableZone->item(rowNum, 3)->setText( QDateTime::fromTime_t( dbThreadX->OFFtime ).toUTC().toString("d:hh:mm:ss") );
+        ui->tableZone->item(rowNum, 3)->setText( getTimeStr( dbThreadX->OFFtime ) );
         total = dbThreadX->ONtime + dbThreadX->OFFtime;
         rate = 0;
         if (total != 0)
@@ -424,6 +425,24 @@ void MainWindow::zoneTable(){
         ui->tableZone->item(rowNum, 4)->setText( QString::number(rate, 'f', 1) );
         ui->tableZone->item(rowNum, 4)->setFont(fontBold);
         ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
+
+
+        // message window
+        ui->textBrowser->append(tableNames[currentZone]);
+
+        int colNum = dbThreadX->qry.record().count();
+
+        QString temp = "End: ";
+        dbThreadX->qry.last();
+        for( int c=0; c<colNum; c++ )
+            temp += dbThreadX->qry.value(c).toString() + " ";
+        ui->textBrowser->append(temp);
+
+        temp = "Bgn: ";
+        dbThreadX->qry.first();
+        for( int c=0; c<colNum; c++ )
+            temp += dbThreadX->qry.value(c).toString() + " ";
+        ui->textBrowser->append(temp);
 
     } else {
         for (int c=0; c<5; c++)
@@ -563,6 +582,11 @@ void MainWindow::on_timeNow1Button_clicked(){
 
 void MainWindow::on_timeNow2Button_clicked(){
     ui->timeEdit_BEGIN->setTime(QTime::currentTime());
+}
+
+void MainWindow::on_yesterdayButton_clicked(){
+    ui->timeEdit_BEGIN->setTime(ui->timeEdit_END->time());
+    ui->dateEdit_BEGIN->setDate(ui->dateEdit_END->date().addDays(-1));
 }
 
 void MainWindow::on_report2DBButton_clicked(){
@@ -880,3 +904,23 @@ void MainWindow::saveTempData(){
 
     tempSave = false;
 }
+
+QString MainWindow::getTimeStr(int val){
+
+    int d = val / 86400;
+    val = val - d*86400;
+    int h = val / 3600;
+    val = val - h*3600;
+    int m = val / 60;
+    val = val - m*60;
+    int s = val;
+    h += d*24;
+
+    char timeInfo[10];
+    sprintf (timeInfo, "%02d:%02d:%02d", h, m, s);
+
+    QString time(timeInfo);
+
+    return time;
+}
+

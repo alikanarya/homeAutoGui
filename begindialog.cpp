@@ -22,6 +22,7 @@ begindialog::begindialog(QWidget *parent) : QDialog(parent), ui(new Ui::begindia
     ui->comboBox->addItem(clientAddress3);
     ui->comboBox->addItem(clientAddress4);
     ui->comboBox->addItem(clientAddress5);
+    ui->comboBox->setCurrentIndex(defaultAddr);
 }
 
 begindialog::~begindialog(){
@@ -32,11 +33,12 @@ bool begindialog::readSettings(){
 
     if (QFile::exists(INIFILENAME)){
 
-        clientAddress1 = settings->value("clientAddress1", _CLIENT_ADR).toString();
-        clientAddress2 = settings->value("clientAddress2", _CLIENT_ADR).toString();
-        clientAddress3 = settings->value("clientAddress3", _CLIENT_ADR).toString();
-        clientAddress4 = settings->value("clientAddress4", _CLIENT_ADR).toString();
-        clientAddress5 = settings->value("clientAddress5", _CLIENT_ADR).toString();
+        defaultAddr = settings->value("defaultAddr", _DEFAULT_ADR).toInt();
+        clientAddress1 = settings->value("clientAddress0", _CLIENT_ADR).toString();
+        clientAddress2 = settings->value("clientAddress1", _CLIENT_ADR).toString();
+        clientAddress3 = settings->value("clientAddress2", _CLIENT_ADR).toString();
+        clientAddress4 = settings->value("clientAddress3", _CLIENT_ADR).toString();
+        clientAddress5 = settings->value("clientAddress4", _CLIENT_ADR).toString();
         clientPort = settings->value("clientPort", _CLIENT_PORT).toInt();
         dbName = settings->value("dbName", _DB_NAME).toString();
         dbUser = settings->value("dbUser", _DB_USER).toString();

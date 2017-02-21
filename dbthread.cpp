@@ -266,6 +266,10 @@ void dbThread::analyzeZone(){
 
                 stateList.clear();
                 qry.last();
+                QDate endDateForm = QDate::fromString(endDate,"dd/MM/yy");
+                QDate endDateRecord = QDate::fromString(qry.value(1).toString(),"dd/MM/yy");
+                qint64 endDateDiff = endDateRecord.daysTo(endDateForm);
+
                 QString queryEndTime = qry.value(2).toString();
                 delimiterEncountered = false;
                 do {
@@ -304,7 +308,6 @@ void dbThread::analyzeZone(){
                 ONcount = 0;
                 OFFcount = 0;
                 QTime zero = QTime::fromString("00:00:00", "hh:mm:ss");
-                //QTime max = QTime::fromString("23:59:59", "hh:mm:ss");
 
                 int lastSec = 0;
                 int firstSec = 0;
@@ -338,9 +341,19 @@ void dbThread::analyzeZone(){
                    // if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << last.secsTo(zero); }
                 }
 
+
+                // End time calcualtions
+
                 last = QTime::fromString(endTime, "hh:mm:ss");
                 first = QTime::fromString(queryEndTime, "hh:mm:ss");
-                diff = first.msecsTo(last) / 1000;
+
+                if (endDateDiff == 0)
+                    diff = first.msecsTo(last) / 1000;
+                else{
+                    lastSec = -1*last.secsTo(zero);
+                    firstSec = -1*first.secsTo(zero);
+                    diff = lastSec+86400*endDateDiff-firstSec;
+                }
 
                 if (stateList.first()==1) {
                     ONtime += diff;
@@ -350,6 +363,8 @@ void dbThread::analyzeZone(){
                     OFFcount++;
                 }
 
+
+                // Begin time calcualtions
                 last = QTime::fromString(queryBeginTime, "hh:mm:ss");
 
                 if (!delimiterEncountered){
