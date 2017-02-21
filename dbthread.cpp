@@ -365,11 +365,25 @@ void dbThread::analyzeZone(){
 
 
                 // Begin time calcualtions
+                QDate beginDateForm = QDate::fromString(beginDate,"dd/MM/yy");
+                QDate beginDateRecord = QDate::fromString(qry.value(1).toString(),"dd/MM/yy");
+                qint64 beginDateDiff = beginDateForm.daysTo(beginDateRecord);
+
+
                 last = QTime::fromString(queryBeginTime, "hh:mm:ss");
 
                 if (!delimiterEncountered){
                     first = QTime::fromString(beginTime, "hh:mm:ss");
-                    diff = first.msecsTo(last) / 1000;
+
+                    if (beginDateDiff == 0)
+                        diff = first.msecsTo(last) / 1000;
+                    else{
+                        lastSec = -1*last.secsTo(zero);
+                        firstSec = -1*first.secsTo(zero);
+                        diff = lastSec+86400*beginDateDiff-firstSec;
+                    }
+
+                    //diff = first.msecsTo(last) / 1000;
                     if (stateList.last()==0) {
                         ONtime += diff;
                     } else {
