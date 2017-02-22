@@ -687,6 +687,8 @@ void dbThread::getTemperature(){
 
                 qry.last();
                 tempOut = qry.value(3).toFloat();
+                tempDate = qry.value(1).toString();
+                tempTime = qry.value(2).toString();
             } else {
                 qDebug() << "no record returned";
             }

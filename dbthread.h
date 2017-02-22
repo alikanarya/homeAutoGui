@@ -115,6 +115,7 @@ public:
     float tempAvg = -99;
     float tempMin = -99;
     float tempMax = 99;
+    QString tempDate="", tempTime="";
 
 public slots:
 

@@ -842,6 +842,8 @@ void MainWindow::updateTemp(){
 void MainWindow::updateTempGUI(){
 
     ui->outTemp->setText( QString::number(dbThreadX->tempOut, 'f', 1) + "°C" );
+    ui->outTempDate->setText( dbThreadX->tempDate );
+    ui->outTempTime->setText( dbThreadX->tempTime );
 }
 
 void MainWindow::calcAvgTemp(){
