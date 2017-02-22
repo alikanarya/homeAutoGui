@@ -41,6 +41,7 @@ public:
     void getGraphData();
     void getTemperature();
     void getAvgTemperature();
+    void analyzeZones();
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
@@ -80,6 +81,7 @@ public:
     bool cmdGraphData = false;
     bool cmdTempData = false;
     bool cmdAvgTempData = false;
+    bool cmdAnalyzeZones = false;
 
     struct summaryTable {
         QString date;
@@ -136,6 +138,7 @@ signals:
     void graphDataDone();
     void tempOutDone();
     void tempOutAvgDone();
+    void analyzeZonesDone();
 };
 
 #endif // DBTHREAD_H

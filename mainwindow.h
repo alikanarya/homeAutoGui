@@ -28,6 +28,8 @@ public:
 
     void addAxis();
     void clearGraph();
+    void addAxisZones();
+    void clearGraphZones();
     void saveTempData();
     QString getTimeStr(int val);
 
@@ -40,8 +42,10 @@ public:
     QPen penAxisSolid;
     QPen penAxisDash;
     QPen penZone;
+    QPen penZoneBlue;
     QRect sceneRect;
     int sceneWidth, sceneHeight, xMax, yMax;
+    int graphScale = 3;
 
     int sceneZoneStep;
 
@@ -67,6 +71,7 @@ private slots:
     void zoneTable();
     void summaryResult();
     void drawGraph();
+    void drawGraphZones();
     void updateTemp();
     void updateTempGUI();
     void calcAvgTemp();
@@ -90,6 +95,10 @@ private slots:
     void on_saveTempData_clicked();
 
     void on_yesterdayButton_clicked();
+
+    void on_zoneGraphButton_clicked();
+
+    void on_dateEdit_END_dateChanged(const QDate &date);
 
 signals:
 

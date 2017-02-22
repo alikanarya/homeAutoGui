@@ -847,7 +847,7 @@
      <rect>
       <x>10</x>
       <y>330</y>
-      <width>471</width>
+      <width>591</width>
       <height>151</height>
      </rect>
     </property>
@@ -969,7 +969,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Güncelle</string>
+     <string>Son 1 Saat</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_14">
@@ -1636,6 +1636,19 @@
     </property>
     <property name="text">
      <string>-24h</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="zoneGraphButton">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>210</y>
+      <width>111</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Bölge Grafik</string>
     </property>
    </widget>
   </widget>

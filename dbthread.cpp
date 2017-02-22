@@ -55,6 +55,11 @@ void dbThread::run(){
         cmdAvgTempData = false;
     }
 
+    if (cmdAnalyzeZones) {
+        analyzeZones();
+        cmdAnalyzeZones = false;
+    }
+
     verbose = false;
 }
 
@@ -263,6 +268,17 @@ void dbThread::analyzeZone(){
                 }
 
                 QStringList timeList;
+                QTime last, first;
+                qint64 diff = 0;
+
+                ONtime = 0;
+                OFFtime = 0;
+                ONcount = 0;
+                OFFcount = 0;
+                QTime zero = QTime::fromString("00:00:00", "hh:mm:ss");
+
+                int lastSec = 0;
+                int firstSec = 0;
 
                 stateList.clear();
                 qry.last();
@@ -271,6 +287,43 @@ void dbThread::analyzeZone(){
                 qint64 endDateDiff = endDateRecord.daysTo(endDateForm);
 
                 QString queryEndTime = qry.value(2).toString();
+
+                int listSeq = currentZone - 1;
+                graphData start;
+                start.state = qry.value(3).toInt();
+                start.timeDiff = 0;
+                graphList[listSeq].append(start);
+
+                // End time calcualtions
+
+                last = QTime::fromString(endTime, "hh:mm:ss");
+                first = QTime::fromString(queryEndTime, "hh:mm:ss");
+
+                if (endDateDiff == 0)
+                    diff = first.msecsTo(last) / 1000;
+                else{
+                    lastSec = -1*last.secsTo(zero);
+                    firstSec = -1*first.secsTo(zero);
+                    diff = lastSec+86400*endDateDiff-firstSec;
+                }
+
+
+                if (qry.value(3).toInt()==1) {
+                    ONtime += diff;
+                    ONcount++;
+                } else {
+                    OFFtime += diff;
+                    OFFcount++;
+                }
+
+                int totalDiff = 0;
+                totalDiff += diff;
+
+                graphData x;
+                x.state = qry.value(3).toInt();
+                x.timeDiff = totalDiff;
+                graphList[listSeq].append(x);
+
                 delimiterEncountered = false;
                 do {
                     timeList.append(qry.value(2).toString());
@@ -297,20 +350,10 @@ void dbThread::analyzeZone(){
                 }
 
 
-                QTime last, first;
-                qint64 diff = 0;
 
                 timeDiffList.clear();
                 timeDiffListOn.clear();
                 timeDiffListOff.clear();
-                ONtime = 0;
-                OFFtime = 0;
-                ONcount = 0;
-                OFFcount = 0;
-                QTime zero = QTime::fromString("00:00:00", "hh:mm:ss");
-
-                int lastSec = 0;
-                int firstSec = 0;
 
                 for (int i=0; i<timeList.count()-1; i++) {
 
@@ -339,29 +382,15 @@ void dbThread::analyzeZone(){
                     }
                     if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << diff; }
                    // if (verbose){ qDebug() << last.toString() << " - " << first.toString() << " is " << last.secsTo(zero); }
+
+                    totalDiff += diff;
+                    graphData x;
+                    x.state = stateList.at(i+1);
+                    x.timeDiff = totalDiff;
+                    graphList[listSeq].append(x);
                 }
 
 
-                // End time calcualtions
-
-                last = QTime::fromString(endTime, "hh:mm:ss");
-                first = QTime::fromString(queryEndTime, "hh:mm:ss");
-
-                if (endDateDiff == 0)
-                    diff = first.msecsTo(last) / 1000;
-                else{
-                    lastSec = -1*last.secsTo(zero);
-                    firstSec = -1*first.secsTo(zero);
-                    diff = lastSec+86400*endDateDiff-firstSec;
-                }
-
-                if (stateList.first()==1) {
-                    ONtime += diff;
-                    ONcount++;
-                } else {
-                    OFFtime += diff;
-                    OFFcount++;
-                }
 
 
                 // Begin time calcualtions
@@ -383,12 +412,22 @@ void dbThread::analyzeZone(){
                         diff = lastSec+86400*beginDateDiff-firstSec;
                     }
 
-                    //diff = first.msecsTo(last) / 1000;
+                    int lastState = 0;
+
                     if (stateList.last()==0) {
                         ONtime += diff;
+                        lastState = 1;
                     } else {
                         OFFtime += diff;
+                        lastState = 0;
                     }
+
+                    totalDiff += diff;
+                    graphData x;
+                    x.state = lastState;
+                    x.timeDiff = totalDiff;
+                    graphList[listSeq].append(x);
+
                 } else {
                     first = QTime::fromString(beginTimeDelimiter, "hh:mm:ss");
                     diff = first.msecsTo(last) / 1000;
@@ -407,6 +446,12 @@ void dbThread::analyzeZone(){
                     qDebug() << "OFF times:" << OFFtime;
                     for (int i=0; i<timeDiffListOff.count(); i++)
                         qDebug() << timeDiffListOff.at(i);
+                }
+
+
+                if (verbose){
+                    for (int c=0; c<graphList[listSeq].size(); c++)
+                        qDebug() << graphList[listSeq].at(c).state << "," << graphList[listSeq].at(c).timeDiff;
                 }
 
                 int total = ONtime + OFFtime;
@@ -439,7 +484,7 @@ void dbThread::analyzeZone(){
                     default:break;
                 }
 
-                qDebug() << "no record returned";
+                qDebug() << "table: " << tableNames[currentZone] << " > no record returned";
             }
 
             if (cmdAnalyzeZone)
@@ -599,7 +644,7 @@ void dbThread::analyzeZonesForGraph(){
 
             } else {
 
-                qDebug() << "no record returned";
+                qDebug() << "table: " << tableNames[currentZone] << " > no record returned";
             }
 
             //emit summaryReportProcess();
@@ -713,4 +758,17 @@ void dbThread::getAvgTemperature(){
             emit tempOutAvgDone();
         }
     }
+}
+
+void dbThread::analyzeZones(){
+
+    for (int i=0; i<zoneNumber; i++)
+        graphList[i].clear();
+
+    for (int i=1; i<8; i++) {
+        currentZone = i;
+        analyzeZone();
+    }
+
+    emit analyzeZonesDone();
 }

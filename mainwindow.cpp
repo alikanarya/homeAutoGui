@@ -88,6 +88,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(graphDataDone()), this, SLOT(drawGraph()));
     connect(dbThreadX, SIGNAL(tempOutDone()), this, SLOT(updateTempGUI()));
     connect(dbThreadX, SIGNAL(tempOutAvgDone()), this, SLOT(avgTempGUI()));
+    connect(dbThreadX, SIGNAL(analyzeZonesDone()), this, SLOT(drawGraphZones()));
 
     QTimer *timerTemp = new QTimer();
     QObject::connect(timerTemp, SIGNAL(timeout()), this, SLOT(updateTemp()));
@@ -109,6 +110,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     penZone.setColor(Qt::red);
     penZone.setWidth(1);
+
+    penZoneBlue.setColor(Qt::blue);
+    penZoneBlue.setWidth(1);
 
     sceneRect = ui->graphicsView->geometry();
     sceneZoneStep = sceneRect.height() / zoneNumber;
@@ -707,6 +711,8 @@ void MainWindow::drawGraph(){
 
     ui->textBrowser->append("-----");
 
+    graphScale = 3;
+
     for (int i=0; i<zoneNumber; i++){
 
         int yRef0 = sceneZoneStep*(i+1) - 1;
@@ -720,9 +726,9 @@ void MainWindow::drawGraph(){
             for (int j=0; j<dbThreadX->graphList[i].count()-1; j++){
 
                 t1 = dbThreadX->graphList[i].at(j).timeDiff;
-                x1 = t1 / 3;
+                x1 = t1 / graphScale;
                 t2 = dbThreadX->graphList[i].at(j+1).timeDiff;
-                x2 = t2 / 3;
+                x2 = t2 / graphScale;
 
                 if (dbThreadX->graphList[i].at(j+1).state == 0)
                     y = yRef0;
@@ -751,6 +757,7 @@ void MainWindow::drawGraph(){
         first = last.addSecs(-300*i);
         timeLabels[i]->setText(first.toString("hh:mm"));
     }
+
 }
 
 void MainWindow::on_forwardLargeButton_clicked(){
@@ -924,3 +931,114 @@ QString MainWindow::getTimeStr(int val){
     return time;
 }
 
+void MainWindow::on_zoneGraphButton_clicked(){
+
+    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+    dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
+    dbThreadX->endTime = ui->timeEdit_END->time().toString();
+    dbThreadX->verbose = false;
+
+    QDateTime endDT;
+    endDT.setDate(ui->dateEdit_END->date());
+    endDT.setTime(ui->timeEdit_END->time());
+
+    QDateTime beginDT;
+    beginDT.setDate(ui->dateEdit_BEGIN->date());
+    beginDT.setTime(ui->timeEdit_BEGIN->time());
+
+    int timeDifference = beginDT.secsTo(endDT);
+
+    if (timeDifference != 0)
+        graphScale = 72.0 * timeDifference / 86400;
+    else
+        graphScale = 72;
+
+    //qDebug() << beginDT.secsTo(endDT);
+
+    ui->textBrowser->clear();
+    dbThreadX->cmdAnalyzeZones = true;
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
+
+}
+
+void MainWindow::addAxisZones(){
+
+    for (int i=1; i <zoneNumber+1; i++){
+        scene->addLine(0, sceneZoneStep*i-1, xMax, sceneZoneStep*i-1, penAxisSolid);
+    }
+
+    for (int i=1; i <24; i++){
+        scene->addLine(50*i-1, 0, 50*i-1, yMax, penAxisDash);
+    }
+}
+
+void MainWindow::clearGraphZones(){
+
+    scene->clear();
+    addAxisZones();
+    ui->graphicsView->show();
+}
+
+void MainWindow::drawGraphZones(){
+
+    clearGraphZones();
+
+    ui->textBrowser->append("-----");
+
+    for (int i=0; i<zoneNumber; i++){
+
+        int yRef0 = sceneZoneStep*(i+1) - 1;
+        int yRef1 = yRef0 - 20;
+        int x1, x2, y, t1, t2, diff;
+
+        if (!dbThreadX->graphList[i].isEmpty()){
+
+            QString temp = tableNames[i+1];
+
+            for (int j=0; j<dbThreadX->graphList[i].count()-1; j++){
+
+                t1 = dbThreadX->graphList[i].at(j).timeDiff;
+                x1 = t1 / graphScale;
+                t2 = dbThreadX->graphList[i].at(j+1).timeDiff;
+                x2 = t2 / graphScale;
+
+                if (dbThreadX->graphList[i].at(j+1).state == 0)
+                    y = yRef0;
+                else
+                    y = yRef1;
+
+                scene->addLine(x1, y, x2, y, penZoneBlue);
+                scene->addLine(x2, yRef0, x2, yRef1, penZoneBlue);
+
+                diff = t2 - t1;
+                if (diff < 3600)
+                    temp += " ," + QDateTime::fromTime_t(t2-t1).toUTC().toString("mm:ss");
+                else
+                    temp += " ," + QDateTime::fromTime_t(t2-t1).toUTC().toString("hh:mm:ss");
+            }
+            ui->textBrowser->append(temp);
+            ui->textBrowser->append("...");
+
+        }
+    }
+
+    QTime last, first;
+    last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
+
+    timeLabels[0]->setText(ui->timeEdit_END->time().toString("hh:mm"));
+
+    for (int i=1; i<13; i++){
+        int backSecs = -7200*i*graphScale/72;
+        first = last.addSecs(backSecs);
+        timeLabels[i]->setText(first.toString("hh:mm"));
+    }
+
+}
+
+void MainWindow::on_dateEdit_END_dateChanged(const QDate &date){
+    if (date < ui->dateEdit_BEGIN->date())
+        ui->dateEdit_BEGIN->setDate(date);
+
+}
