@@ -63,6 +63,7 @@ QString tblSummaryFiels[19] =
      "0_zone_thr_count", "0_zone_thr_time",
      "on_rate_oto", "on_rate_sln", "on_rate_blk", "on_rate_mut", "on_rate_eyo", "on_rate_cyo", "on_rate_yod" };
 
+int loadFactors[7] = { 1, 3, 1, 2, 2, 2, 2};
 
 //QString clientAddress = "192.168.2.232"; // BBB ***
 //QString clientAddress = "192.168.1.235"; // BBB ***

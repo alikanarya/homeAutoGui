@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         }
 
     for (int i=0; i<7; i++)
-        for (int c=0; c<5; c++){
+        for (int c=0; c<6; c++){
             ui->tableZone->setItem(i, c, new QTableWidgetItem( " " ) );
             ui->tableZone->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         }
@@ -427,9 +427,12 @@ void MainWindow::zoneTable(){
         if (total != 0)
             rate = 100.0 * dbThreadX->ONtime / total;
         ui->tableZone->item(rowNum, 4)->setText( QString::number(rate, 'f', 1) );
-        ui->tableZone->item(rowNum, 4)->setFont(fontBold);
+        //ui->tableZone->item(rowNum, 4)->setFont(fontBold);
         ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
 
+        ui->tableZone->item(rowNum, 5)->setText( QString::number(rate * loadFactors[currentZone - 1]/13, 'f', 2) );
+        ui->tableZone->item(rowNum, 5)->setFont(fontBold);
+        ui->tableZone->item(rowNum, 5)->setForeground(QColor::fromRgb(255,0,0));
 
         // message window
         ui->textBrowser->append(tableNames[currentZone]);
@@ -449,7 +452,7 @@ void MainWindow::zoneTable(){
         ui->textBrowser->append(temp);
 
     } else {
-        for (int c=0; c<5; c++)
+        for (int c=0; c<6; c++)
             ui->tableZone->item(rowNum, c)->setText( "0" );
     }
 
@@ -710,6 +713,8 @@ void MainWindow::drawGraph(){
     clearGraph();
 
     ui->textBrowser->append("-----");
+    ui->labelBeginDate->setText( "---" );
+    ui->labelEndDate->setText( ui->dateEdit_END->text());
 
     graphScale = 3;
 
@@ -988,6 +993,8 @@ void MainWindow::drawGraphZones(){
     clearGraphZones();
 
     ui->textBrowser->append("-----");
+    ui->labelBeginDate->setText( ui->dateEdit_BEGIN->text());
+    ui->labelEndDate->setText( ui->dateEdit_END->text());
 
     for (int i=0; i<zoneNumber; i++){
 
@@ -997,7 +1004,7 @@ void MainWindow::drawGraphZones(){
 
         if (!dbThreadX->graphList[i].isEmpty()){
 
-            QString temp = tableNames[i+1];
+            QString temp = tableNames[i+1].toUpper() + ".....";
 
             for (int j=0; j<dbThreadX->graphList[i].count()-1; j++){
 
@@ -1021,7 +1028,7 @@ void MainWindow::drawGraphZones(){
                     temp += " ," + QDateTime::fromTime_t(t2-t1).toUTC().toString("hh:mm:ss");
             }
             ui->textBrowser->append(temp);
-            ui->textBrowser->append("...");
+            //ui->textBrowser->append("...");
 
         }
     }
