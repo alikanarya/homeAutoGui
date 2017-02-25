@@ -637,7 +637,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>381</y>
+      <y>386</y>
       <width>541</width>
       <height>241</height>
      </rect>
@@ -812,7 +812,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>340</y>
+      <y>350</y>
       <width>111</width>
       <height>29</height>
      </rect>
@@ -825,7 +825,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>340</y>
+      <y>350</y>
       <width>111</width>
       <height>29</height>
      </rect>
@@ -1565,7 +1565,7 @@
    <widget class="QLabel" name="outTemp">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>470</x>
       <y>241</y>
       <width>81</width>
       <height>31</height>
@@ -1641,7 +1641,7 @@
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>340</y>
+      <y>350</y>
       <width>111</width>
       <height>29</height>
      </rect>
@@ -1653,7 +1653,7 @@
    <widget class="QLabel" name="outTempDate">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>400</x>
       <y>234</y>
       <width>81</width>
       <height>21</height>
@@ -1667,7 +1667,7 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
+     <string notr="true">color: rgb(0, 0, 255);</string>
     </property>
     <property name="text">
      <string>dd/mm/yy</string>
@@ -1679,7 +1679,7 @@
    <widget class="QLabel" name="outTempTime">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>400</x>
       <y>254</y>
       <width>81</width>
       <height>21</height>
@@ -1693,7 +1693,7 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 0, 0);</string>
+     <string notr="true">color: rgb(0, 0, 255);</string>
     </property>
     <property name="text">
      <string>hh:mm:ss</string>
@@ -1724,7 +1724,7 @@
      <string notr="true">color: rgb(255, 0, 0);</string>
     </property>
     <property name="text">
-     <string>dd/mm/yy</string>
+     <string>dd/mm/yyyy</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1752,10 +1752,33 @@
      <string notr="true">color: rgb(255, 0, 0);</string>
     </property>
     <property name="text">
-     <string>dd/mm/yy</string>
+     <string>dd/mm/yyyy</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="avgTemp2">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>380</y>
+      <width>291</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Avg</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -1765,7 +1788,7 @@
      <x>0</x>
      <y>0</y>
      <width>1800</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

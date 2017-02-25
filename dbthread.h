@@ -102,6 +102,20 @@ public:
         float on_rate_eyo;
         float on_rate_cyo;
         float on_rate_yod;
+        int on_count_oto;
+        int on_count_sln;
+        int on_count_blk;
+        int on_count_mut;
+        int on_count_eyo;
+        int on_count_cyo;
+        int on_count_yod;
+        int on_time_oto;
+        int on_time_sln;
+        int on_time_blk;
+        int on_time_mut;
+        int on_time_eyo;
+        int on_time_cyo;
+        int on_time_yod;
     } summaryData;
 
     struct graphData {

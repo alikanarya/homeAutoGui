@@ -467,10 +467,30 @@ void dbThread::analyzeZone(){
                     case 5: summaryData.on_rate_eyo = rate; break;
                     case 6: summaryData.on_rate_cyo = rate; break;
                     case 7: summaryData.on_rate_yod = rate; break;
-                    default:
-                        break;
+                    default:break;
                 }
 
+                switch (currentZone) {
+                    case 1: summaryData.on_count_oto = ONcount; break;
+                    case 2: summaryData.on_count_sln = ONcount; break;
+                    case 3: summaryData.on_count_blk = ONcount; break;
+                    case 4: summaryData.on_count_mut = ONcount; break;
+                    case 5: summaryData.on_count_eyo = ONcount; break;
+                    case 6: summaryData.on_count_cyo = ONcount; break;
+                    case 7: summaryData.on_count_yod = ONcount; break;
+                    default:break;
+                }
+
+                switch (currentZone) {
+                    case 1: summaryData.on_time_oto = ONtime; break;
+                    case 2: summaryData.on_time_sln = ONtime; break;
+                    case 3: summaryData.on_time_blk = ONtime; break;
+                    case 4: summaryData.on_time_mut = ONtime; break;
+                    case 5: summaryData.on_time_eyo = ONtime; break;
+                    case 6: summaryData.on_time_cyo = ONtime; break;
+                    case 7: summaryData.on_time_yod = ONtime; break;
+                    default:break;
+                }
             } else {
 
                 switch (currentZone) {
@@ -484,6 +504,27 @@ void dbThread::analyzeZone(){
                     default:break;
                 }
 
+                switch (currentZone) {
+                    case 1: summaryData.on_count_oto = 0; break;
+                    case 2: summaryData.on_count_sln = 0; break;
+                    case 3: summaryData.on_count_blk = 0; break;
+                    case 4: summaryData.on_count_mut = 0; break;
+                    case 5: summaryData.on_count_eyo = 0; break;
+                    case 6: summaryData.on_count_cyo = 0; break;
+                    case 7: summaryData.on_count_yod = 0; break;
+                    default:break;
+                }
+
+                switch (currentZone) {
+                    case 1: summaryData.on_time_oto = 0; break;
+                    case 2: summaryData.on_time_sln = 0; break;
+                    case 3: summaryData.on_time_blk = 0; break;
+                    case 4: summaryData.on_time_mut = 0; break;
+                    case 5: summaryData.on_time_eyo = 0; break;
+                    case 6: summaryData.on_time_cyo = 0; break;
+                    case 7: summaryData.on_time_yod = 0; break;
+                    default:break;
+                }
                 qDebug() << "table: " << tableNames[currentZone] << " > no record returned";
             }
 

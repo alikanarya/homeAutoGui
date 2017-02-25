@@ -39,6 +39,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         for (int c=0; c<6; c++){
             ui->tableZone->setItem(i, c, new QTableWidgetItem( " " ) );
             ui->tableZone->item(i, c)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            if (c==4 || c==5)
+                ui->tableZone->item(i, c)->setForeground(QColor::fromRgb(255,0,0));
+            if (c==5)
+                ui->tableZone->item(i, c)->setFont(fontBold);
         }
 
     serverx = new Server();
@@ -428,11 +432,11 @@ void MainWindow::zoneTable(){
             rate = 100.0 * dbThreadX->ONtime / total;
         ui->tableZone->item(rowNum, 4)->setText( QString::number(rate, 'f', 1) );
         //ui->tableZone->item(rowNum, 4)->setFont(fontBold);
-        ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
+        //ui->tableZone->item(rowNum, 4)->setForeground(QColor::fromRgb(255,0,0));
 
         ui->tableZone->item(rowNum, 5)->setText( QString::number(rate * loadFactors[currentZone - 1]/13, 'f', 2) );
-        ui->tableZone->item(rowNum, 5)->setFont(fontBold);
-        ui->tableZone->item(rowNum, 5)->setForeground(QColor::fromRgb(255,0,0));
+        //ui->tableZone->item(rowNum, 5)->setFont(fontBold);
+        //ui->tableZone->item(rowNum, 5)->setForeground(QColor::fromRgb(255,0,0));
 
         // message window
         ui->textBrowser->append(tableNames[currentZone]);
@@ -640,6 +644,22 @@ void MainWindow::summaryResult(){
         for (int c=0; c<5; c++)
             ui->tableZone->item(i, c)->setText( " " );
 
+    ui->tableZone->item(0, 0)->setText( QString::number(dbThreadX->summaryData.on_count_oto) );
+    ui->tableZone->item(1, 0)->setText( QString::number(dbThreadX->summaryData.on_count_sln) );
+    ui->tableZone->item(2, 0)->setText( QString::number(dbThreadX->summaryData.on_count_blk) );
+    ui->tableZone->item(3, 0)->setText( QString::number(dbThreadX->summaryData.on_count_mut) );
+    ui->tableZone->item(4, 0)->setText( QString::number(dbThreadX->summaryData.on_count_eyo) );
+    ui->tableZone->item(5, 0)->setText( QString::number(dbThreadX->summaryData.on_count_cyo) );
+    ui->tableZone->item(6, 0)->setText( QString::number(dbThreadX->summaryData.on_count_yod) );
+
+    ui->tableZone->item(0, 2)->setText( QDateTime::fromTime_t( dbThreadX->summaryData.on_time_oto ).toUTC().toString("hh:mm:ss") );
+    ui->tableZone->item(1, 2)->setText( QDateTime::fromTime_t( dbThreadX->summaryData.on_time_sln ).toUTC().toString("hh:mm:ss") );
+    ui->tableZone->item(2, 2)->setText( QDateTime::fromTime_t( dbThreadX->summaryData.on_time_blk ).toUTC().toString("hh:mm:ss") );
+    ui->tableZone->item(3, 2)->setText( QDateTime::fromTime_t( dbThreadX->summaryData.on_time_mut ).toUTC().toString("hh:mm:ss") );
+    ui->tableZone->item(4, 2)->setText( QDateTime::fromTime_t( dbThreadX->summaryData.on_time_eyo ).toUTC().toString("hh:mm:ss") );
+    ui->tableZone->item(5, 2)->setText( QDateTime::fromTime_t( dbThreadX->summaryData.on_time_cyo ).toUTC().toString("hh:mm:ss") );
+    ui->tableZone->item(6, 2)->setText( QDateTime::fromTime_t( dbThreadX->summaryData.on_time_yod ).toUTC().toString("hh:mm:ss") );
+
     ui->tableZone->item(0, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_oto, 'f', 1) );
     ui->tableZone->item(1, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_sln, 'f', 1) );
     ui->tableZone->item(2, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_blk, 'f', 1) );
@@ -647,6 +667,14 @@ void MainWindow::summaryResult(){
     ui->tableZone->item(4, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_eyo, 'f', 1) );
     ui->tableZone->item(5, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_cyo, 'f', 1) );
     ui->tableZone->item(6, 4)->setText( QString::number(dbThreadX->summaryData.on_rate_yod, 'f', 1) );
+
+    ui->tableZone->item(0, 5)->setText( QString::number(dbThreadX->summaryData.on_rate_oto * loadFactors[0]/13, 'f', 2) );
+    ui->tableZone->item(1, 5)->setText( QString::number(dbThreadX->summaryData.on_rate_sln * loadFactors[1]/13, 'f', 2) );
+    ui->tableZone->item(2, 5)->setText( QString::number(dbThreadX->summaryData.on_rate_blk * loadFactors[2]/13, 'f', 2) );
+    ui->tableZone->item(3, 5)->setText( QString::number(dbThreadX->summaryData.on_rate_mut * loadFactors[3]/13, 'f', 2) );
+    ui->tableZone->item(4, 5)->setText( QString::number(dbThreadX->summaryData.on_rate_eyo * loadFactors[4]/13, 'f', 2) );
+    ui->tableZone->item(5, 5)->setText( QString::number(dbThreadX->summaryData.on_rate_cyo * loadFactors[5]/13, 'f', 2) );
+    ui->tableZone->item(6, 5)->setText( QString::number(dbThreadX->summaryData.on_rate_yod * loadFactors[6]/13, 'f', 2) );
 
     if (reportToDB) {
         dbThreadX->cmdInsertToSummaryTable = true;
@@ -846,7 +874,7 @@ void MainWindow::updateTemp(){
 
 void MainWindow::updateTempGUI(){
 
-    ui->outTemp->setText( QString::number(dbThreadX->tempOut, 'f', 1) + "°C" );
+    ui->outTemp->setText( QString::number(dbThreadX->tempOut, 'f', 1) + " °C");//+"<sub>"+dbThreadX->tempTime+"</sub><sup>"+dbThreadX->tempDate+"</sup>" );
     ui->outTempDate->setText( dbThreadX->tempDate );
     ui->outTempTime->setText( dbThreadX->tempTime );
 }
@@ -868,6 +896,7 @@ void MainWindow::calcAvgTemp(){
 void MainWindow::avgTempGUI(){
 
     ui->avgTemp->setText( QString::number(dbThreadX->tempMin, 'f', 1) + " // " + QString::number(dbThreadX->tempAvg, 'f', 1) + " // " + QString::number(dbThreadX->tempMax, 'f', 1) + " °C" );
+    ui->avgTemp2->setText( "T(24h)  min: <font color=\"blue\">" + QString::number(dbThreadX->tempMin, 'f', 1) + "</font>  avg: <font color=\"red\">" + QString::number(dbThreadX->tempAvg, 'f', 1) + "</font>  max: <font color=\"blue\">" + QString::number(dbThreadX->tempMax, 'f', 1) + " °C</font>" );
 
     if (tempSave)
         saveTempData();
@@ -995,6 +1024,10 @@ void MainWindow::drawGraphZones(){
     ui->textBrowser->append("-----");
     ui->labelBeginDate->setText( ui->dateEdit_BEGIN->text());
     ui->labelEndDate->setText( ui->dateEdit_END->text());
+    QString fontAttrRed = "<font color=\"red\">";
+    QString fontAttrEnd = "</font>";
+    QString fontStart = "";
+    QString fonEnd = "";
 
     for (int i=0; i<zoneNumber; i++){
 
@@ -1004,7 +1037,7 @@ void MainWindow::drawGraphZones(){
 
         if (!dbThreadX->graphList[i].isEmpty()){
 
-            QString temp = tableNames[i+1].toUpper() + ".....";
+            QString temp = fontAttrRed + tableNames[i+1].toUpper() + fontAttrEnd + ".....";
 
             for (int j=0; j<dbThreadX->graphList[i].count()-1; j++){
 
@@ -1013,19 +1046,24 @@ void MainWindow::drawGraphZones(){
                 t2 = dbThreadX->graphList[i].at(j+1).timeDiff;
                 x2 = t2 / graphScale;
 
-                if (dbThreadX->graphList[i].at(j+1).state == 0)
+                if (dbThreadX->graphList[i].at(j+1).state == 0){
                     y = yRef0;
-                else
+                    fontStart = "";
+                    fonEnd = "";
+                } else {
                     y = yRef1;
+                    fontStart = fontAttrRed;
+                    fonEnd = fontAttrEnd;
+                }
 
                 scene->addLine(x1, y, x2, y, penZoneBlue);
                 scene->addLine(x2, yRef0, x2, yRef1, penZoneBlue);
 
                 diff = t2 - t1;
                 if (diff < 3600)
-                    temp += " ," + QDateTime::fromTime_t(t2-t1).toUTC().toString("mm:ss");
+                    temp += " ," + fontStart + QDateTime::fromTime_t(t2-t1).toUTC().toString("mm:ss") + fonEnd;
                 else
-                    temp += " ," + QDateTime::fromTime_t(t2-t1).toUTC().toString("hh:mm:ss");
+                    temp += " ," + fontStart + QDateTime::fromTime_t(t2-t1).toUTC().toString("hh:mm:ss") + fonEnd;
             }
             ui->textBrowser->append(temp);
             //ui->textBrowser->append("...");
@@ -1043,6 +1081,8 @@ void MainWindow::drawGraphZones(){
         first = last.addSecs(backSecs);
         timeLabels[i]->setText(first.toString("hh:mm"));
     }
+
+    calcAvgTemp();
 
 }
 
