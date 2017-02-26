@@ -45,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 ui->tableZone->item(i, c)->setFont(fontBold);
         }
 
+    zoneTableHeader = QStringList() << "ON #" << "OFF #" << "ON t" << "OFF t" << "% ON" << "LOAD";
+
     serverx = new Server();
     clientx = new Client();
     checkClientX = new checkClient();
@@ -421,6 +423,10 @@ void MainWindow::zoneTable(){
     float rate, total;
 
     if (dbThreadX->qry.size() > 0) {
+
+        zoneTableHeader[5] = "LOAD";
+        ui->tableZone->setHorizontalHeaderLabels(zoneTableHeader);
+
         ui->tableZone->item(rowNum, 0)->setText( QString::number(dbThreadX->ONcount) );
         ui->tableZone->item(rowNum, 1)->setText( QString::number(dbThreadX->OFFcount) );
         ui->tableZone->item(rowNum, 2)->setText( QDateTime::fromTime_t( dbThreadX->ONtime ).toUTC().toString("hh:mm:ss") );
@@ -643,6 +649,13 @@ void MainWindow::summaryResult(){
     for (int i=0; i<7; i++)
         for (int c=0; c<5; c++)
             ui->tableZone->item(i, c)->setText( " " );
+
+    float totalLoad = dbThreadX->summaryData.on_rate_oto * loadFactors[0] + dbThreadX->summaryData.on_rate_sln * loadFactors[1] + dbThreadX->summaryData.on_rate_blk * loadFactors[2] +
+            dbThreadX->summaryData.on_rate_mut * loadFactors[3] + dbThreadX->summaryData.on_rate_eyo * loadFactors[4] + dbThreadX->summaryData.on_rate_cyo * loadFactors[5] + dbThreadX->summaryData.on_rate_yod * loadFactors[6];
+
+    totalLoad /= 13;
+    zoneTableHeader[5] = "L:" + QString::number(totalLoad, 'f', 2);
+    ui->tableZone->setHorizontalHeaderLabels(zoneTableHeader);
 
     ui->tableZone->item(0, 0)->setText( QString::number(dbThreadX->summaryData.on_count_oto) );
     ui->tableZone->item(1, 0)->setText( QString::number(dbThreadX->summaryData.on_count_sln) );
@@ -886,7 +899,7 @@ void MainWindow::calcAvgTemp(){
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
     dbThreadX->beginTime = dbThreadX->endTime;
 
-    dbThreadX->verbose = false;
+    dbThreadX->verbose = true;
     dbThreadX->cmdAvgTempData = true;
 
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
@@ -900,6 +913,10 @@ void MainWindow::avgTempGUI(){
 
     if (tempSave)
         saveTempData();
+
+    if ( dbThreadX->qry.size() > 0 ) {
+
+    }
 }
 
 void MainWindow::on_saveTempData_clicked(){

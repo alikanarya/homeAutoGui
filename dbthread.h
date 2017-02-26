@@ -123,6 +123,11 @@ public:
         int state;
     };
 
+    struct tempData {
+        int timeDiff;
+        float value;
+    };
+
     QList<graphData> graphList[7];
 
     float tempOut = -99;
@@ -130,6 +135,8 @@ public:
     float tempMin = -99;
     float tempMax = 99;
     QString tempDate="", tempTime="";
+
+    QList<tempData> tempList;
 
 public slots:
 

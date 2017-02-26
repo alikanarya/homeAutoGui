@@ -50,6 +50,7 @@ public:
     int sceneZoneStep;
 
     QLabel *timeLabels[13];
+    QStringList zoneTableHeader;
 
 private:
 

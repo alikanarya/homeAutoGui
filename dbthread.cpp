@@ -742,7 +742,6 @@ void dbThread::getTemperature(){
 void dbThread::getAvgTemperature(){
 
 //    QString qryStr = QString( "SELECT * FROM tempout ORDER BY `index` DESC LIMIT 1");
-//    QString qryStr = QString( "SELECT * FROM tempout WHERE (date = '$today' AND time <= '$now') OR (date = '$yesterday' AND time > '$now') ORDER BY `index` DESC");
     QString qryStr = QString( "SELECT * FROM tempout WHERE (date = '%1' AND time <= '%2') OR (date = '%3' AND time > '%4') ORDER BY `index` DESC").arg(endDate).arg(endTime).arg(beginDate).arg(beginTime);
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
@@ -770,18 +769,17 @@ void dbThread::getAvgTemperature(){
                 float val = 0;
 
                 qry.first();
+                tempList.clear();
+                QTime last, first;
+                qint64 diff = 0;
+                last = QTime::fromString(endTime, "hh:mm:ss");
 
                 do {
 
-                    if (verbose){
-                        temp = "";
-                        for( int c=0; c<colNum; c++ )
-                            temp += qry.value(c).toString() + " ";
-                        qDebug() << temp ;
-                    }
-
                     count++;
+
                     val = qry.value(3).toFloat();
+
                     tempAvg += val;
 
                     if (val > tempMax)
@@ -789,6 +787,23 @@ void dbThread::getAvgTemperature(){
 
                     if (val < tempMin)
                         tempMin = val;
+
+                    first = QTime::fromString(qry.value(2).toString(), "hh:mm:ss");
+                    diff = first.secsTo(last);
+
+                    tempData x;
+                    x.value = val;
+                    x.timeDiff = diff;
+
+                    tempList.append(x);
+
+                    if (verbose){
+                        temp = "";
+                        for( int c=0; c<colNum; c++ )
+                            temp += qry.value(c).toString() + " ";
+                        temp += QString::number(diff);
+                        qDebug() << temp ;
+                    }
 
                 } while( qry.next() && qry.value(3).toString() != "-99");
 
