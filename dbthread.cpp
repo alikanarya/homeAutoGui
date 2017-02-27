@@ -770,15 +770,26 @@ void dbThread::getAvgTemperature(){
 
                 qry.first();
                 tempList.clear();
-                QTime last, first;
+                //QTime last, first;
                 qint64 diff = 0;
-                last = QTime::fromString(endTime, "hh:mm:ss");
+                //last = QTime::fromString(endTime, "hh:mm:ss");
+
+                QDateTime endDT;
+                endDT.setDate( QDate::fromString(endDate, "dd/MM/yy") );
+                endDT.setTime( QTime::fromString(endTime, "hh:mm:ss") );
+
+                QDateTime beginDT;
+
+                //int timeDifference = beginDT.secsTo(endDT);
 
                 do {
 
                     count++;
 
                     val = qry.value(3).toFloat();
+
+                    beginDT.setDate( QDate::fromString(qry.value(1).toString(), "dd/MM/yy") );
+                    beginDT.setTime( QTime::fromString(qry.value(2).toString(), "hh:mm:ss") );
 
                     tempAvg += val;
 
@@ -788,8 +799,8 @@ void dbThread::getAvgTemperature(){
                     if (val < tempMin)
                         tempMin = val;
 
-                    first = QTime::fromString(qry.value(2).toString(), "hh:mm:ss");
-                    diff = first.secsTo(last);
+                    //first = QTime::fromString(qry.value(2).toString(), "hh:mm:ss");
+                    diff = beginDT.secsTo(endDT);
 
                     tempData x;
                     x.value = val;

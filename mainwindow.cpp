@@ -914,7 +914,23 @@ void MainWindow::avgTempGUI(){
     if (tempSave)
         saveTempData();
 
+    int x1, x2, y1, y2;
+
+    float ySpan = (dbThreadX->tempMax - dbThreadX->tempMin);
+    float yScale = scene->height() / ySpan;
+
     if ( dbThreadX->qry.size() > 0 ) {
+
+        for (int i=0; i<dbThreadX->tempList.size()-1; i++){
+
+            x1= dbThreadX->tempList[i].timeDiff / graphScale;
+            x2= dbThreadX->tempList[i+1].timeDiff / graphScale;
+
+            y1 = scene->height() - (dbThreadX->tempList[i].value - dbThreadX->tempMin) * yScale;
+            y2 = scene->height() - (dbThreadX->tempList[i+1].value - dbThreadX->tempMin) * yScale;
+
+            scene->addLine(x1, y1, x2, y2, penZone);
+        }
 
     }
 }
