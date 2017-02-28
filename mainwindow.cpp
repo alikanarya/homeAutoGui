@@ -914,12 +914,14 @@ void MainWindow::avgTempGUI(){
     if (tempSave)
         saveTempData();
 
-    int x1, x2, y1, y2;
-
-    float ySpan = (dbThreadX->tempMax - dbThreadX->tempMin);
-    float yScale = scene->height() / ySpan;
 
     if ( dbThreadX->qry.size() > 0 ) {
+
+        int x1, x2, y1, y2;
+
+        float ySpan = (dbThreadX->tempMax - dbThreadX->tempMin);
+        float yScale = scene->height() / ySpan;
+        graphScale = 72;
 
         for (int i=0; i<dbThreadX->tempList.size()-1; i++){
 
