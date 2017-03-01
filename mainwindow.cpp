@@ -914,7 +914,6 @@ void MainWindow::avgTempGUI(){
     if (tempSave)
         saveTempData();
 
-
     if ( dbThreadX->qry.size() > 0 ) {
 
         int x1, x2, y1, y2;
@@ -934,6 +933,15 @@ void MainWindow::avgTempGUI(){
             scene->addLine(x1, y1, x2, y2, penZone);
         }
 
+        QTime last, first;
+        last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
+
+        timeLabels[0]->setText(ui->timeEdit_END->time().toString("hh:mm"));
+
+        for (int i=1; i<13; i++){
+            first = last.addSecs(-300*i);
+            timeLabels[i]->setText(first.toString("hh:mm"));
+        }
     }
 }
 
