@@ -51,6 +51,7 @@ public:
 
     QLabel *timeLabels[13];
     QStringList zoneTableHeader;
+    bool drawGraphZonesFlag = false;
 
 private:
 

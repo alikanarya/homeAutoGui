@@ -895,7 +895,7 @@ void MainWindow::updateTempGUI(){
 void MainWindow::calcAvgTemp(){
 
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
-    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().addDays(-1).toString("dd/MM/yy");
+    dbThreadX->beginDate = ui->dateEdit_END->date().addDays(-1).toString("dd/MM/yy");
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
     dbThreadX->beginTime = dbThreadX->endTime;
 
@@ -916,32 +916,44 @@ void MainWindow::avgTempGUI(){
 
     if ( dbThreadX->qry.size() > 0 ) {
 
+        if (!drawGraphZonesFlag) {
+            QTime last, first;
+            last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
+
+            timeLabels[0]->setText(ui->timeEdit_END->time().toString("hh:mm"));
+
+            for (int i=1; i<13; i++){
+                first = last.addSecs(-7200*i);
+                timeLabels[i]->setText(first.toString("hh:mm"));
+            }
+
+            ui->labelBeginDate->setText( ui->dateEdit_END->date().addDays(-1).toString("dd.MM.yyyy"));
+            ui->labelEndDate->setText( ui->dateEdit_END->text());
+            graphScale = 72;
+        }
+
         int x1, x2, y1, y2;
 
-        float ySpan = (dbThreadX->tempMax - dbThreadX->tempMin);
+        float range = (dbThreadX->tempMax - dbThreadX->tempMin);
+        float ySpan = range * 1.1;
         float yScale = scene->height() / ySpan;
-        graphScale = 72;
+        int min = yScale * range * 0.05;
+
 
         for (int i=0; i<dbThreadX->tempList.size()-1; i++){
 
             x1= dbThreadX->tempList[i].timeDiff / graphScale;
             x2= dbThreadX->tempList[i+1].timeDiff / graphScale;
 
-            y1 = scene->height() - (dbThreadX->tempList[i].value - dbThreadX->tempMin) * yScale;
-            y2 = scene->height() - (dbThreadX->tempList[i+1].value - dbThreadX->tempMin) * yScale;
+            y1 = scene->height() - (dbThreadX->tempList[i].value - dbThreadX->tempMin) * yScale - min;
+            y2 = scene->height() - (dbThreadX->tempList[i+1].value - dbThreadX->tempMin) * yScale - min;
 
             scene->addLine(x1, y1, x2, y2, penZone);
+            scene->addEllipse(x1-3, y1-3, 6, 6, penZone);
         }
 
-        QTime last, first;
-        last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
 
-        timeLabels[0]->setText(ui->timeEdit_END->time().toString("hh:mm"));
-
-        for (int i=1; i<13; i++){
-            first = last.addSecs(-300*i);
-            timeLabels[i]->setText(first.toString("hh:mm"));
-        }
+        drawGraphZonesFlag = false;
     }
 }
 
@@ -1124,7 +1136,7 @@ void MainWindow::drawGraphZones(){
         first = last.addSecs(backSecs);
         timeLabels[i]->setText(first.toString("hh:mm"));
     }
-
+    drawGraphZonesFlag = true;
     calcAvgTemp();
 
 }
