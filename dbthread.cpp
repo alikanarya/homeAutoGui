@@ -819,7 +819,9 @@ void dbThread::getAvgTemperature(){
                 } while( qry.next() && qry.value(3).toString() != "-99");
 
                 if (count!=0)   tempAvg /= count;
-                if (verbose) qDebug() << tempAvg;
+                if (verbose) {
+                    qDebug() << "min: " << tempMin << " avg: " << tempAvg << " max: " << tempMax;
+                }
             } else {
                 qDebug() << "no record returned";
             }

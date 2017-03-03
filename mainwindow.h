@@ -50,6 +50,7 @@ public:
     int sceneZoneStep;
 
     QLabel *timeLabels[13];
+    QLabel *yLabels[7];
     QStringList zoneTableHeader;
     bool drawGraphZonesFlag = false;
 

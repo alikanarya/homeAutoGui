@@ -964,11 +964,11 @@
      <string>Son 1 Saat</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_14">
+   <widget class="QLabel" name="labelY6">
     <property name="geometry">
      <rect>
-      <x>1770</x>
-      <y>412</y>
+      <x>1766</x>
+      <y>400</y>
       <width>30</width>
       <height>17</height>
      </rect>
@@ -984,17 +984,17 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>OTO</string>
+     <string>Y6</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_15">
+   <widget class="QLabel" name="labelY5">
     <property name="geometry">
      <rect>
-      <x>1770</x>
-      <y>442</y>
+      <x>1766</x>
+      <y>430</y>
       <width>30</width>
       <height>17</height>
      </rect>
@@ -1010,17 +1010,17 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>SLN</string>
+     <string>Y5</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_16">
+   <widget class="QLabel" name="labelY4">
     <property name="geometry">
      <rect>
-      <x>1770</x>
-      <y>472</y>
+      <x>1766</x>
+      <y>460</y>
       <width>30</width>
       <height>17</height>
      </rect>
@@ -1036,17 +1036,17 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>BLK</string>
+     <string>Y4</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_17">
+   <widget class="QLabel" name="labelY3">
     <property name="geometry">
      <rect>
-      <x>1770</x>
-      <y>502</y>
+      <x>1766</x>
+      <y>490</y>
       <width>30</width>
       <height>17</height>
      </rect>
@@ -1062,17 +1062,17 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>MUT</string>
+     <string>Y3</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_18">
+   <widget class="QLabel" name="labelY2">
     <property name="geometry">
      <rect>
-      <x>1770</x>
-      <y>532</y>
+      <x>1766</x>
+      <y>520</y>
       <width>30</width>
       <height>17</height>
      </rect>
@@ -1088,17 +1088,17 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>EYO</string>
+     <string>Y2</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_19">
+   <widget class="QLabel" name="labelY1">
     <property name="geometry">
      <rect>
-      <x>1770</x>
-      <y>562</y>
+      <x>1766</x>
+      <y>550</y>
       <width>30</width>
       <height>17</height>
      </rect>
@@ -1114,17 +1114,17 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>ÇYO</string>
+     <string>Y1</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_20">
+   <widget class="QLabel" name="labelY0">
     <property name="geometry">
      <rect>
-      <x>1770</x>
-      <y>592</y>
+      <x>1766</x>
+      <y>580</y>
       <width>30</width>
       <height>17</height>
      </rect>
@@ -1140,10 +1140,10 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>YOD</string>
+     <string>Y0</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="labelT0">

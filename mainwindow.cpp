@@ -144,6 +144,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     timeLabels[11] = ui->labelT11;
     timeLabels[12] = ui->labelT12;
 
+    yLabels[0] = ui->labelY0;
+    yLabels[1] = ui->labelY1;
+    yLabels[2] = ui->labelY2;
+    yLabels[3] = ui->labelY3;
+    yLabels[4] = ui->labelY4;
+    yLabels[5] = ui->labelY5;
+    yLabels[6] = ui->labelY6;
 }
 
 MainWindow::~MainWindow(){
@@ -895,9 +902,11 @@ void MainWindow::updateTempGUI(){
 void MainWindow::calcAvgTemp(){
 
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
-    dbThreadX->beginDate = ui->dateEdit_END->date().addDays(-1).toString("dd/MM/yy");
+    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+//    dbThreadX->beginDate = ui->dateEdit_END->date().addDays(-1).toString("dd/MM/yy");
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
-    dbThreadX->beginTime = dbThreadX->endTime;
+    dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
+//    dbThreadX->beginTime = dbThreadX->endTime;
 
     dbThreadX->verbose = true;
     dbThreadX->cmdAvgTempData = true;
@@ -939,6 +948,11 @@ void MainWindow::avgTempGUI(){
         float yScale = scene->height() / ySpan;
         int min = yScale * range * 0.05;
 
+        float y = 0;
+        for (int i=0; i<7; i++){
+            y = (i+1)*ySpan/7 + dbThreadX->tempMin - range*0.05;
+            yLabels[i]->setText(QString::number(y, 'f', 1));
+        }
 
         for (int i=0; i<dbThreadX->tempList.size()-1; i++){
 
@@ -949,9 +963,8 @@ void MainWindow::avgTempGUI(){
             y2 = scene->height() - (dbThreadX->tempList[i+1].value - dbThreadX->tempMin) * yScale - min;
 
             scene->addLine(x1, y1, x2, y2, penZone);
-            scene->addEllipse(x1-3, y1-3, 6, 6, penZone);
+            scene->addEllipse(x1-2, y1-2, 4, 4, penZone);
         }
-
 
         drawGraphZonesFlag = false;
     }
