@@ -956,8 +956,12 @@ void MainWindow::avgTempGUI(){
 
         QString temp = fontAttrRed + "TMP"+ fontAttrEnd + ".....";
 
+        int timeStep = 7200*graphScale/72;
+        //qDebug() << "timestep: " << timeStep << " count: " << count << " diff: " << dbThreadX->tempList[ 0 ].timeDiff;
+
+        int count = 1;
+
         for (int i=dbThreadX->tempList.size()-1; i>0; i--){
-//            for (int i=0; i<dbThreadX->tempList.size()-1; i++){
 
             x1= dbThreadX->tempList[i].timeDiff / graphScale;
             x2= dbThreadX->tempList[i-1].timeDiff / graphScale;
@@ -969,10 +973,14 @@ void MainWindow::avgTempGUI(){
             scene->addEllipse(x1-2, y1-2, 4, 4, penZone);
             scene->addEllipse(x2-2, y2-2, 4, 4, penZone);
 
-            temp += " ," + QString::number(dbThreadX->tempList[i].value, 'f', 1);
+            if (dbThreadX->tempList[i].timeDiff >= count*timeStep){
+                count++;
+                temp += " ," + fontAttrRed + QTime::fromString(dbThreadX->endTime, "hh:mm:ss").addSecs(-1*dbThreadX->tempList[i].timeDiff).toString("hh:mm") + fontAttrEnd + " " + QString::number(dbThreadX->tempList[i].value, 'f', 1);
+            } else {
+                temp += " ," + QString::number(dbThreadX->tempList[i].value, 'f', 1);
+            }
         }
 
-//        temp += " ," + QString::number(dbThreadX->tempList[dbThreadX->tempList.size()-1].value, 'f', 1);
         temp += " ," + QString::number(dbThreadX->tempList[0].value, 'f', 1);
         ui->textBrowser->append(temp);
 

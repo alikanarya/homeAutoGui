@@ -1591,8 +1591,8 @@
    <widget class="QLabel" name="avgTemp">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>245</y>
+      <x>330</x>
+      <y>290</y>
       <width>211</width>
       <height>20</height>
      </rect>
@@ -1616,7 +1616,7 @@
      <rect>
       <x>10</x>
       <y>240</y>
-      <width>101</width>
+      <width>121</width>
       <height>29</height>
      </rect>
     </property>
@@ -1784,9 +1784,9 @@
    <widget class="QCheckBox" name="checkBoxTempSave">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>245</y>
-      <width>61</width>
+      <x>150</x>
+      <y>246</y>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -1801,7 +1801,7 @@
      <x>0</x>
      <y>0</y>
      <width>1800</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
