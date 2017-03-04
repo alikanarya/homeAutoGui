@@ -742,7 +742,17 @@ void dbThread::getTemperature(){
 void dbThread::getAvgTemperature(){
 
 //    QString qryStr = QString( "SELECT * FROM tempout ORDER BY `index` DESC LIMIT 1");
-    QString qryStr = QString( "SELECT * FROM tempout WHERE (date = '%1' AND time <= '%2') OR (date = '%3' AND time > '%4') ORDER BY `index` DESC").arg(endDate).arg(endTime).arg(beginDate).arg(beginTime);
+//    QString qryStr = QString( "SELECT * FROM tempout WHERE (date = '%1' AND time <= '%2') OR (date = '%3' AND time > '%4') ORDER BY `index` DESC").arg(endDate).arg(endTime).arg(beginDate).arg(beginTime);
+
+    QString qryStr = "";
+    if (endDate == beginDate)
+        qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) AND"
+                                                 "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg("tempout").arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+    else
+        qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') < STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(date, '%d/%m/%y') > STR_TO_DATE('%3', '%d/%m/%y')) OR"
+                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) OR"
+                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg("tempout").arg(endDate).arg(beginDate).arg(endTime).arg(beginTime);
+
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
     if (db.open()) {

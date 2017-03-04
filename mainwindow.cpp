@@ -908,7 +908,7 @@ void MainWindow::calcAvgTemp(){
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
 //    dbThreadX->beginTime = dbThreadX->endTime;
 
-    dbThreadX->verbose = true;
+    dbThreadX->verbose = false;
     dbThreadX->cmdAvgTempData = true;
 
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
@@ -954,17 +954,27 @@ void MainWindow::avgTempGUI(){
             yLabels[i]->setText(QString::number(y, 'f', 1));
         }
 
-        for (int i=0; i<dbThreadX->tempList.size()-1; i++){
+        QString temp = fontAttrRed + "TMP"+ fontAttrEnd + ".....";
+
+        for (int i=dbThreadX->tempList.size()-1; i>0; i--){
+//            for (int i=0; i<dbThreadX->tempList.size()-1; i++){
 
             x1= dbThreadX->tempList[i].timeDiff / graphScale;
-            x2= dbThreadX->tempList[i+1].timeDiff / graphScale;
+            x2= dbThreadX->tempList[i-1].timeDiff / graphScale;
 
             y1 = scene->height() - (dbThreadX->tempList[i].value - dbThreadX->tempMin) * yScale - min;
-            y2 = scene->height() - (dbThreadX->tempList[i+1].value - dbThreadX->tempMin) * yScale - min;
+            y2 = scene->height() - (dbThreadX->tempList[i-1].value - dbThreadX->tempMin) * yScale - min;
 
             scene->addLine(x1, y1, x2, y2, penZone);
             scene->addEllipse(x1-2, y1-2, 4, 4, penZone);
+            scene->addEllipse(x2-2, y2-2, 4, 4, penZone);
+
+            temp += " ," + QString::number(dbThreadX->tempList[i].value, 'f', 1);
         }
+
+//        temp += " ," + QString::number(dbThreadX->tempList[dbThreadX->tempList.size()-1].value, 'f', 1);
+        temp += " ," + QString::number(dbThreadX->tempList[0].value, 'f', 1);
+        ui->textBrowser->append(temp);
 
         drawGraphZonesFlag = false;
     }
@@ -972,8 +982,9 @@ void MainWindow::avgTempGUI(){
 
 void MainWindow::on_saveTempData_clicked(){
 
+    clearGraphZones();
+    tempSave = ui->checkBoxTempSave->isChecked();
     calcAvgTemp();
-    tempSave = true;
 }
 
 void MainWindow::saveTempData(){
@@ -1013,7 +1024,7 @@ void MainWindow::saveTempData(){
         }
     }
 
-    tempSave = false;
+    //tempSave = false;
 }
 
 QString MainWindow::getTimeStr(int val){
@@ -1092,16 +1103,15 @@ void MainWindow::drawGraphZones(){
     ui->textBrowser->append("-----");
     ui->labelBeginDate->setText( ui->dateEdit_BEGIN->text());
     ui->labelEndDate->setText( ui->dateEdit_END->text());
-    QString fontAttrRed = "<font color=\"red\">";
-    QString fontAttrEnd = "</font>";
-    QString fontStart = "";
-    QString fonEnd = "";
 
     for (int i=0; i<zoneNumber; i++){
 
         int yRef0 = sceneZoneStep*(i+1) - 1;
         int yRef1 = yRef0 - 20;
         int x1, x2, y, t1, t2, diff;
+
+        QString fontStart = "";
+        QString fonEnd = "";
 
         if (!dbThreadX->graphList[i].isEmpty()){
 

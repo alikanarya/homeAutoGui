@@ -54,6 +54,10 @@ public:
     QStringList zoneTableHeader;
     bool drawGraphZonesFlag = false;
 
+    QString fontAttrRed = "<font color=\"red\">";
+    QString fontAttrEnd = "</font>";
+
+
 private:
 
     Ui::MainWindow *ui;
