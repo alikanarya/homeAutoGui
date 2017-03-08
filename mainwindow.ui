@@ -1794,6 +1794,157 @@
      <string>Kaydet</string>
     </property>
    </widget>
+   <widget class="QTabWidget" name="paramTabs">
+    <property name="geometry">
+     <rect>
+      <x>1250</x>
+      <y>10</y>
+      <width>401</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(213, 213, 160);</string>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab1">
+     <attribute name="title">
+      <string>OTO</string>
+     </attribute>
+     <widget class="QTableWidget" name="tab1Table">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>371</width>
+        <height>291</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>97</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>Proportional Band Width (K)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Cycle Time of PWM Signal (min)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Position of Proportional Band (%)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string/>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab2">
+     <attribute name="title">
+      <string>SLN</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab3">
+     <attribute name="title">
+      <string>BLK</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab4">
+     <attribute name="title">
+      <string>MUT</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab5">
+     <attribute name="title">
+      <string>EYO</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab6">
+     <attribute name="title">
+      <string>ÇYK</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab7">
+     <attribute name="title">
+      <string>YOD</string>
+     </attribute>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

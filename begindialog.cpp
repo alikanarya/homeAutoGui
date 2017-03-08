@@ -43,6 +43,15 @@ bool begindialog::readSettings(){
         dbName = settings->value("dbName", _DB_NAME).toString();
         dbUser = settings->value("dbUser", _DB_USER).toString();
         dbPass = settings->value("dbPass", _DB_PASS).toString();
+        prmArray[0].propBandWidth = settings->value("propBandWidth_Z1", 5).toInt();
+        prmArray[0].cycleTime = settings->value("cycleTime_Z1", 21).toInt();
+        prmArray[0].propBandPos = settings->value("propBandPos_Z1", 50).toInt();
+        prmArray[0].P1NormalModeTime = settings->value("P1NormalModeTime_Z1", "--:--:--").toString();
+        prmArray[0].P1ReducedModeTime = settings->value("P1ReducedModeTime_Z1", "--:--:--").toString();
+        prmArray[0].P2NormalModeTime = settings->value("P2NormalModeTime_Z1", "--:--:--").toString();
+        prmArray[0].P2ReducedModeTime = settings->value("P2ReducedModeTime_Z1", "--:--:--").toString();
+        prmArray[0].P3NormalModeTime = settings->value("P3NormalModeTime_Z1", "--:--:--").toString();
+        prmArray[0].P3ReducedModeTime = settings->value("P3ReducedModeTime_Z1", "--:--:--").toString();
 
         //cout << clientAddress.toUtf8().constData() << endl;
         return true;

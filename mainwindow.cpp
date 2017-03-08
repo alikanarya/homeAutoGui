@@ -3,6 +3,8 @@
 #include "globals.h"
 #include "checkclient.h"
 #include "dbthread.h"
+#include "begindialog.h"
+
 #include <iostream>
 
 using namespace std;
@@ -11,6 +13,7 @@ Server *serverx;
 Client *clientx;
 checkClient *checkClientX;
 dbThread *dbThreadX;
+extern begindialog *bd;
 
 int currentZone=0;
 
@@ -25,7 +28,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->tableAllZones->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableZone->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tab1Table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     fontBold.setBold(true);
+
+    //bd->prmArray[0].cycleTime = 20;
+    //qDebug() << bd->prmArray[0].cycleTime;
 
     ui->tableAllZones->setRowCount(15);
     ui->tableAllZones->verticalHeader()->setDefaultSectionSize(20);
@@ -44,6 +51,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             if (c==5)
                 ui->tableZone->item(i, c)->setFont(fontBold);
         }
+
+    for (int c=0; c<9; c++){
+        ui->tab1Table->setItem(c, 0, new QTableWidgetItem( " " ) );
+        ui->tab1Table->item(c, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    }
+
+    ui->tab1Table->item(0, 0)->setText( QString::number(bd->prmArray[0].propBandWidth) );
+    ui->tab1Table->item(1, 0)->setText( QString::number(bd->prmArray[0].cycleTime) );
+    ui->tab1Table->item(2, 0)->setText( QString::number(bd->prmArray[0].propBandPos) );
+    ui->tab1Table->item(3, 0)->setText( bd->prmArray[0].P1NormalModeTime );
+    ui->tab1Table->item(4, 0)->setText( bd->prmArray[0].P1ReducedModeTime );
+    ui->tab1Table->item(5, 0)->setText( bd->prmArray[0].P2NormalModeTime );
+    ui->tab1Table->item(6, 0)->setText( bd->prmArray[0].P2ReducedModeTime );
+    ui->tab1Table->item(7, 0)->setText( bd->prmArray[0].P3NormalModeTime );
+    ui->tab1Table->item(8, 0)->setText( bd->prmArray[0].P3ReducedModeTime );
 
     zoneTableHeader = QStringList() << "ON #" << "OFF #" << "ON t" << "OFF t" << "% ON" << "LOAD";
 

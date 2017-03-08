@@ -44,6 +44,20 @@ public:
 
     bool state = false;
 
+    struct controllerPrms {
+        int propBandWidth = 0;
+        int cycleTime = 0;
+        int propBandPos = 0;
+        QString P1NormalModeTime = "--:--:--";
+        QString P1ReducedModeTime = "--:--:--";
+        QString P2NormalModeTime = "--:--:--";
+        QString P2ReducedModeTime = "--:--:--";
+        QString P3NormalModeTime = "--:--:--";
+        QString P3ReducedModeTime = "--:--:--";
+    };
+
+    controllerPrms prmArray[7];
+
 private slots:
     void on_okButton_clicked();
 

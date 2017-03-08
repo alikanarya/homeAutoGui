@@ -3,12 +3,13 @@
 #include <QApplication>
 
 bool appState = false;
+begindialog *bd;
 
 int main(int argc, char *argv[]){
 
     QApplication a(argc, argv);
 
-    begindialog *bd = new begindialog(NULL);
+    bd = new begindialog(NULL);
     bd->exec();
     //qDebug() << clientAddress;
 

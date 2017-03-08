@@ -71,4 +71,5 @@ int loadFactors[7] = { 1, 3, 1, 2, 2, 2, 2};
 //QString clientAddress = "192.168.2.241"; // DebianVB
 //QString clientAddress = "192.168.2.222"; // Windows
 
+
 #endif // GLOBALS_H
