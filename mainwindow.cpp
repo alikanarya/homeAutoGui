@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 ui->tableZone->item(i, c)->setFont(fontBold);
         }
 
-    for (int c=0; c<9; c++){
+    for (int c=0; c<11; c++){
         ui->tab1Table->setItem(c, 0, new QTableWidgetItem( " " ) );
         ui->tab1Table->item(c, 0)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
@@ -60,12 +60,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->tab1Table->item(0, 0)->setText( QString::number(bd->prmArray[0].propBandWidth) );
     ui->tab1Table->item(1, 0)->setText( QString::number(bd->prmArray[0].cycleTime) );
     ui->tab1Table->item(2, 0)->setText( QString::number(bd->prmArray[0].propBandPos) );
-    ui->tab1Table->item(3, 0)->setText( bd->prmArray[0].P1NormalModeTime );
-    ui->tab1Table->item(4, 0)->setText( bd->prmArray[0].P1ReducedModeTime );
-    ui->tab1Table->item(5, 0)->setText( bd->prmArray[0].P2NormalModeTime );
-    ui->tab1Table->item(6, 0)->setText( bd->prmArray[0].P2ReducedModeTime );
-    ui->tab1Table->item(7, 0)->setText( bd->prmArray[0].P3NormalModeTime );
-    ui->tab1Table->item(8, 0)->setText( bd->prmArray[0].P3ReducedModeTime );
+    ui->tab1Table->item(3, 0)->setText( QString::number(bd->prmArray[0].normalSet, 'f', 1) );
+    ui->tab1Table->item(4, 0)->setText( QString::number(bd->prmArray[0].reducedSet, 'f', 1) );
+    ui->tab1Table->item(5, 0)->setText( bd->prmArray[0].P1NormalModeTime );
+    ui->tab1Table->item(6, 0)->setText( bd->prmArray[0].P1ReducedModeTime );
+    ui->tab1Table->item(7, 0)->setText( bd->prmArray[0].P2NormalModeTime );
+    ui->tab1Table->item(8, 0)->setText( bd->prmArray[0].P2ReducedModeTime );
+    ui->tab1Table->item(9, 0)->setText( bd->prmArray[0].P3NormalModeTime );
+    ui->tab1Table->item(10, 0)->setText( bd->prmArray[0].P3ReducedModeTime );
 
     zoneTableHeader = QStringList() << "ON #" << "OFF #" << "ON t" << "OFF t" << "% ON" << "LOAD";
 
@@ -1202,5 +1204,31 @@ void MainWindow::on_dateEdit_END_dateChanged(const QDate &date){
 
 void MainWindow::on_zoneEstimateButton_clicked(){
     bd->prmArray[0].propBandWidth = ui->tab1Table->item(0,0)->text().toInt();
-    qDebug() << bd->prmArray[0].propBandWidth;
+    bd->prmArray[0].cycleTime = ui->tab1Table->item(1,0)->text().toInt();
+    bd->prmArray[0].propBandPos = ui->tab1Table->item(2,0)->text().toInt();
+    bd->prmArray[0].normalSet = ui->tab1Table->item(3,0)->text().toFloat();
+    bd->prmArray[0].reducedSet = ui->tab1Table->item(4,0)->text().toFloat();
+
+    //qDebug() << bd->prmArray[0].propBandWidth;
+
+    calcBandValues(0);
+    //int x = QTime::fromString(ui->tab1Table->item(10,0)->text(),"hh:mm:ss").s
+}
+
+void MainWindow::calcBandValues(int zone){
+    bd->prmArray[zone].normalLow = bd->prmArray[zone].normalSet - (100 - bd->prmArray[zone].propBandPos)*bd->prmArray[zone].propBandWidth / 100.0;
+    bd->prmArray[zone].normalHigh = bd->prmArray[zone].normalSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
+    bd->prmArray[zone].reducedLow = bd->prmArray[zone].reducedSet - (100 - bd->prmArray[zone].propBandPos)*bd->prmArray[zone].propBandWidth / 100.0;
+    bd->prmArray[zone].reducedHigh = bd->prmArray[zone].reducedSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
+    qDebug() << "NL: " << bd->prmArray[zone].normalLow << "NH: " << bd->prmArray[zone].normalHigh << "RL: " << bd->prmArray[zone].reducedLow << "RH: " << bd->prmArray[zone].reducedHigh;
+}
+
+float MainWindow::calcEstValueNormal(int zone, int inp){
+    float rate = inp / (bd->prmArray[zone].cycleTime * 60.0);
+    return ( bd->prmArray[zone].normalLow+(1-rate)*bd->prmArray[zone].propBandWidth);
+}
+
+float MainWindow::calcEstValueReduced(int zone, int inp){
+    float rate = inp / (bd->prmArray[zone].cycleTime * 60.0);
+    return ( bd->prmArray[zone].reducedLow+(1-rate)*bd->prmArray[zone].propBandWidth);
 }

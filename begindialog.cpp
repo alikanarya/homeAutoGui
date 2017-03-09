@@ -43,9 +43,11 @@ bool begindialog::readSettings(){
         dbName = settings->value("dbName", _DB_NAME).toString();
         dbUser = settings->value("dbUser", _DB_USER).toString();
         dbPass = settings->value("dbPass", _DB_PASS).toString();
-        prmArray[0].propBandWidth = settings->value("propBandWidth_Z1", 5).toInt();
-        prmArray[0].cycleTime = settings->value("cycleTime_Z1", 21).toInt();
-        prmArray[0].propBandPos = settings->value("propBandPos_Z1", 50).toInt();
+        prmArray[0].propBandWidth = settings->value("propBandWidth_Z1", 0).toInt();
+        prmArray[0].cycleTime = settings->value("cycleTime_Z1", 0).toInt();
+        prmArray[0].propBandPos = settings->value("propBandPos_0", 50).toInt();
+        prmArray[0].normalSet = settings->value("normalSet_Z1", 0).toFloat();
+        prmArray[0].reducedSet = settings->value("reducedSet_Z1", 0).toFloat();
         prmArray[0].P1NormalModeTime = settings->value("P1NormalModeTime_Z1", "--:--:--").toString();
         prmArray[0].P1ReducedModeTime = settings->value("P1ReducedModeTime_Z1", "--:--:--").toString();
         prmArray[0].P2NormalModeTime = settings->value("P2NormalModeTime_Z1", "--:--:--").toString();

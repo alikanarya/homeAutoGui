@@ -32,6 +32,9 @@ public:
     void clearGraphZones();
     void saveTempData();
     QString getTimeStr(int val);
+    void calcBandValues(int zone);
+    float calcEstValueNormal(int zone, int inp);
+    float calcEstValueReduced(int zone, int inp);
 
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
