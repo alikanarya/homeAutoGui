@@ -107,6 +107,8 @@ private slots:
 
     void on_dateEdit_END_dateChanged(const QDate &date);
 
+    void on_zoneEstimateButton_clicked();
+
 signals:
 
     void connectTo();

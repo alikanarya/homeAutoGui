@@ -1199,3 +1199,8 @@ void MainWindow::on_dateEdit_END_dateChanged(const QDate &date){
         ui->dateEdit_BEGIN->setDate(date);
 
 }
+
+void MainWindow::on_zoneEstimateButton_clicked(){
+    bd->prmArray[0].propBandWidth = ui->tab1Table->item(0,0)->text().toInt();
+    qDebug() << bd->prmArray[0].propBandWidth;
+}

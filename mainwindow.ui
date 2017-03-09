@@ -1912,6 +1912,14 @@
         <string>Value</string>
        </property>
       </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+       </property>
+      </item>
      </widget>
     </widget>
     <widget class="QWidget" name="tab2">
@@ -1945,6 +1953,19 @@
      </attribute>
     </widget>
    </widget>
+   <widget class="QPushButton" name="zoneEstimateButton">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>320</y>
+      <width>111</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Estimate</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -1952,7 +1973,7 @@
      <x>0</x>
      <y>0</y>
      <width>1800</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
