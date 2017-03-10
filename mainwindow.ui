@@ -1969,37 +1969,745 @@
      <attribute name="title">
       <string>SLN</string>
      </attribute>
+     <widget class="QTableWidget" name="tab2Table">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>371</width>
+        <height>345</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>97</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>Proportional Band Width (K)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Cycle Time of PWM Signal (min)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Position of Proportional Band (%)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Normal Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Reduced Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string/>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab3">
      <attribute name="title">
       <string>BLK</string>
      </attribute>
+     <widget class="QTableWidget" name="tab3Table">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>371</width>
+        <height>345</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>97</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>Proportional Band Width (K)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Cycle Time of PWM Signal (min)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Position of Proportional Band (%)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Normal Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Reduced Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string/>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab4">
      <attribute name="title">
       <string>MUT</string>
      </attribute>
+     <widget class="QTableWidget" name="tab4Table">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>371</width>
+        <height>345</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>97</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>Proportional Band Width (K)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Cycle Time of PWM Signal (min)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Position of Proportional Band (%)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Normal Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Reduced Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string/>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab5">
      <attribute name="title">
       <string>EYO</string>
      </attribute>
+     <widget class="QTableWidget" name="tab5Table">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>371</width>
+        <height>345</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>97</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>Proportional Band Width (K)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Cycle Time of PWM Signal (min)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Position of Proportional Band (%)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Normal Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Reduced Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string/>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab6">
      <attribute name="title">
       <string>ÇYK</string>
      </attribute>
+     <widget class="QTableWidget" name="tab6Table">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>371</width>
+        <height>345</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>97</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>Proportional Band Width (K)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Cycle Time of PWM Signal (min)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Position of Proportional Band (%)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Normal Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Reduced Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string/>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab7">
      <attribute name="title">
       <string>YOD</string>
      </attribute>
+     <widget class="QTableWidget" name="tab7Table">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>5</y>
+        <width>371</width>
+        <height>345</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustIgnored</enum>
+      </property>
+      <property name="gridStyle">
+       <enum>Qt::SolidLine</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>97</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>28</number>
+      </attribute>
+      <attribute name="verticalHeaderStretchLastSection">
+       <bool>false</bool>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>Proportional Band Width (K)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Cycle Time of PWM Signal (min)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Position of Proportional Band (%)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Normal Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Reduced Mode Set Value (C)</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P1 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P2 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Normal Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>P3 Reduced Mode Time</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string/>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="flags">
+        <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+       </property>
+      </item>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="zoneEstimateButton">
     <property name="geometry">
      <rect>
-      <x>1050</x>
+      <x>1040</x>
       <y>320</y>
       <width>111</width>
       <height>29</height>
@@ -2009,6 +2717,60 @@
      <string>Estimate</string>
     </property>
    </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>1154</x>
+      <y>321</y>
+      <width>69</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0);</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>OTO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>SLN</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>BLK</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>MUT</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>EYO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ÇYO</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>YOD</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -2016,7 +2778,7 @@
      <x>0</x>
      <y>0</y>
      <width>1800</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

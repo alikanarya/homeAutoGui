@@ -8,6 +8,7 @@
 //#include <QtGui>
 //#include <QPixmap>
 #include <QGraphicsScene>
+#include <QTableWidget>
 
 namespace Ui {
 class MainWindow;
@@ -60,6 +61,8 @@ public:
     QString fontAttrRed = "<font color=\"red\">";
     QString fontAttrEnd = "</font>";
 
+    int estimatedZone = 0;
+    QTableWidget *prmTables[7];
 
 private:
 
@@ -111,6 +114,8 @@ private slots:
     void on_dateEdit_END_dateChanged(const QDate &date);
 
     void on_zoneEstimateButton_clicked();
+
+    void on_comboBox_currentIndexChanged(int index);
 
 signals:
 
