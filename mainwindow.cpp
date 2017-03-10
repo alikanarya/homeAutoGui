@@ -506,7 +506,7 @@ void MainWindow::zoneTable(){
         for( int c=0; c<colNum; c++ )
             temp += dbThreadX->qry.value(c).toString() + " ";
         ui->textBrowser->append(temp);
-
+drawGraphZones();
     } else {
         for (int c=0; c<6; c++)
             ui->tableZone->item(rowNum, c)->setText( "0" );
@@ -518,7 +518,6 @@ void MainWindow::zoneTable(){
 }
 
 void MainWindow::on_zoneSaveButton_clicked(){
-
 
     QString fileName = zoneFileNames[currentZone-1] +
             ui->dateEdit_BEGIN->date().toString("yyMMdd") + "_" + ui->timeEdit_BEGIN->time().toString("hhmmss") + "-" +
@@ -1218,15 +1217,23 @@ void MainWindow::on_dateEdit_END_dateChanged(const QDate &date){
 }
 
 void MainWindow::on_zoneEstimateButton_clicked(){
-    bd->prmArray[estimatedZone].propBandWidth = ui->tab1Table->item(0,0)->text().toInt();
-    bd->prmArray[0].cycleTime = ui->tab1Table->item(1,0)->text().toInt();
-    bd->prmArray[0].propBandPos = ui->tab1Table->item(2,0)->text().toInt();
-    bd->prmArray[0].normalSet = ui->tab1Table->item(3,0)->text().toFloat();
-    bd->prmArray[0].reducedSet = ui->tab1Table->item(4,0)->text().toFloat();
+    //estimatedZone = ui->comboBox->currentIndex();
+    //qDebug() << estimatedZone;
+    bd->prmArray[estimatedZone].propBandWidth = prmTables[estimatedZone]->item(0,0)->text().toInt();
+    bd->prmArray[estimatedZone].cycleTime = prmTables[estimatedZone]->item(1,0)->text().toInt();
+    bd->prmArray[estimatedZone].propBandPos = prmTables[estimatedZone]->item(2,0)->text().toInt();
+    bd->prmArray[estimatedZone].normalSet = prmTables[estimatedZone]->item(3,0)->text().toFloat();
+    bd->prmArray[estimatedZone].reducedSet = prmTables[estimatedZone]->item(4,0)->text().toFloat();
+    bd->prmArray[estimatedZone].P1NormalModeTime = prmTables[estimatedZone]->item(5,0)->text();
+    bd->prmArray[estimatedZone].P1ReducedModeTime = prmTables[estimatedZone]->item(6,0)->text();
+    bd->prmArray[estimatedZone].P2NormalModeTime = prmTables[estimatedZone]->item(7,0)->text();
+    bd->prmArray[estimatedZone].P2ReducedModeTime = prmTables[estimatedZone]->item(8,0)->text();
+    bd->prmArray[estimatedZone].P3NormalModeTime = prmTables[estimatedZone]->item(9,0)->text();
+    bd->prmArray[estimatedZone].P3ReducedModeTime = prmTables[estimatedZone]->item(10,0)->text();
 
-    calcBandValues(0);
-    int x = QTime::fromString("00:00:00","hh:mm:ss").secsTo( QTime::fromString(ui->tab1Table->item(10,0)->text(),"hh:mm:ss") );
-    qDebug() << calcEstValueNormal(0, x) << " <N  R> " << calcEstValueReduced(0, x);
+    calcBandValues(estimatedZone);
+    int x = QTime::fromString("00:00:00","hh:mm:ss").secsTo( QTime::fromString(prmTables[estimatedZone]->item(10,0)->text(),"hh:mm:ss") );
+    //qDebug() << calcEstValueNormal(estimatedZone, x) << " <N  R> " << calcEstValueReduced(estimatedZone, x);
 
     dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
     dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
@@ -1251,8 +1258,10 @@ void MainWindow::on_zoneEstimateButton_clicked(){
 
     //qDebug() << beginDT.secsTo(endDT);
 
-    ui->textBrowser->clear();
-    dbThreadX->cmdAnalyzeZones = true;
+    //ui->textBrowser->clear();
+    dbThreadX->cmdAnalyzeZone = true;
+    currentZone = estimatedZone+1;
+    dbThreadX->currentZone = currentZone;
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
 
@@ -1263,7 +1272,7 @@ void MainWindow::calcBandValues(int zone){
     bd->prmArray[zone].normalHigh = bd->prmArray[zone].normalSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
     bd->prmArray[zone].reducedLow = bd->prmArray[zone].reducedSet - (100 - bd->prmArray[zone].propBandPos)*bd->prmArray[zone].propBandWidth / 100.0;
     bd->prmArray[zone].reducedHigh = bd->prmArray[zone].reducedSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
-    qDebug() << "NL: " << bd->prmArray[zone].normalLow << "NH: " << bd->prmArray[zone].normalHigh << "RL: " << bd->prmArray[zone].reducedLow << "RH: " << bd->prmArray[zone].reducedHigh;
+    //qDebug() << "NL: " << bd->prmArray[zone].normalLow << "NH: " << bd->prmArray[zone].normalHigh << "RL: " << bd->prmArray[zone].reducedLow << "RH: " << bd->prmArray[zone].reducedHigh;
 }
 
 float MainWindow::calcEstValueNormal(int zone, int inp){
@@ -1278,5 +1287,5 @@ float MainWindow::calcEstValueReduced(int zone, int inp){
 
 void MainWindow::on_comboBox_currentIndexChanged(int index){
     estimatedZone = index;
-    qDebug() << estimatedZone;
+    //qDebug() << estimatedZone;
 }
