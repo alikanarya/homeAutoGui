@@ -85,6 +85,7 @@ private slots:
     void summaryResult();
     void drawGraph();
     void drawGraphZones();
+    void drawSingleZone();
     void updateTemp();
     void updateTempGUI();
     void calcAvgTemp();

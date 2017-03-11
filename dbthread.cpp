@@ -60,6 +60,11 @@ void dbThread::run(){
         cmdAnalyzeZones = false;
     }
 
+    if (cmdSingleZone) {
+        analyzeZone();
+        cmdSingleZone = false;
+    }
+
     verbose = false;
 }
 
@@ -533,6 +538,9 @@ void dbThread::analyzeZone(){
 
             if (cmdSummaryReport)
                 emit summaryReportProcess();
+
+            if (cmdSingleZone)
+                emit singleZoneDone();
         }
     }
 }

@@ -103,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(tempOutDone()), this, SLOT(updateTempGUI()));
     connect(dbThreadX, SIGNAL(tempOutAvgDone()), this, SLOT(avgTempGUI()));
     connect(dbThreadX, SIGNAL(analyzeZonesDone()), this, SLOT(drawGraphZones()));
+    connect(dbThreadX, SIGNAL(singleZoneDone()), this, SLOT(drawSingleZone()));
 
     QTimer *timerTemp = new QTimer();
     QObject::connect(timerTemp, SIGNAL(timeout()), this, SLOT(updateTemp()));
@@ -506,7 +507,7 @@ void MainWindow::zoneTable(){
         for( int c=0; c<colNum; c++ )
             temp += dbThreadX->qry.value(c).toString() + " ";
         ui->textBrowser->append(temp);
-drawGraphZones();
+
     } else {
         for (int c=0; c<6; c++)
             ui->tableZone->item(rowNum, c)->setText( "0" );
@@ -1210,6 +1211,74 @@ void MainWindow::drawGraphZones(){
 
 }
 
+void MainWindow::drawSingleZone(){
+
+    zoneTable();
+
+    clearGraphZones();
+
+    ui->textBrowser->append("-----");
+    ui->labelBeginDate->setText( ui->dateEdit_BEGIN->text());
+    ui->labelEndDate->setText( ui->dateEdit_END->text());
+
+
+    int yRef0 = sceneZoneStep*(estimatedZone+1) - 1;
+    int yRef1 = yRef0 - 20;
+    int x1, x2, y, t1, t2, diff;
+
+    QString fontStart = "";
+    QString fonEnd = "";
+
+    if (!dbThreadX->graphList[estimatedZone].isEmpty()){
+
+        QString temp = fontAttrRed + tableNames[estimatedZone+1].toUpper() + fontAttrEnd + ".....";
+
+        for (int j=0; j<dbThreadX->graphList[estimatedZone].count()-1; j++){
+
+            t1 = dbThreadX->graphList[estimatedZone].at(j).timeDiff;
+            x1 = t1 / graphScale;
+            t2 = dbThreadX->graphList[estimatedZone].at(j+1).timeDiff;
+            x2 = t2 / graphScale;
+
+            if (dbThreadX->graphList[estimatedZone].at(j+1).state == 0){
+                y = yRef0;
+                fontStart = "";
+                fonEnd = "";
+            } else {
+                y = yRef1;
+                fontStart = fontAttrRed;
+                fonEnd = fontAttrEnd;
+            }
+
+            scene->addLine(x1, y, x2, y, penZoneBlue);
+            scene->addLine(x2, yRef0, x2, yRef1, penZoneBlue);
+
+            diff = t2 - t1;
+            if (diff < 3600)
+                temp += " ," + fontStart + QDateTime::fromTime_t(t2-t1).toUTC().toString("mm:ss") + fonEnd;
+            else
+                temp += " ," + fontStart + QDateTime::fromTime_t(t2-t1).toUTC().toString("hh:mm:ss") + fonEnd;
+        }
+        ui->textBrowser->append(temp);
+        //ui->textBrowser->append("...");
+
+    }
+
+    QTime last, first;
+    last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
+
+    timeLabels[0]->setText(ui->timeEdit_END->time().toString("hh:mm"));
+
+    for (int i=1; i<13; i++){
+        int backSecs = -7200*i*graphScale/72;
+        first = last.addSecs(backSecs);
+        timeLabels[i]->setText(first.toString("hh:mm"));
+    }
+    //drawGraphZonesFlag = true;
+    //calcAvgTemp();
+
+}
+
 void MainWindow::on_dateEdit_END_dateChanged(const QDate &date){
     if (date < ui->dateEdit_BEGIN->date())
         ui->dateEdit_BEGIN->setDate(date);
@@ -1259,9 +1328,10 @@ void MainWindow::on_zoneEstimateButton_clicked(){
     //qDebug() << beginDT.secsTo(endDT);
 
     //ui->textBrowser->clear();
-    dbThreadX->cmdAnalyzeZone = true;
+    dbThreadX->cmdSingleZone = true;
     currentZone = estimatedZone+1;
     dbThreadX->currentZone = currentZone;
+    dbThreadX->graphList[estimatedZone].clear();
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
     dbThreadX->start();
 

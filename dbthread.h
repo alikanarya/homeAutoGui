@@ -82,6 +82,7 @@ public:
     bool cmdTempData = false;
     bool cmdAvgTempData = false;
     bool cmdAnalyzeZones = false;
+    bool cmdSingleZone = false;
 
     struct summaryTable {
         QString date;
@@ -161,6 +162,7 @@ signals:
     void tempOutDone();
     void tempOutAvgDone();
     void analyzeZonesDone();
+    void singleZoneDone();
 };
 
 #endif // DBTHREAD_H
