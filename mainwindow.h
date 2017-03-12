@@ -36,6 +36,7 @@ public:
     void calcBandValues(int zone);
     float calcEstValueNormal(int zone, int inp);
     float calcEstValueReduced(int zone, int inp);
+    void drawRoomEstimation();
 
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
@@ -63,6 +64,11 @@ public:
 
     int estimatedZone = 0;
     QTableWidget *prmTables[7];
+
+    struct graphData {
+        int timeDiff;
+        int state;
+    };
 
 private:
 

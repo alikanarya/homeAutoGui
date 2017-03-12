@@ -1275,7 +1275,169 @@ void MainWindow::drawSingleZone(){
         timeLabels[i]->setText(first.toString("hh:mm"));
     }
     //drawGraphZonesFlag = true;
-    //calcAvgTemp();
+
+    drawRoomEstimation();
+}
+
+void MainWindow::drawRoomEstimation(){
+
+
+    ui->textBrowser->append("-----");
+
+    int yRef0 = sceneZoneStep*(estimatedZone+2) - 1;
+    int yRef1 = yRef0 - 20;
+    int x1, x2, y, t1, t2;
+
+    QTime initial = QTime::fromString(ui->timeEdit_END->text(), "hh:mm:ss");
+    QTime end = QTime::fromString("23:59:59", "hh:mm:ss");
+    qint64 offset = initial.secsTo(end);
+    qint64 P1NormalModeTimeX = -1;
+    qint64 P1ReducedModeTimeX = -1;
+    qint64 P2NormalModeTimeX = -1;
+    qint64 P2ReducedModeTimeX = -1;
+    qint64 P3NormalModeTimeX = -1;
+    qint64 P3ReducedModeTimeX = -1;
+
+    if ( bd->prmArray[estimatedZone].P1NormalModeTime != "--:--:--" ){
+        P1NormalModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P1NormalModeTime, "hh:mm:ss").secsTo( end ) - offset;
+        P1ReducedModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P1ReducedModeTime, "hh:mm:ss").secsTo( end ) - offset;
+    }
+
+    if ( bd->prmArray[estimatedZone].P2NormalModeTime != "--:--:--" ){
+        P2NormalModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P2NormalModeTime, "hh:mm:ss").secsTo( end ) - offset;
+        P2ReducedModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P2ReducedModeTime, "hh:mm:ss").secsTo( end ) - offset;
+    }
+
+    if ( bd->prmArray[estimatedZone].P3NormalModeTime != "--:--:--" ){
+        P3NormalModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P3NormalModeTime, "hh:mm:ss").secsTo( end ) - offset;
+        P3ReducedModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P3ReducedModeTime, "hh:mm:ss").secsTo( end ) - offset;
+    }
+    qDebug() << offset;
+    qDebug() << P1NormalModeTimeX << " " << P1ReducedModeTimeX;
+    qDebug() << P2NormalModeTimeX << " " << P2ReducedModeTimeX;
+    qDebug() << P3NormalModeTimeX << " " << P3ReducedModeTimeX;
+
+    float range = (bd->prmArray[estimatedZone].normalHigh - bd->prmArray[estimatedZone].reducedLow);
+    float ySpan = range;// * 1.17;
+    float yScale = scene->height() / ySpan;
+    int min = yScale * range * 0.05;
+
+    float ys = 0;
+    for (int i=0; i<7; i++){
+        ys = (i+1)*ySpan/7 + bd->prmArray[estimatedZone].reducedLow;// - range*0.05;
+        yLabels[i]->setText(QString::number(ys, 'f', 1));
+    }
+
+
+    QList<graphData> refList;
+
+    graphData start;
+    bool startFlag = false;
+    int endState = 0;
+
+    if (P3ReducedModeTimeX >= 0){
+        if (!startFlag){
+            start.state = 0;
+            start.timeDiff = 0;
+            refList.append(start);
+            startFlag = true;
+        }
+        graphData x;
+        x.timeDiff = P3ReducedModeTimeX;
+        x.state = 0;
+        refList.append(x);
+        endState = 1;
+    }
+    if (P3NormalModeTimeX >= 0){
+        if (!startFlag){
+            start.state = 1;
+            start.timeDiff = 0;
+            refList.append(start);
+            startFlag = true;
+        }
+        graphData x;
+        x.timeDiff = P3NormalModeTimeX;
+        x.state = 1;
+        refList.append(x);
+        endState = 0;
+    }
+    if (P2ReducedModeTimeX >= 0){
+        if (!startFlag){
+            start.state = 0;
+            start.timeDiff = 0;
+            refList.append(start);
+            startFlag = true;
+        }
+        graphData x;
+        x.timeDiff = P2ReducedModeTimeX;
+        x.state = 0;
+        refList.append(x);
+        endState = 1;
+    }
+    if (P2NormalModeTimeX >= 0){
+        if (!startFlag){
+            start.state = 1;
+            start.timeDiff = 0;
+            refList.append(start);
+            startFlag = true;
+        }
+        graphData x;
+        x.timeDiff = P2NormalModeTimeX;
+        x.state = 1;
+        refList.append(x);
+        endState = 0;
+    }
+    if (P1ReducedModeTimeX >= 0){
+        if (!startFlag){
+            start.state = 0;
+            start.timeDiff = 0;
+            refList.append(start);
+            startFlag = true;
+        }
+        graphData x;
+        x.timeDiff = P1ReducedModeTimeX;
+        x.state = 0;
+        refList.append(x);
+        endState = 1;
+    }
+    if (P1NormalModeTimeX >= 0){
+        if (!startFlag){
+            start.state = 1;
+            start.timeDiff = 0;
+            refList.append(start);
+            startFlag = true;
+        }
+        graphData x;
+        x.timeDiff = P1NormalModeTimeX;
+        x.state = 1;
+        refList.append(x);
+        endState = 0;
+    }
+
+    for (int j=0; j<refList.count()-1; j++){
+
+        t1 = refList.at(j).timeDiff;
+        x1 = t1 / graphScale;
+        t2 = refList.at(j+1).timeDiff;
+        x2 = t2 / graphScale;
+
+        if (refList.at(j+1).state == 0){
+            y = yRef0;
+        } else {
+            y = yRef1;
+        }
+
+        scene->addLine(x1, y, x2, y, penZone);
+        scene->addLine(x2, yRef0, x2, yRef1, penZone);
+    }
+
+    if (endState == 0)
+        y = yRef0;
+    else
+        y = yRef1;
+
+    scene->addLine(x2, y, scene->width(), y, penZone);
+
 
 }
 
@@ -1342,7 +1504,7 @@ void MainWindow::calcBandValues(int zone){
     bd->prmArray[zone].normalHigh = bd->prmArray[zone].normalSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
     bd->prmArray[zone].reducedLow = bd->prmArray[zone].reducedSet - (100 - bd->prmArray[zone].propBandPos)*bd->prmArray[zone].propBandWidth / 100.0;
     bd->prmArray[zone].reducedHigh = bd->prmArray[zone].reducedSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
-    //qDebug() << "NL: " << bd->prmArray[zone].normalLow << "NH: " << bd->prmArray[zone].normalHigh << "RL: " << bd->prmArray[zone].reducedLow << "RH: " << bd->prmArray[zone].reducedHigh;
+    qDebug() << "NL: " << bd->prmArray[zone].normalLow << "NH: " << bd->prmArray[zone].normalHigh << "RL: " << bd->prmArray[zone].reducedLow << "RH: " << bd->prmArray[zone].reducedHigh;
 }
 
 float MainWindow::calcEstValueNormal(int zone, int inp){
