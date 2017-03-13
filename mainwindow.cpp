@@ -129,6 +129,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     penZoneBlue.setColor(Qt::blue);
     penZoneBlue.setWidth(1);
 
+    penZoneGreen.setColor(Qt::green);
+    penZoneGreen.setWidth(1);
+
     sceneRect = ui->graphicsView->geometry();
     sceneZoneStep = sceneRect.height() / zoneNumber;
     sceneWidth = sceneRect.width() - 2;
@@ -1281,12 +1284,11 @@ void MainWindow::drawSingleZone(){
 
 void MainWindow::drawRoomEstimation(){
 
-
     ui->textBrowser->append("-----");
 
     int yRef0 = sceneZoneStep*(estimatedZone+2) - 1;
     int yRef1 = yRef0 - 20;
-    int x1, x2, y, t1, t2;
+    int x1, x2, y;
 
     QTime initial = QTime::fromString(ui->timeEdit_END->text(), "hh:mm:ss");
     QTime end = QTime::fromString("23:59:59", "hh:mm:ss");
@@ -1312,20 +1314,27 @@ void MainWindow::drawRoomEstimation(){
         P3NormalModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P3NormalModeTime, "hh:mm:ss").secsTo( end ) - offset;
         P3ReducedModeTimeX = QTime::fromString(bd->prmArray[estimatedZone].P3ReducedModeTime, "hh:mm:ss").secsTo( end ) - offset;
     }
+    /*
     qDebug() << offset;
     qDebug() << P1NormalModeTimeX << " " << P1ReducedModeTimeX;
     qDebug() << P2NormalModeTimeX << " " << P2ReducedModeTimeX;
     qDebug() << P3NormalModeTimeX << " " << P3ReducedModeTimeX;
+    */
 
-    float range = (bd->prmArray[estimatedZone].normalHigh - bd->prmArray[estimatedZone].reducedLow);
-    float ySpan = range;// * 1.17;
+    float high = bd->prmArray[estimatedZone].normalHigh;
+    float low = bd->prmArray[estimatedZone].reducedLow;
+
+    float range = ( high - low );
+    float z = 7 - range;
+    float ySpan = range + z;// * 1.17;
     float yScale = scene->height() / ySpan;
-    int min = yScale * range * 0.05;
+//    int min = yScale * range * 0.05;
+    float min = z / 2;
 
     float ys = 0;
     for (int i=0; i<7; i++){
-        ys = (i+1)*ySpan/7 + bd->prmArray[estimatedZone].reducedLow;// - range*0.05;
-        yLabels[i]->setText(QString::number(ys, 'f', 1));
+        ys = (i+1)*ySpan/7 + low - min;// - range*0.05;
+        yLabels[i]->setText(QString::number(ys, 'f', 2));
     }
 
 
@@ -1414,12 +1423,13 @@ void MainWindow::drawRoomEstimation(){
         endState = 0;
     }
 
+    yRef0 = scene->height() - (bd->prmArray[estimatedZone].reducedSet - low) * yScale - min * yScale;
+    yRef1 = scene->height() - (bd->prmArray[estimatedZone].normalSet - low) * yScale - min * yScale;
+
     for (int j=0; j<refList.count()-1; j++){
 
-        t1 = refList.at(j).timeDiff;
-        x1 = t1 / graphScale;
-        t2 = refList.at(j+1).timeDiff;
-        x2 = t2 / graphScale;
+        x1 = refList.at(j).timeDiff / graphScale;
+        x2 = refList.at(j+1).timeDiff / graphScale;
 
         if (refList.at(j+1).state == 0){
             y = yRef0;
@@ -1438,6 +1448,32 @@ void MainWindow::drawRoomEstimation(){
 
     scene->addLine(x2, y, scene->width(), y, penZone);
 
+//------------------
+    int y1, t1, t2, diff;
+    float val1;
+    for (int j=dbThreadX->graphList[estimatedZone].count()-1; j>0; j--){
+
+        t1 = dbThreadX->graphList[estimatedZone].at(j).timeDiff;
+        x1 = t1 / graphScale;
+        t2 = dbThreadX->graphList[estimatedZone].at(j-1).timeDiff;
+        x2 = t2 / graphScale;
+        diff = t1 - t2;
+
+        //if (diff >=180) {
+            if (dbThreadX->graphList[estimatedZone].at(j).state == 0){
+            } else {
+                val1 = calcEstValueNormal(estimatedZone, diff);
+                y1 = scene->height() - (val1 - low) * yScale - min * yScale;
+                qDebug() << dbThreadX->graphList[estimatedZone].at(j-1).timeDiff << " " << diff << " " << val1 << " " << y1;
+                scene->addEllipse(x1-2, y1-2, 4, 4, penZoneGreen);
+            }
+        //}
+
+
+//        scene->addLine(x1, y, x2, y, penZoneBlue);
+//        scene->addLine(x2, yRef0, x2, yRef1, penZoneBlue);
+
+    }
 
 }
 
@@ -1504,7 +1540,8 @@ void MainWindow::calcBandValues(int zone){
     bd->prmArray[zone].normalHigh = bd->prmArray[zone].normalSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
     bd->prmArray[zone].reducedLow = bd->prmArray[zone].reducedSet - (100 - bd->prmArray[zone].propBandPos)*bd->prmArray[zone].propBandWidth / 100.0;
     bd->prmArray[zone].reducedHigh = bd->prmArray[zone].reducedSet + bd->prmArray[zone].propBandPos*bd->prmArray[zone].propBandWidth / 100.0;
-    qDebug() << "NL: " << bd->prmArray[zone].normalLow << "NH: " << bd->prmArray[zone].normalHigh << "RL: " << bd->prmArray[zone].reducedLow << "RH: " << bd->prmArray[zone].reducedHigh;
+    //qDebug() << "NL: " << bd->prmArray[zone].normalLow << "NH: " << bd->prmArray[zone].normalHigh << "RL: " << bd->prmArray[zone].reducedLow << "RH: " << bd->prmArray[zone].reducedHigh;
+    ui->textBrowser->append( "Normal Low: "+QString::number(bd->prmArray[zone].normalLow,'f',1)+" Normal High: "+QString::number(bd->prmArray[zone].normalHigh,'f',1)+" Reduced Low: "+QString::number(bd->prmArray[zone].reducedLow,'f',1)+" Reduced High: "+QString::number(bd->prmArray[zone].reducedHigh,'f',1));
 }
 
 float MainWindow::calcEstValueNormal(int zone, int inp){
