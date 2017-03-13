@@ -49,6 +49,7 @@ public:
     QPen penZone;
     QPen penZoneBlue;
     QPen penZoneGreen;
+    QPen penZoneEst;
     QRect sceneRect;
     int sceneWidth, sceneHeight, xMax, yMax;
     float graphScale = 3;

@@ -132,6 +132,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     penZoneGreen.setColor(Qt::green);
     penZoneGreen.setWidth(1);
 
+    penZoneEst.setColor(Qt::darkRed);
+    penZoneEst.setWidth(1);
+
     sceneRect = ui->graphicsView->geometry();
     sceneZoneStep = sceneRect.height() / zoneNumber;
     sceneWidth = sceneRect.width() - 2;
@@ -1334,7 +1337,7 @@ void MainWindow::drawRoomEstimation(){
     float ys = 0;
     for (int i=0; i<7; i++){
         ys = (i+1)*ySpan/7 + low - min;// - range*0.05;
-        yLabels[i]->setText(QString::number(ys, 'f', 2));
+        yLabels[i]->setText(QString::number(ys, 'f', 1));
     }
 
 
@@ -1451,6 +1454,9 @@ void MainWindow::drawRoomEstimation(){
 //------------------
     int y1, t1, t2, diff;
     float val1;
+    QString temp = "Estimated Temps.....";
+
+    QStringList vals;
     for (int j=dbThreadX->graphList[estimatedZone].count()-1; j>0; j--){
 
         t1 = dbThreadX->graphList[estimatedZone].at(j).timeDiff;
@@ -1459,21 +1465,37 @@ void MainWindow::drawRoomEstimation(){
         x2 = t2 / graphScale;
         diff = t1 - t2;
 
-        //if (diff >=180) {
+        if (diff >=180) {
             if (dbThreadX->graphList[estimatedZone].at(j).state == 0){
             } else {
-                val1 = calcEstValueNormal(estimatedZone, diff);
-                y1 = scene->height() - (val1 - low) * yScale - min * yScale;
-                qDebug() << dbThreadX->graphList[estimatedZone].at(j-1).timeDiff << " " << diff << " " << val1 << " " << y1;
-                scene->addEllipse(x1-2, y1-2, 4, 4, penZoneGreen);
-            }
-        //}
 
+                for (int j=0; j<refList.count()-1; j++){
+                    if (t1 <= refList[j].timeDiff && t1 >= refList[j+1].timeDiff){
+                        if (refList[j].state == 1)
+                            val1 = calcEstValueNormal(estimatedZone, diff);
+                        else
+                            val1 = calcEstValueReduced(estimatedZone, diff);
+                        break;
+                    }
+                }
+
+
+//                val1 = calcEstValueNormal(estimatedZone, diff);
+                y1 = scene->height() - (val1 - low) * yScale - min * yScale;
+                //qDebug() << dbThreadX->graphList[estimatedZone].at(j-1).timeDiff << " " << diff << " " << val1 << " " << y1;
+                scene->addEllipse(x1-2, y1-2, 4, 4, penZoneEst);
+                vals.append(QString::number(val1, 'f', 1));
+            }
+        }
 
 //        scene->addLine(x1, y, x2, y, penZoneBlue);
 //        scene->addLine(x2, yRef0, x2, yRef1, penZoneBlue);
-
     }
+
+    for (int i=vals.count()-1; i>=0; i--){
+        temp += vals.at(i) + " ,";
+    }
+    ui->textBrowser->append(temp);
 
 }
 
@@ -1499,7 +1521,7 @@ void MainWindow::on_zoneEstimateButton_clicked(){
     bd->prmArray[estimatedZone].P3ReducedModeTime = prmTables[estimatedZone]->item(10,0)->text();
 
     calcBandValues(estimatedZone);
-    int x = QTime::fromString("00:00:00","hh:mm:ss").secsTo( QTime::fromString(prmTables[estimatedZone]->item(10,0)->text(),"hh:mm:ss") );
+    //int x = QTime::fromString("00:00:00","hh:mm:ss").secsTo( QTime::fromString(prmTables[estimatedZone]->item(10,0)->text(),"hh:mm:ss") );
     //qDebug() << calcEstValueNormal(estimatedZone, x) << " <N  R> " << calcEstValueReduced(estimatedZone, x);
 
     dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
