@@ -1289,8 +1289,8 @@ void MainWindow::drawRoomEstimation(){
 
     ui->textBrowser->append("-----");
 
-    int yRef0 = sceneZoneStep*(estimatedZone+2) - 1;
-    int yRef1 = yRef0 - 20;
+    int yRef0;// = sceneZoneStep*(estimatedZone+2) - 1;
+    int yRef1;// = yRef0 - 20;
     int x1, x2, y;
 
     QTime initial = QTime::fromString(ui->timeEdit_END->text(), "hh:mm:ss");
@@ -1330,9 +1330,9 @@ void MainWindow::drawRoomEstimation(){
     float range = ( high - low );
     float z = 7 - range;
     float ySpan = range + z;// * 1.17;
-    float yScale = scene->height() / ySpan;
-//    int min = yScale * range * 0.05;
+    float yScale = sceneHeight / ySpan;
     float min = z / 2;
+    //qDebug() << ":: " << range << " " << z << " " << ySpan << " " << yScale << " " << scene->height();
 
     float ys = 0;
     for (int i=0; i<7; i++){
@@ -1426,12 +1426,20 @@ void MainWindow::drawRoomEstimation(){
         endState = 0;
     }
 
-    yRef0 = scene->height() - (bd->prmArray[estimatedZone].reducedSet - low) * yScale - min * yScale;
-    yRef1 = scene->height() - (bd->prmArray[estimatedZone].normalSet - low) * yScale - min * yScale;
+    if (refList.isEmpty()) {
+        graphData x;
+        x.timeDiff = 0;
+        x.state = 0;
+        refList.append(x);
+        endState = 0;
+    }
+
+    yRef0 = sceneHeight - (bd->prmArray[estimatedZone].reducedSet - low) * yScale - min * yScale;
+    yRef1 = sceneHeight - (bd->prmArray[estimatedZone].normalSet - low) * yScale - min * yScale;
 
     for (int j=0; j<refList.count()-1; j++){
 
-        qDebug() << refList[j].timeDiff;
+        //qDebug() << refList[j].timeDiff;
         x1 = refList.at(j).timeDiff / graphScale;
         x2 = refList.at(j+1).timeDiff / graphScale;
 
@@ -1444,7 +1452,12 @@ void MainWindow::drawRoomEstimation(){
         scene->addLine(x1, y, x2, y, penZone);
         scene->addLine(x2, yRef0, x2, yRef1, penZone);
     }
-    qDebug() << refList.last().timeDiff;
+
+    if (refList.count() == 1) {
+        scene->addLine(0, yRef0, scene->width(), yRef0, penZone);
+    }
+
+    //qDebug() << refList.last().timeDiff;
 
     if (endState == 0)
         y = yRef0;
@@ -1468,23 +1481,35 @@ void MainWindow::drawRoomEstimation(){
         diff = t1 - t2;
 
         if (diff >=180) {
+
             if (dbThreadX->graphList[estimatedZone].at(j).state == 0){
             } else {
-/*
+
+                val1 = 0;
+
                 for (int j=0; j<refList.count()-1; j++){
-                    if (t1 <= refList[j].timeDiff && t1 >= refList[j+1].timeDiff){
-                        if (refList[j].state == 1)
+
+                    if (t1 >= refList[j].timeDiff && t1 <= refList[j+1].timeDiff){
+                        if (refList[j+1].state == 1)
                             val1 = calcEstValueNormal(estimatedZone, diff);
                         else
                             val1 = calcEstValueReduced(estimatedZone, diff);
                         break;
                     }
                 }
-*/
 
-                val1 = calcEstValueReduced(estimatedZone, diff);
-                y1 = scene->height() - (val1 - low) * yScale - min * yScale;
-                qDebug() << t1 << " " << dbThreadX->graphList[estimatedZone].at(j-1).timeDiff << " " << diff << " " << val1 << " " << y1;
+                if (val1 == 0) {
+                    if (refList.last().state == 1)
+                        val1 = calcEstValueReduced(estimatedZone, diff);
+                    else
+                        val1 = calcEstValueNormal(estimatedZone, diff);
+                }
+
+
+                //val1 = calcEstValueNormal(estimatedZone, diff);
+                y1 = sceneHeight - (val1 - low) * yScale - min * yScale;
+                //qDebug() << t1 << " " << val1 << " " << low << " " << yScale << " " << min;
+                //qDebug() << t1 << " " << dbThreadX->graphList[estimatedZone].at(j-1).timeDiff << " " << diff << " " << val1 << " " << y1;
                 scene->addEllipse(x1-2, y1-2, 4, 4, penZoneEst);
                 vals.append(QString::number(val1, 'f', 1));
             }
