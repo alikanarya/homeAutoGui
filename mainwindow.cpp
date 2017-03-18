@@ -196,6 +196,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         prmTables[i]->item(9, 0)->setText( bd->prmArray[i].P3NormalModeTime );
         prmTables[i]->item(10, 0)->setText( bd->prmArray[i].P3ReducedModeTime );
     }
+    ui->paramTabs->setCurrentIndex(0);
 
 }
 
@@ -1011,8 +1012,8 @@ void MainWindow::avgTempGUI(){
             x1= dbThreadX->tempList[i].timeDiff / graphScale;
             x2= dbThreadX->tempList[i-1].timeDiff / graphScale;
 
-            y1 = scene->height() - (dbThreadX->tempList[i].value - dbThreadX->tempMin) * yScale - min;
-            y2 = scene->height() - (dbThreadX->tempList[i-1].value - dbThreadX->tempMin) * yScale - min;
+            y1 = sceneHeight - (dbThreadX->tempList[i].value - dbThreadX->tempMin) * yScale - min;
+            y2 = sceneHeight - (dbThreadX->tempList[i-1].value - dbThreadX->tempMin) * yScale - min;
 
             scene->addLine(x1, y1, x2, y2, penZone);
             scene->addEllipse(x1-2, y1-2, 4, 4, penZone);
@@ -1606,4 +1607,5 @@ float MainWindow::calcEstValueReduced(int zone, int inp){
 void MainWindow::on_comboBox_currentIndexChanged(int index){
     estimatedZone = index;
     //qDebug() << estimatedZone;
+    ui->paramTabs->setCurrentIndex(index);
 }
