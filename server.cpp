@@ -38,7 +38,7 @@ void Server::startRead(){
     datagram.clear();
     while (client->bytesAvailable())
         datagram.append(client->readAll());
-     //cout << datagram.data();// << endl;      //DBG
+    //qDebug() << datagram.data();// << endl;      //DBG
 
     for (int i = 0; i < dInpNum; i++) {
         dInpArr[i] = datagram.data()[i];
@@ -51,9 +51,9 @@ void Server::startRead(){
     */
 
     int pos = dInpNum;//+dOutSize;
-    char ch = datagram.at(pos);
+//    char ch = datagram.at(pos);
     //cout << ch << endl;      //DBG
-
+/*
     int j = 0, x = 0;
     while (ch != 'Z') {
         //x = 0;
@@ -77,7 +77,7 @@ void Server::startRead(){
             x++;
 
         }
-    }
+    }*/
     //cout << endl;
 
     emit this->readFinished();
