@@ -51,9 +51,9 @@ void Server::startRead(){
     */
 
     int pos = dInpNum;//+dOutSize;
-//    char ch = datagram.at(pos);
+    char ch = datagram.at(pos);
     //cout << ch << endl;      //DBG
-/*
+
     int j = 0, x = 0;
     while (ch != 'Z') {
         //x = 0;
@@ -77,7 +77,7 @@ void Server::startRead(){
             x++;
 
         }
-    }*/
+    }
     //cout << endl;
 
     emit this->readFinished();
