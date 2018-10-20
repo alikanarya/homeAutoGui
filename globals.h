@@ -22,14 +22,18 @@ QString MSG_DB_CON_YES = "DB+";
 QString MSG_DB_CON_NO = "DB-";
 
 extern const int dInpSize = 8;
+int dInpSizeUsed = 7;
 extern const int dOutSize = 4;
+extern const int dOutSizeUsed = 0;
 extern const int aInpSize = 7;
+extern const int aInpSizeUsed = 2;
 extern const int aOutSize = 4;
+extern const int dataBufferSizeMax = 19;   // dInpSize+dOutSizeUsed+aInpSizeUsed*5{A+4digit}+1{Z}
+extern const int dataBufferSizeMin = 13;   // dInpSize+dOutSizeUsed+aInpSizeUsed*2{A+1digit}+1{Z}
 
 char dInpArr[dInpSize+1];
 int dInpGpioMap[dInpSize] = {45, 44, 26, 47, 46, 27, 65, 61};
 
-int dInpNum = 7;
 extern const int zoneNumber = 7;
 
 char dOutArr[dOutSize+1];

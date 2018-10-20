@@ -31,6 +31,8 @@ private:
 signals:
 
     void readFinished();
+    void dataValid();
+    void dataInValid();
 };
 
 #endif // SERVER_H
