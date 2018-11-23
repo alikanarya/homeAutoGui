@@ -563,11 +563,13 @@ void dbThread::insertToSummaryTable(){
     QString qryStr = QString( "INSERT INTO summary (date, "
                               "0_zone_rate, 1_zone_rate, 2_zone_rate, 3_zone_rate, 4_zone_rate, 5_zone_rate, 6_zone_rate, 7_zone_rate, "
                               "0_zone_thr_count, 0_zone_thr_time, "
-                              "on_rate_oto, on_rate_sln, on_rate_blk, on_rate_mut, on_rate_eyo, on_rate_cyo, on_rate_yod) VALUES ('%1', %2, %3, %4, %5, %6, %7, %8, %9, %10, '%11', %12, %13, %14, %15, %16, %17, %18)"
+                              "on_rate_oto, on_rate_sln, on_rate_blk, on_rate_mut, on_rate_eyo, on_rate_cyo, on_rate_yod, "
+                              "tempAvg, tempMin, tempMax) VALUES ('%1', %2, %3, %4, %5, %6, %7, %8, %9, %10, '%11', %12, %13, %14, %15, %16, %17, %18, %19, %20, %21)"
                               ).arg(summaryData.date)
             .arg(summaryData.zone0_rate).arg(summaryData.zone1_rate).arg(summaryData.zone2_rate).arg(summaryData.zone3_rate).arg(summaryData.zone4_rate).arg(summaryData.zone5_rate).arg(summaryData.zone6_rate).arg(summaryData.zone7_rate)
             .arg(summaryData.zone0_thr_count).arg(summaryData.zone0_thr_time)
-            .arg(summaryData.on_rate_oto).arg(summaryData.on_rate_sln).arg(summaryData.on_rate_blk).arg(summaryData.on_rate_mut).arg(summaryData.on_rate_eyo).arg(summaryData.on_rate_cyo).arg(summaryData.on_rate_yod);
+            .arg(summaryData.on_rate_oto).arg(summaryData.on_rate_sln).arg(summaryData.on_rate_blk).arg(summaryData.on_rate_mut).arg(summaryData.on_rate_eyo).arg(summaryData.on_rate_cyo).arg(summaryData.on_rate_yod)
+            .arg(summaryData.tempAvg).arg(summaryData.tempMin).arg(summaryData.tempMax);
 
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
@@ -836,7 +838,14 @@ void dbThread::getAvgTemperature(){
 
                 } while( qry.next() && qry.value(3).toString() != "-99");
 
-                if (count!=0)   tempAvg /= count;
+                if (count!=0) {
+                    tempAvg /= count;
+                    summaryData.tempAvg = QString::number(tempAvg,'f',1).toFloat();
+                    summaryData.tempMin = QString::number(tempMin,'f',1).toFloat();
+                    summaryData.tempMax = QString::number(tempMax,'f',1).toFloat();
+                    qDebug() << "min: " << summaryData.tempMin << " avg: " << summaryData.tempAvg << " max: " << summaryData.tempMax;
+                }
+
                 if (verbose) {
                     qDebug() << "min: " << tempMin << " avg: " << tempAvg << " max: " << tempMax;
                 }

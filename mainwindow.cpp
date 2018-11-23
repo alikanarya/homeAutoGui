@@ -747,6 +747,9 @@ void MainWindow::summaryResult(){
         progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
         dbThreadX->start();
     }
+
+    clearGraphZones();
+    calcAvgTemp();
 }
 
 void MainWindow::addAxis(){

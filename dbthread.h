@@ -117,6 +117,9 @@ public:
         int on_time_eyo;
         int on_time_cyo;
         int on_time_yod;
+        float tempAvg;
+        float tempMin;
+        float tempMax;
     } summaryData;
 
     struct graphData {
