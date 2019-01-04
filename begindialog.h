@@ -11,13 +11,15 @@ namespace Ui {
 #define INIFILENAME         "settings.ini"
 #define _CLIENT_ADR         "localhost"
 #define _DEFAULT_ADR        0
-#define _CLIENT_PORT        8888
+#define _CLIENT_PORT        8889
+#define _SERVER_PORT        8888
 #define _DB_NAME            "homeAutoDB"
 #define _DB_USER            "ali"
 #define _DB_PASS            "reyhan"
 
 extern QString clientAddress;
 extern quint16 clientPort;
+extern int serverPort;
 extern QString dbName;
 extern QString dbUser;
 extern QString dbPass;

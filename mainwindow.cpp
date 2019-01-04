@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     zoneTableHeader = QStringList() << "ON #" << "OFF #" << "ON t" << "OFF t" << "% ON" << "LOAD";
 
     serverx = new Server();
+    serverx->serverPort = serverPort;
+    serverx->init();
     clientx = new Client();
     checkClientX = new checkClient();
 

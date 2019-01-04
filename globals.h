@@ -8,7 +8,8 @@ using namespace std;
 
 #define INIFILENAME         "settings.ini"
 #define _CLIENT_ADR         "localhost"
-#define _CLIENT_PORT        8888
+#define _CLIENT_PORT        8889
+#define _SERVER_PORT        8888
 #define _DB_NAME            "homeAutoDB"
 #define _DB_USER            "ali"
 #define _DB_PASS            "reyhan"
@@ -47,6 +48,7 @@ int aOutArr[aOutSize];
 
 QString clientAddress = "";
 quint16 clientPort = 0;
+int serverPort = 0;
 QString dbName;
 QString dbUser;
 QString dbPass;

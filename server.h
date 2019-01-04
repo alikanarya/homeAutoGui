@@ -15,8 +15,10 @@ public:
     Server(QObject * parent = 0);
     ~Server();
 
-    int serverPort = 8888;
+    int serverPort;
     QByteArray datagram;
+
+    void init();
 
 public slots:
 

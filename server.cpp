@@ -19,10 +19,12 @@ extern int dataBufferSizeMax;
 extern int dataBufferSizeMin;
 
 Server::Server(QObject* parent): QObject(parent){
+}
 
+void Server::init(){
     connect(&server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
     server.listen(QHostAddress::Any, serverPort);
-    cout << MSG_SERVER_INIT.toUtf8().constData() << endl;
+    cout << MSG_SERVER_INIT.toUtf8().constData() << serverPort << endl;
 }
 
 Server::~Server(){

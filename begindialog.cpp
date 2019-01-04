@@ -40,6 +40,7 @@ bool begindialog::readSettings(){
         clientAddress4 = settings->value("clientAddress3", _CLIENT_ADR).toString();
         clientAddress5 = settings->value("clientAddress4", _CLIENT_ADR).toString();
         clientPort = settings->value("clientPort", _CLIENT_PORT).toInt();
+        serverPort = settings->value("serverPort", _SERVER_PORT).toInt();
         dbName = settings->value("dbName", _DB_NAME).toString();
         dbUser = settings->value("dbUser", _DB_USER).toString();
         dbPass = settings->value("dbPass", _DB_PASS).toString();
