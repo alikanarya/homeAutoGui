@@ -115,16 +115,13 @@ private slots:
     void on_timeNow2Button_clicked();
 
     void on_saveTempData_clicked();
-
     void on_yesterdayButton_clicked();
-
     void on_zoneGraphButton_clicked();
-
     void on_dateEdit_END_dateChanged(const QDate &date);
-
     void on_zoneEstimateButton_clicked();
-
     void on_comboBox_currentIndexChanged(int index);
+
+    void _debug();
 
 signals:
 

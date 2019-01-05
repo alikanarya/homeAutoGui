@@ -86,7 +86,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QObject::connect(timerSec, SIGNAL(timeout()), checkClientX, SLOT(connect()));
     timerSec->start(1000);
 
-    connect(serverx, SIGNAL(readFinished()),this, SLOT(displayInputs()));
+    connect(serverx, SIGNAL(mainIO()),this, SLOT(displayInputs()));
+    connect(serverx, SIGNAL(readFinished()),this, SLOT(_debug()));
     connect(checkClientX, SIGNAL(Connected()),this, SLOT(ConnectedToServer()));
     connect(checkClientX, SIGNAL(notConnected()),this, SLOT(NotConnectedToServer()));
     connect(this, SIGNAL(sendData()),this, SLOT(transferData()));
@@ -1613,4 +1614,10 @@ void MainWindow::on_comboBox_currentIndexChanged(int index){
     estimatedZone = index;
     //qDebug() << estimatedZone;
     ui->paramTabs->setCurrentIndex(index);
+}
+
+void MainWindow::_debug(){
+    if (debugIncomingData)
+        ui->textBrowser->append(serverx->datagram.data());
+
 }

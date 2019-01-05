@@ -22,6 +22,7 @@ QString MSG_BBB_CON_NO = "BBB-";
 QString MSG_DB_CON_YES = "DB+";
 QString MSG_DB_CON_NO = "DB-";
 
+bool debugIncomingData = false;
 extern const int dInpSize = 8;
 int dInpSizeUsed = 7;
 extern const int dOutSize = 4;
@@ -31,6 +32,14 @@ extern const int aInpSizeUsed = 2;
 extern const int aOutSize = 4;
 extern const int dataBufferSizeMax = 19;   // dInpSize+dOutSizeUsed+aInpSizeUsed*5{A+4digit}+1{Z}
 extern const int dataBufferSizeMin = 13;   // dInpSize+dOutSizeUsed+aInpSizeUsed*2{A+1digit}+1{Z}
+
+// remote station 1
+extern const int dInpSize_R1 = 3;
+extern const int dOutSize_R1 = 0;
+extern const int aInpSize_R1 = 1;
+extern const int aOutSize_R1 = 0;
+extern const int dataBufferSizeMax_R1 = 11;     // 1{A}+dInpSize+dOutSize+aInpSize*5{A+4digit}+1{Z}
+extern const int dataBufferSizeMin_R1 = 7;      // 1{A}+dInpSize+dOutSize+aInpSize*2{A+1digit}+1{Z}
 
 char dInpArr[dInpSize+1];
 int dInpGpioMap[dInpSize] = {45, 44, 26, 47, 46, 27, 65, 61};
@@ -45,6 +54,9 @@ int aInpArr[aInpSize];
 float aInpArrVal[aInpSize];
 
 int aOutArr[aOutSize];
+
+char dInpArr_R1[dInpSize_R1+1];
+int aInpArr_R1[aInpSize_R1];
 
 QString clientAddress = "";
 quint16 clientPort = 0;

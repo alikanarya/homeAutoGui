@@ -19,6 +19,8 @@ public:
     QByteArray datagram;
 
     void init();
+    void frameMainIO();
+    void frameRemote1IO();
 
 public slots:
 
@@ -33,6 +35,8 @@ private:
 signals:
 
     void readFinished();
+    void mainIO();
+    void remote1IO();
     void dataValid();
     void dataInValid();
 };

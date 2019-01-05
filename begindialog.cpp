@@ -142,3 +142,7 @@ void begindialog::on_okButton_clicked(){
     clientAddress = ui->comboBox->currentText();
     this->close();
 }
+
+void begindialog::on_checkBoxIncomingData_clicked() {
+    debugIncomingData = ui->checkBoxIncomingData->isChecked();
+}

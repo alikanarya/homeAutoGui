@@ -23,6 +23,7 @@ extern int serverPort;
 extern QString dbName;
 extern QString dbUser;
 extern QString dbPass;
+extern bool debugIncomingData;
 
 
 
@@ -68,6 +69,8 @@ public:
 
 private slots:
     void on_okButton_clicked();
+
+    void on_checkBoxIncomingData_clicked();
 
 private:
     Ui::begindialog *ui;
