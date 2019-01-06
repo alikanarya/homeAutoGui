@@ -87,6 +87,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     timerSec->start(1000);
 
     connect(serverx, SIGNAL(mainIO()),this, SLOT(displayInputs()));
+    connect(serverx, SIGNAL(remote1IO()),this, SLOT(displayInputsR1()));
     connect(serverx, SIGNAL(readFinished()),this, SLOT(_debug()));
     connect(checkClientX, SIGNAL(Connected()),this, SLOT(ConnectedToServer()));
     connect(checkClientX, SIGNAL(notConnected()),this, SLOT(NotConnectedToServer()));
@@ -308,6 +309,12 @@ void MainWindow::displayInputs(){
 
     //aInpArrVal[1] = aInpArr[1] / 22.755555;
     //ui->ai1->setText(QString::number(aInpArrVal[1],'f',1));
+}
+
+void MainWindow::displayInputsR1(){
+    QString message = "Central Heating:" + (dInpArr_R1_bool[0] ? QString("ON") : QString("OFF")) + "  Hot Water:" + (dInpArr_R1_bool[1] ? "ON" : "OFF") + "  Flame:" + (dInpArr_R1_bool[2] ? "ON" : "OFF");
+    message += "  Boiler temperature is " + QString::number(aInpArr_R1[0]) + " C";
+    ui->textBrowser->append(message);
 }
 
 void MainWindow::transferData(){
@@ -1619,5 +1626,9 @@ void MainWindow::on_comboBox_currentIndexChanged(int index){
 void MainWindow::_debug(){
     if (debugIncomingData)
         ui->textBrowser->append(serverx->datagram.data());
+
+}
+
+void MainWindow::on_testButton_clicked(){
 
 }

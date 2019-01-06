@@ -87,6 +87,7 @@ private slots:
     void unconnectedToDB();
 
     void displayInputs();
+    void displayInputsR1(); // for remote station 1
     void transferData();
     void allZonesTable();
     void zoneTable();
@@ -122,6 +123,8 @@ private slots:
     void on_comboBox_currentIndexChanged(int index);
 
     void _debug();
+
+    void on_testButton_clicked();
 
 signals:
 

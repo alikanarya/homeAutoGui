@@ -56,6 +56,7 @@ float aInpArrVal[aInpSize];
 int aOutArr[aOutSize];
 
 char dInpArr_R1[dInpSize_R1+1];
+bool dInpArr_R1_bool[dInpSize_R1];
 int aInpArr_R1[aInpSize_R1];
 
 QString clientAddress = "";

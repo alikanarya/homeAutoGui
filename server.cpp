@@ -26,6 +26,7 @@ extern const int aOutSize_R1;
 extern const int dataBufferSizeMax_R1;
 extern const int dataBufferSizeMin_R1;
 extern char dInpArr_R1[];
+extern bool dInpArr_R1_bool[];
 extern int aInpArr_R1[];
 
 Server::Server(QObject* parent): QObject(parent){
@@ -161,6 +162,7 @@ void Server::frameRemote1IO(){
 
         for (int i = 0; i < dInpSize_R1; i++) {
             dInpArr_R1[i] = datagram.data()[i+1];
+            dInpArr_R1_bool[i] = (dInpArr_R1[i] == '0') ? false : true;
         }
 
         //for (int i = 0; i < dOutSize; i++) { dOutReadArr[i] = datagram.data()[i + dInpSize]; }
