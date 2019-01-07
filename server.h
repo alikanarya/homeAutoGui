@@ -12,6 +12,9 @@ class Server: public QObject{
 
 public:
 
+    QTcpServer server;
+    QTcpSocket* client;
+
     Server(QObject * parent = 0);
     ~Server();
 
@@ -29,8 +32,6 @@ public slots:
 
 private:
 
-    QTcpServer server;
-    QTcpSocket* client;
 
 signals:
 

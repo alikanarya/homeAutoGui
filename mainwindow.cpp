@@ -1630,5 +1630,14 @@ void MainWindow::_debug(){
 }
 
 void MainWindow::on_testButton_clicked(){
+    cout << "....s" << endl;
+    if (serverx->client->state() == QAbstractSocket::ConnectedState){
 
+        serverx->datagram.clear();
+        serverx->datagram.append( 'A' );
+        serverx->datagram.append( 'Z' );
+        cout << serverx->datagram.data() << endl;
+        serverx->client->write(serverx->datagram);
+
+    }
 }
