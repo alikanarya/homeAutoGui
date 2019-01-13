@@ -137,8 +137,8 @@ void Server::frameMainIO(){
 }
 
 void Server::frameRemote1IO(){
-    // A 1 1 1 A 1 2 3 4 Z
-    // 0 1 2 3 4 5 6 7 8 9
+    // A 1 1 1 1 1 1 1 A 1 2 3 4 Z
+    // 0 1 2 3 4 5 6 7 8 910111213
     bool validData = !datagram.isEmpty() && datagram.size() >= dataBufferSizeMin_R1 && datagram.size() <= dataBufferSizeMax_R1;
 
     if (datagram.size() >=2 )

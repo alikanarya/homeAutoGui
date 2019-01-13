@@ -312,8 +312,8 @@ void MainWindow::displayInputs(){
 }
 
 void MainWindow::displayInputsR1(){
-    QString message = "Central Heating:" + (dInpArr_R1_bool[0] ? QString("ON") : QString("OFF")) + "  Hot Water:" + (dInpArr_R1_bool[1] ? "ON" : "OFF") + "  Flame:" + (dInpArr_R1_bool[2] ? "ON" : "OFF");
-    message += "  Boiler temperature is " + QString::number(aInpArr_R1[0]) + " C";
+    QString message = "Central Heating:" + (dInpArr_R1_bool[4] ? QString("ON") : QString("OFF")) + "  Hot Water:" + (dInpArr_R1_bool[5] ? "ON" : "OFF") + "  Flame:" + (dInpArr_R1_bool[6] ? "ON" : "OFF");
+    message += "  Boiler temperature is " + QString::number(aInpArr_R1[0]/100.0, 'f', 1) + " C";
     ui->textBrowser->append(message);
 }
 
@@ -1634,8 +1634,8 @@ void MainWindow::on_testButton_clicked(){
 
     if (clientx->clientSocket.state() == QAbstractSocket::ConnectedState){
         clientx->datagram.clear();
-        clientx->datagram.append( 'A' );
-        clientx->datagram.append( 'Z' );
+        clientx->datagram.append( ui->testEdit->text() );
+        clientx->datagram.append( '\n' );
         cout << clientx->datagram.data() << endl;
         clientx->startTransfer();
     }

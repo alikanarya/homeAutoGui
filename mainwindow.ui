@@ -2784,6 +2784,19 @@
      <string>Test</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="testEdit">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>305</y>
+      <width>191</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>{w:0;r:0;d:0;s:0;t:35}</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
