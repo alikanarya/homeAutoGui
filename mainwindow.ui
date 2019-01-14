@@ -2775,7 +2775,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>300</y>
+      <y>275</y>
       <width>111</width>
       <height>29</height>
      </rect>
@@ -2788,13 +2788,122 @@
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>305</y>
+      <y>280</y>
       <width>191</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>{w:0;r:0;d:0;s:0;t:35}</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="boilerCH">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>307</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>CH</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="boilerDHW">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>307</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>DHW</string>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="boilerFlame">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>307</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>FL</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="boilerTemp">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>320</y>
+      <width>71</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>34.5 C</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="remst1WiFi">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>320</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>WiFi Qual %---</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
   </widget>

@@ -312,9 +312,28 @@ void MainWindow::displayInputs(){
 }
 
 void MainWindow::displayInputsR1(){
+    /*
     QString message = "Central Heating:" + (dInpArr_R1_bool[4] ? QString("ON") : QString("OFF")) + "  Hot Water:" + (dInpArr_R1_bool[5] ? "ON" : "OFF") + "  Flame:" + (dInpArr_R1_bool[6] ? "ON" : "OFF");
     message += "  Boiler temperature is " + QString::number(aInpArr_R1[0]/100.0, 'f', 1) + " C";
-    ui->textBrowser->append(message);
+    */
+    if (dInpArr_R1_bool[1] || dInpArr_R1_bool[2] || dInpArr_R1_bool[3]) {
+        QString message = "OpenThermResponseStatus:" + (dInpArr_R1_bool[1] ? QString("not initialized ") : QString(" ")) + (dInpArr_R1_bool[2] ? "Invalid response " : " ") + (dInpArr_R1_bool[3] ? "Response timeout " : " ");
+        ui->textBrowser->append(message);
+    }
+
+    if (dInpArr_R1_bool[4]) ui->boilerCH->setStyleSheet("background-color: green");
+    else ui->boilerCH->setStyleSheet("background-color: red");
+
+    if (dInpArr_R1_bool[5]) ui->boilerDHW->setStyleSheet("background-color: green");
+    else ui->boilerDHW->setStyleSheet("background-color: red");
+
+    if (dInpArr_R1_bool[6]) ui->boilerFlame->setStyleSheet("background-color: green");
+    else ui->boilerFlame->setStyleSheet("background-color: red");
+
+    ui->boilerTemp->setText(QString::number(aInpArr_R1[0]/100.0,'f',1));
+
+    QString wifiqual = (aInpArr_R1[1] != 999) ? QString::number(aInpArr_R1[1]) : "---";
+    ui->remst1WiFi->setText("WiFi Qual %" + wifiqual);
 }
 
 void MainWindow::transferData(){

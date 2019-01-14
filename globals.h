@@ -36,10 +36,10 @@ extern const int dataBufferSizeMin = 13;   // dInpSize+dOutSizeUsed+aInpSizeUsed
 // remote station 1
 extern const int dInpSize_R1 = 7;
 extern const int dOutSize_R1 = 0;
-extern const int aInpSize_R1 = 1;
+extern const int aInpSize_R1 = 2; // Boiler Temp, Wifi Qual
 extern const int aOutSize_R1 = 0;
-extern const int dataBufferSizeMax_R1 = 15;     // 1{A}+dInpSize+dOutSize+aInpSize*5{A+4digit}+1{Z}
-extern const int dataBufferSizeMin_R1 = 11;      // 1{A}+dInpSize+dOutSize+aInpSize*2{A+1digit}+1{Z}
+extern const int dataBufferSizeMax_R1 = 20;     // 1{A}+dInpSize+dOutSize+aInpSize*5{A+4digit}+1{Z}
+extern const int dataBufferSizeMin_R1 = 13;     // 1{A}+dInpSize+dOutSize+aInpSize*2{A+1digit}+1{Z}
 
 char dInpArr[dInpSize+1];
 int dInpGpioMap[dInpSize] = {45, 44, 26, 47, 46, 27, 65, 61};
