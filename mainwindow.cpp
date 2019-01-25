@@ -330,7 +330,7 @@ void MainWindow::displayInputsR1(){
     if (dInpArr_R1_bool[6]) ui->boilerFlame->setStyleSheet("background-color: green");
     else ui->boilerFlame->setStyleSheet("background-color: red");
 
-    ui->boilerTemp->setText(QString::number(aInpArr_R1[0]/100.0,'f',1));
+    ui->boilerTemp->setText(QString::number(aInpArr_R1[0]/100.0,'f',1) + " / " + QString::number(aInpArr_R1[2]) + " C"); // Boiler Temp / Set Temp
 
     QString wifiqual = (aInpArr_R1[1] != 999) ? QString::number(aInpArr_R1[1]) : "---";
     ui->remst1WiFi->setText("WiFi Qual %" + wifiqual);
