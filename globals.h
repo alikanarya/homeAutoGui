@@ -38,8 +38,11 @@ extern const int dInpSize_R1 = 7;
 extern const int dOutSize_R1 = 0;
 extern const int aInpSize_R1 = 3; // Boiler Temp, Wifi Qual, Boiler Set Temp
 extern const int aOutSize_R1 = 0;
-extern const int dataBufferSizeMax_R1 = 25;     // 1{A}+dInpSize+dOutSize+aInpSize*5{A+4digit}+1{Z}
-extern const int dataBufferSizeMin_R1 = 16;     // 1{A}+dInpSize+dOutSize+aInpSize*2{A+1digit}+1{Z}
+extern const int dataBufferSizeMax_R1 = 31;     // 1{A}+Time{hhmmss)+dInpSize+dOutSize+aInpSize*5{A+4digit}+1{Z}
+extern const int dataBufferSizeMin_R1 = 22;     // 1{A}+Time{hhmmss)+dInpSize+dOutSize+aInpSize*2{A+1digit}+1{Z}
+QString rs1Hour =  "";
+QString rs1Min = "";
+QString rs1Sec = "";
 
 char dInpArr[dInpSize+1];
 int dInpGpioMap[dInpSize] = {45, 44, 26, 47, 46, 27, 65, 61};
