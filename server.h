@@ -22,8 +22,8 @@ public:
     QByteArray datagram;
 
     void init();
-    void frameMainIO();
-    void frameRemote1IO();
+    void frameMainIO(QByteArray _datagram);
+    void frameRemote1IO(QByteArray _datagram);
 
 public slots:
 
