@@ -317,7 +317,8 @@ void MainWindow::displayInputsR1(){
     message += "  Boiler temperature is " + QString::number(aInpArr_R1[0]/100.0, 'f', 1) + " C";
     */
     if (dInpArr_R1_bool[1] || dInpArr_R1_bool[2] || dInpArr_R1_bool[3]) {
-        QString message = "OpenThermResponseStatus:" + (dInpArr_R1_bool[1] ? QString("not initialized ") : QString(" ")) + (dInpArr_R1_bool[2] ? "Invalid response " : " ") + (dInpArr_R1_bool[3] ? "Response timeout " : " ");
+        QString message = rs1Hour + ":" + rs1Min + ":" + rs1Sec + " ";
+        message += "OpenThermResponseStatus:" + (dInpArr_R1_bool[1] ? QString("not initialized ") : QString(" ")) + (dInpArr_R1_bool[2] ? "Invalid response " : " ") + (dInpArr_R1_bool[3] ? "Response timeout " : " ");
         ui->textBrowser->append(message);
     }
 
