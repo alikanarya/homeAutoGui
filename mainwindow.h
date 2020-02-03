@@ -125,6 +125,8 @@ private slots:
     void _debug();
 
     void on_testButton_clicked();
+    void on_ngMeterButton_clicked();
+    void updateNgConsumptionValue(float val);
 
 signals:
 

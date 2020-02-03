@@ -42,6 +42,7 @@ public:
     void getTemperature();
     void getAvgTemperature();
     void analyzeZones();
+    void ngConsumption();
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
@@ -83,6 +84,7 @@ public:
     bool cmdAvgTempData = false;
     bool cmdAnalyzeZones = false;
     bool cmdSingleZone = false;
+    bool cmdNgConsumption = false;
 
     struct summaryTable {
         QString date;
@@ -141,6 +143,7 @@ public:
     QString tempDate="", tempTime="";
 
     QList<tempData> tempList;
+    QList<tempData> ngMeterList;
 
 public slots:
 
@@ -166,6 +169,7 @@ signals:
     void tempOutAvgDone();
     void analyzeZonesDone();
     void singleZoneDone();
+    void ngConsumptionDone(float);
 };
 
 #endif // DBTHREAD_H

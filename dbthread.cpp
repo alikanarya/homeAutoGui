@@ -65,6 +65,11 @@ void dbThread::run(){
         cmdSingleZone = false;
     }
 
+    if (cmdNgConsumption) {
+        ngConsumption();
+        cmdNgConsumption = false;
+    }
+
     verbose = false;
 }
 
@@ -869,4 +874,116 @@ void dbThread::analyzeZones(){
     }
 
     emit analyzeZonesDone();
+}
+
+void dbThread::ngConsumption()
+{
+    QDateTime refDT;
+    refDT.setDate( QDate::fromString(endDate, "dd/MM/yy") );
+    refDT.setTime( QTime::fromString("23:59:59") );
+    QDateTime end_DT;
+    end_DT.setDate( QDate::fromString(endDate, "dd/MM/yy") );
+    end_DT.setTime( QTime::fromString(endTime, "hh:mm:ss") );
+
+    if ( end_DT.secsTo(refDT) == 0 ) {
+        end_DT = end_DT.addDays(1);
+        end_DT.setTime( QTime::fromString("00:00:05") );
+    }
+    QString _endDate = end_DT.toString("dd/MM/yy");
+    QString _endTime = end_DT.toString("hh:mm:ss");
+    qDebug() << _endDate << " " << _endTime;
+
+
+    QString qryStr = "";
+    if (_endDate == beginDate)
+        qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) AND"
+                                                 "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg("gas_reading").arg(_endDate).arg(beginDate).arg(_endTime).arg(beginTime);
+    else
+        qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') < STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(date, '%d/%m/%y') > STR_TO_DATE('%3', '%d/%m/%y')) OR"
+                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) OR"
+                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg("gas_reading").arg(_endDate).arg(beginDate).arg(_endTime).arg(beginTime);
+
+    qDebug() << qryStr.toUtf8().constData() << endl;
+
+    if (db.open()) {
+
+        qry.prepare( qryStr );
+
+        if( !qry.exec() )
+            qDebug() << qry.lastError();
+        else {
+
+            QSqlRecord record;
+            record = qry.record();
+            float consumption = 0;
+
+            if ( qry.size() > 0 ) {
+
+                int colNum = record.count();
+
+                QString temp = "";
+                int count = 0;
+                float val = 0;
+
+                qry.first();
+                ngMeterList.clear();
+                //QTime last, first;
+                qint64 diff = 0;
+                //last = QTime::fromString(endTime, "hh:mm:ss");
+
+                QDateTime endDT;
+                endDT.setDate( QDate::fromString(_endDate, "dd/MM/yy") );
+                endDT.setTime( QTime::fromString(_endTime, "hh:mm:ss") );
+
+                QDateTime beginDT;
+
+                //int timeDifference = beginDT.secsTo(endDT);
+
+                do {
+
+                    count++;
+
+                    val = qry.value(3).toFloat();
+
+                    beginDT.setDate( QDate::fromString(qry.value(1).toString(), "dd/MM/yy") );
+                    beginDT.setTime( QTime::fromString(qry.value(2).toString(), "hh:mm:ss") );
+
+                    //first = QTime::fromString(qry.value(2).toString(), "hh:mm:ss");
+                    diff = beginDT.secsTo(endDT);
+
+                    tempData x;
+                    x.value = val;
+                    x.timeDiff = diff;
+
+                    ngMeterList.append(x);
+
+                    if (verbose){
+                        temp = "";
+                        for( int c=0; c<colNum; c++ )
+                            temp += qry.value(c).toString() + " ";
+                        temp += QString::number(diff);
+                        qDebug() << temp ;
+                    }
+
+                } while( qry.next() && qry.value(3).toString() != "-99");
+                consumption = ngMeterList.last().value - ngMeterList.first().value;
+
+                /*if (count!=0) {
+                    tempAvg /= count;
+                    summaryData.tempAvg = QString::number(tempAvg,'f',1).toFloat();
+                    summaryData.tempMin = QString::number(tempMin,'f',1).toFloat();
+                    summaryData.tempMax = QString::number(tempMax,'f',1).toFloat();
+                    qDebug() << "min: " << summaryData.tempMin << " avg: " << summaryData.tempAvg << " max: " << summaryData.tempMax;
+                }*/
+
+                /*if (verbose) {
+                    qDebug() << "min: " << tempMin << " avg: " << tempAvg << " max: " << tempMax;
+                }*/
+            } else {
+                qDebug() << "no record returned";
+            }
+
+            emit ngConsumptionDone(consumption);
+        }
+    }
 }

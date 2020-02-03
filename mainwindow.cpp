@@ -108,6 +108,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(tempOutAvgDone()), this, SLOT(avgTempGUI()));
     connect(dbThreadX, SIGNAL(analyzeZonesDone()), this, SLOT(drawGraphZones()));
     connect(dbThreadX, SIGNAL(singleZoneDone()), this, SLOT(drawSingleZone()));
+    connect(dbThreadX, SIGNAL(ngConsumptionDone(float)), this, SLOT(updateNgConsumptionValue(float)));
 
     QTimer *timerTemp = new QTimer();
     QObject::connect(timerTemp, SIGNAL(timeout()), this, SLOT(updateTemp()));
@@ -1659,4 +1660,23 @@ void MainWindow::on_testButton_clicked(){
         cout << clientx->datagram.data() << endl;
         clientx->startTransfer();
     }
+}
+
+void MainWindow::on_ngMeterButton_clicked()
+{
+    dbThreadX->endDate = ui->dateEdit_END->date().toString("dd/MM/yy");
+    dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
+    dbThreadX->endTime = ui->timeEdit_END->time().toString();
+    dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
+    dbThreadX->verbose = true;
+    dbThreadX->cmdNgConsumption = true;
+
+    progress->setWindowTitle("Sorgu Sonucu Bekleniyor");
+    dbThreadX->start();
+
+}
+
+void MainWindow::updateNgConsumptionValue(float val)
+{
+    ui->ngMeterButton->setText(QString::number(val,'f',1)+" m3");
 }
