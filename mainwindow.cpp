@@ -781,6 +781,7 @@ void MainWindow::summaryResult(){
 
     clearGraphZones();
     calcAvgTemp();
+    on_ngMeterButton_clicked();
 }
 
 void MainWindow::addAxis(){
@@ -1668,7 +1669,7 @@ void MainWindow::on_ngMeterButton_clicked()
     dbThreadX->beginDate = ui->dateEdit_BEGIN->date().toString("dd/MM/yy");
     dbThreadX->endTime = ui->timeEdit_END->time().toString();
     dbThreadX->beginTime = ui->timeEdit_BEGIN->time().toString();
-    dbThreadX->verbose = true;
+    dbThreadX->verbose = false;
     dbThreadX->cmdNgConsumption = true;
 
     progress->setWindowTitle("Sorgu Sonucu Bekleniyor");

@@ -122,6 +122,7 @@ public:
         float tempAvg;
         float tempMin;
         float tempMax;
+        float ngMeter;
     } summaryData;
 
     struct graphData {

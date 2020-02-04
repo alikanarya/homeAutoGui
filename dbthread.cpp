@@ -215,14 +215,14 @@ void dbThread::analyzeAllZones(){
                 }
 
                 summaryData.date = endDate;
-                summaryData.zone0_rate = statTotalActiveZonesPercent[0];
-                summaryData.zone1_rate = statTotalActiveZonesPercent[1];
-                summaryData.zone2_rate = statTotalActiveZonesPercent[2];
-                summaryData.zone3_rate = statTotalActiveZonesPercent[3];
-                summaryData.zone4_rate = statTotalActiveZonesPercent[4];
-                summaryData.zone5_rate = statTotalActiveZonesPercent[5];
-                summaryData.zone6_rate = statTotalActiveZonesPercent[6];
-                summaryData.zone7_rate = statTotalActiveZonesPercent[7];
+                summaryData.zone0_rate = QString::number(statTotalActiveZonesPercent[0],'f',1).toFloat();
+                summaryData.zone1_rate = QString::number(statTotalActiveZonesPercent[1],'f',1).toFloat();
+                summaryData.zone2_rate = QString::number(statTotalActiveZonesPercent[2],'f',1).toFloat();
+                summaryData.zone3_rate = QString::number(statTotalActiveZonesPercent[3],'f',1).toFloat();
+                summaryData.zone4_rate = QString::number(statTotalActiveZonesPercent[4],'f',1).toFloat();
+                summaryData.zone5_rate = QString::number(statTotalActiveZonesPercent[5],'f',1).toFloat();
+                summaryData.zone6_rate = QString::number(statTotalActiveZonesPercent[6],'f',1).toFloat();
+                summaryData.zone7_rate = QString::number(statTotalActiveZonesPercent[7],'f',1).toFloat();
                 summaryData.zone0_thr_count = zeroStateHighCount;
                 summaryData.zone0_thr_time = QDateTime::fromTime_t( zeroStateHighTime ).toUTC().toString("hh:mm:ss");
 
@@ -470,13 +470,13 @@ void dbThread::analyzeZone(){
                     rate = 100.0 * ONtime / total;
 
                 switch (currentZone) {
-                    case 1: summaryData.on_rate_oto = rate; break;
-                    case 2: summaryData.on_rate_sln = rate; break;
-                    case 3: summaryData.on_rate_blk = rate; break;
-                    case 4: summaryData.on_rate_mut = rate; break;
-                    case 5: summaryData.on_rate_eyo = rate; break;
-                    case 6: summaryData.on_rate_cyo = rate; break;
-                    case 7: summaryData.on_rate_yod = rate; break;
+                    case 1: summaryData.on_rate_oto = QString::number(rate,'f',1).toFloat(); break;
+                    case 2: summaryData.on_rate_sln = QString::number(rate,'f',1).toFloat(); break;
+                    case 3: summaryData.on_rate_blk = QString::number(rate,'f',1).toFloat(); break;
+                    case 4: summaryData.on_rate_mut = QString::number(rate,'f',1).toFloat(); break;
+                    case 5: summaryData.on_rate_eyo = QString::number(rate,'f',1).toFloat(); break;
+                    case 6: summaryData.on_rate_cyo = QString::number(rate,'f',1).toFloat(); break;
+                    case 7: summaryData.on_rate_yod = QString::number(rate,'f',1).toFloat(); break;
                     default:break;
                 }
 
@@ -569,12 +569,12 @@ void dbThread::insertToSummaryTable(){
                               "0_zone_rate, 1_zone_rate, 2_zone_rate, 3_zone_rate, 4_zone_rate, 5_zone_rate, 6_zone_rate, 7_zone_rate, "
                               "0_zone_thr_count, 0_zone_thr_time, "
                               "on_rate_oto, on_rate_sln, on_rate_blk, on_rate_mut, on_rate_eyo, on_rate_cyo, on_rate_yod, "
-                              "tempAvg, tempMin, tempMax) VALUES ('%1', %2, %3, %4, %5, %6, %7, %8, %9, %10, '%11', %12, %13, %14, %15, %16, %17, %18, %19, %20, %21)"
+                              "tempAvg, tempMin, tempMax, ngMeter) VALUES ('%1', %2, %3, %4, %5, %6, %7, %8, %9, %10, '%11', %12, %13, %14, %15, %16, %17, %18, %19, %20, %21, %22)"
                               ).arg(summaryData.date)
             .arg(summaryData.zone0_rate).arg(summaryData.zone1_rate).arg(summaryData.zone2_rate).arg(summaryData.zone3_rate).arg(summaryData.zone4_rate).arg(summaryData.zone5_rate).arg(summaryData.zone6_rate).arg(summaryData.zone7_rate)
             .arg(summaryData.zone0_thr_count).arg(summaryData.zone0_thr_time)
             .arg(summaryData.on_rate_oto).arg(summaryData.on_rate_sln).arg(summaryData.on_rate_blk).arg(summaryData.on_rate_mut).arg(summaryData.on_rate_eyo).arg(summaryData.on_rate_cyo).arg(summaryData.on_rate_yod)
-            .arg(summaryData.tempAvg).arg(summaryData.tempMin).arg(summaryData.tempMax);
+            .arg(summaryData.tempAvg).arg(summaryData.tempMin).arg(summaryData.tempMax).arg(summaryData.ngMeter);
 
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
@@ -848,7 +848,9 @@ void dbThread::getAvgTemperature(){
                     summaryData.tempAvg = QString::number(tempAvg,'f',1).toFloat();
                     summaryData.tempMin = QString::number(tempMin,'f',1).toFloat();
                     summaryData.tempMax = QString::number(tempMax,'f',1).toFloat();
-                    qDebug() << "min: " << summaryData.tempMin << " avg: " << summaryData.tempAvg << " max: " << summaryData.tempMax;
+                    //qDebug() << "min: " << summaryData.tempMin << " avg: " << summaryData.tempAvg << " max: " << summaryData.tempMax;
+                } else {
+                    summaryData.tempAvg = summaryData.tempMin = summaryData.tempMax = 0;
                 }
 
                 if (verbose) {
@@ -887,11 +889,11 @@ void dbThread::ngConsumption()
 
     if ( end_DT.secsTo(refDT) == 0 ) {
         end_DT = end_DT.addDays(1);
-        end_DT.setTime( QTime::fromString("00:00:05") );
+        end_DT.setTime( QTime::fromString("00:00:02") );
     }
     QString _endDate = end_DT.toString("dd/MM/yy");
     QString _endTime = end_DT.toString("hh:mm:ss");
-    qDebug() << _endDate << " " << _endTime;
+    //qDebug() << _endDate << " " << _endTime;
 
 
     QString qryStr = "";
@@ -903,7 +905,7 @@ void dbThread::ngConsumption()
                                                      "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) OR"
                                                      "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg("gas_reading").arg(_endDate).arg(beginDate).arg(_endTime).arg(beginTime);
 
-    qDebug() << qryStr.toUtf8().constData() << endl;
+    //qDebug() << qryStr.toUtf8().constData() << endl;
 
     if (db.open()) {
 
@@ -968,13 +970,7 @@ void dbThread::ngConsumption()
                 } while( qry.next() && qry.value(3).toString() != "-99");
                 consumption = ngMeterList.last().value - ngMeterList.first().value;
 
-                /*if (count!=0) {
-                    tempAvg /= count;
-                    summaryData.tempAvg = QString::number(tempAvg,'f',1).toFloat();
-                    summaryData.tempMin = QString::number(tempMin,'f',1).toFloat();
-                    summaryData.tempMax = QString::number(tempMax,'f',1).toFloat();
-                    qDebug() << "min: " << summaryData.tempMin << " avg: " << summaryData.tempAvg << " max: " << summaryData.tempMax;
-                }*/
+                summaryData.ngMeter = QString::number(consumption,'f',1).toFloat();
 
                 /*if (verbose) {
                     qDebug() << "min: " << tempMin << " avg: " << tempAvg << " max: " << tempMax;
