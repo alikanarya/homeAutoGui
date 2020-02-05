@@ -109,6 +109,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(dbThreadX, SIGNAL(analyzeZonesDone()), this, SLOT(drawGraphZones()));
     connect(dbThreadX, SIGNAL(singleZoneDone()), this, SLOT(drawSingleZone()));
     connect(dbThreadX, SIGNAL(ngConsumptionDone(float)), this, SLOT(updateNgConsumptionValue(float)));
+    connect(dbThreadX, SIGNAL(ngConsumptionGraph()), this, SLOT(ngMeterGraph()));
 
     QTimer *timerTemp = new QTimer();
     QObject::connect(timerTemp, SIGNAL(timeout()), this, SLOT(updateTemp()));
@@ -1065,8 +1066,77 @@ void MainWindow::avgTempGUI(){
         temp += " ," + QString::number(dbThreadX->tempList[0].value, 'f', 1);
         ui->textBrowser->append(temp);
 
-        drawGraphZonesFlag = false;
+        //drawGraphZonesFlag = false;   //**********
     }
+}
+
+void MainWindow::ngMeterGraph()
+{
+    if ( dbThreadX->qry.size() > 0 ) {
+
+        if (!drawGraphZonesFlag) {
+            QTime last, first;
+            last = QTime::fromString(dbThreadX->endTime, "hh:mm:ss");
+
+            timeLabels[0]->setText(ui->timeEdit_END->time().toString("hh:mm"));
+
+            for (int i=1; i<13; i++){
+                first = last.addSecs(-7200*i);
+                timeLabels[i]->setText(first.toString("hh:mm"));
+            }
+
+            ui->labelBeginDate->setText( ui->dateEdit_END->date().addDays(-1).toString("dd.MM.yyyy"));
+            ui->labelEndDate->setText( ui->dateEdit_END->text());
+            graphScale = 72;
+        }
+
+        int x1, x2, y1, y2;
+
+        float minValue = dbThreadX->ngMeterList.first().value;
+        float range = (dbThreadX->ngMeterList.last().value - minValue);
+        float ySpan = range * 1.1;
+        float yScale = scene->height() / ySpan;
+        int min = yScale * range * 0.05;
+
+        float y = 0;
+        for (int i=0; i<7; i++){
+            y = (i+1)*ySpan/7 + minValue - range*0.05;
+            yLabels[i]->setText(QString::number(y, 'f', 1));
+        }
+
+        QString temp = fontAttrRed + "NG"+ fontAttrEnd + ".....";
+
+        int timeStep = 7200*graphScale/72;
+        //qDebug() << "timestep: " << timeStep << " count: " << count << " diff: " << dbThreadX->tempList[ 0 ].timeDiff;
+
+        int count = 1;
+
+        for (int i=dbThreadX->ngMeterList.size()-1; i>0; i--){
+
+            x1= dbThreadX->ngMeterList[i].timeDiff / graphScale;
+            x2= dbThreadX->ngMeterList[i-1].timeDiff / graphScale;
+
+            y1 = sceneHeight - (dbThreadX->ngMeterList[i].value - minValue) * yScale - min;
+            y2 = sceneHeight - (dbThreadX->ngMeterList[i-1].value - minValue) * yScale - min;
+
+            scene->addLine(x1, y1, x2, y2, penZoneGreen);
+            scene->addEllipse(x1-2, y1-2, 4, 4, penZoneGreen);
+            scene->addEllipse(x2-2, y2-2, 4, 4, penZoneGreen);
+
+            if (dbThreadX->ngMeterList[i].timeDiff >= count*timeStep){
+                count++;
+                temp += " ," + fontAttrRed + QTime::fromString(dbThreadX->endTime, "hh:mm:ss").addSecs(-1*dbThreadX->ngMeterList[i].timeDiff).toString("hh:mm") + fontAttrEnd + " " + QString::number(dbThreadX->ngMeterList[i].value, 'f', 1);
+            } else {
+                temp += " ," + QString::number(dbThreadX->ngMeterList[i].value, 'f', 1);
+            }
+        }
+
+        temp += " ," + QString::number(dbThreadX->ngMeterList[0].value, 'f', 1);
+        ui->textBrowser->append(temp);
+
+        drawGraphZonesFlag = true;
+    }
+
 }
 
 void MainWindow::on_saveTempData_clicked(){

@@ -171,6 +171,7 @@ signals:
     void analyzeZonesDone();
     void singleZoneDone();
     void ngConsumptionDone(float);
+    void ngConsumptionGraph();
 };
 
 #endif // DBTHREAD_H

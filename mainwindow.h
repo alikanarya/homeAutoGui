@@ -99,6 +99,7 @@ private slots:
     void updateTempGUI();
     void calcAvgTemp();
     void avgTempGUI();
+    void ngMeterGraph();
 
     void on_pushButton_clicked();
     void on_saveAllZonesButton_clicked();

@@ -980,6 +980,7 @@ void dbThread::ngConsumption()
             }
 
             emit ngConsumptionDone(consumption);
+            emit ngConsumptionGraph();
         }
     }
 }
