@@ -1100,7 +1100,7 @@ void MainWindow::ngMeterGraph()
 
         float y = 0;
         for (int i=0; i<7; i++){
-            y = (i+1)*ySpan/7 + minValue - range*0.05;
+            y = (i+1)*ySpan/7 + 0 - range*0.05;
             yLabels[i]->setText(QString::number(y, 'f', 1));
         }
 
@@ -1120,8 +1120,8 @@ void MainWindow::ngMeterGraph()
             y2 = sceneHeight - (dbThreadX->ngMeterList[i-1].value - minValue) * yScale - min;
 
             scene->addLine(x1, y1, x2, y2, penZoneGreen);
-            scene->addEllipse(x1-2, y1-2, 4, 4, penZoneGreen);
-            scene->addEllipse(x2-2, y2-2, 4, 4, penZoneGreen);
+            scene->addEllipse(x1-2, y1-2, 4, 4, penZoneEst);
+            scene->addEllipse(x2-2, y2-2, 4, 4, penZoneEst);
 
             if (dbThreadX->ngMeterList[i].timeDiff >= count*timeStep){
                 count++;
