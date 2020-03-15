@@ -66,6 +66,7 @@ public:
 
     int estimatedZone = 0;
     QTableWidget *prmTables[7];
+    QTableWidget *meterTable;
 
     struct graphData {
         int timeDiff;

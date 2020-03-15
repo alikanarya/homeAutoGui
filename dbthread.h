@@ -146,6 +146,16 @@ public:
     QList<tempData> tempList;
     QList<tempData> ngMeterList;
 
+    int meterDataSize = 4;
+    struct meterData {
+        QString date;
+        QString time;
+        float value;
+        QString note;
+    };
+
+    QList<meterData> ngMeterTableList;
+
 public slots:
 
 

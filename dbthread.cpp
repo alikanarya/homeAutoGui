@@ -929,6 +929,8 @@ void dbThread::ngConsumption()
 
                 qry.first();
                 ngMeterList.clear();
+                ngMeterTableList.clear();
+
                 //QTime last, first;
                 qint64 diff = 0;
                 //last = QTime::fromString(endTime, "hh:mm:ss");
@@ -956,8 +958,14 @@ void dbThread::ngConsumption()
                     tempData x;
                     x.value = val;
                     x.timeDiff = diff;
-
                     ngMeterList.append(x);
+
+                    meterData d;
+                    d.date = qry.value(1).toString();
+                    d.time = qry.value(2).toString();
+                    d.value = val;
+                    d.note = qry.value(4).toString();
+                    ngMeterTableList.append(d);
 
                     if (verbose){
                         temp = "";

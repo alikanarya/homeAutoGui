@@ -181,7 +181,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     prmTables[5] = ui->tab6Table;
     prmTables[6] = ui->tab7Table;
 
-
     for (int i=0; i<7; i++){
         prmTables[i]->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
@@ -203,6 +202,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         prmTables[i]->item(10, 0)->setText( bd->prmArray[i].P3ReducedModeTime );
     }
     ui->paramTabs->setCurrentIndex(0);
+
+    meterTable = ui->tab8Table;
 
 }
 
@@ -1135,6 +1136,28 @@ void MainWindow::ngMeterGraph()
         ui->textBrowser->append(temp);
 
         drawGraphZonesFlag = true;
+        //-------------------------------------------------------------------------------
+        meterTable->setRowCount(dbThreadX->ngMeterTableList.size());
+        meterTable->setColumnCount(5);
+        meterTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+        for (int y=0; y<dbThreadX->ngMeterTableList.size(); y++){
+            for (int x=0; x<dbThreadX->meterDataSize; x++){
+                meterTable->setItem(y, x, new QTableWidgetItem( " " ) );
+                meterTable->item(y, x)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            }
+            QTableWidgetItem *item = new QTableWidgetItem(" ");
+            item->setCheckState(Qt::Unchecked);
+            meterTable->setItem(y, dbThreadX->meterDataSize, item );
+
+            meterTable->item(y, 0)->setText( dbThreadX->ngMeterTableList[y].date );
+            meterTable->item(y, 1)->setText( dbThreadX->ngMeterTableList[y].time );
+            meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].value, 'f', 1) );
+            meterTable->item(y, 3)->setText( dbThreadX->ngMeterTableList[y].note );
+
+        }
+
+        ui->paramTabs->setCurrentIndex(7);
     }
 
 }
