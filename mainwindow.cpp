@@ -205,6 +205,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     meterTable = ui->tab8Table;
 
+    pic = new QLabel(this);
+
 }
 
 MainWindow::~MainWindow(){
@@ -1158,6 +1160,20 @@ void MainWindow::ngMeterGraph()
         }
 
         ui->paramTabs->setCurrentIndex(7);
+
+        imageFile.load("D:/Engineering/Repository Data/meter/ngmeter-data/2020-03/15/20200315_000002.jpeg");
+        //ui->gridLayout->addWidget(pic);
+        pic->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+        //pic->setText("first line\nsecond line");
+        //pic->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+        pic->setGeometry(560,60,400,300);
+        pic->setScaledContents(true);
+
+        layout = new QVBoxLayout();
+        pic->setPixmap( QPixmap::fromImage( imageFile ).scaled( imageFile.width(), imageFile.height(), Qt::KeepAspectRatio));
+        layout->addWidget(pic);
+        //setLayout(layout);
+
     }
 
 }

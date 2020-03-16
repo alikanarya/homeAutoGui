@@ -9,6 +9,7 @@
 //#include <QPixmap>
 #include <QGraphicsScene>
 #include <QTableWidget>
+#include <QVBoxLayout>
 
 namespace Ui {
 class MainWindow;
@@ -73,6 +74,9 @@ public:
         int state;
     };
 
+    QLabel *pic;
+QVBoxLayout *layout;
+QImage imageFile;
 private:
 
     Ui::MainWindow *ui;
