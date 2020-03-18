@@ -1161,7 +1161,16 @@ void MainWindow::ngMeterGraph()
 
         ui->paramTabs->setCurrentIndex(7);
 
-        imageFile.load("D:/Engineering/Repository Data/meter/ngmeter-data/2020-03/15/20200315_000002.jpeg");
+        fileOpenDir = "//"+clientAddress+"/ngmeter-data/";
+        qDebug() << fileOpenDir;
+
+        //filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
+
+        //imageFile.load("D:/Engineering/Repository Data/meter/ngmeter-data/2020-03/15/20200315_000002.jpeg");
+        //imageFile.load("//"+clientAddress+"/ngmeter-data/"+"2020-03/18/20200318_211636.jpeg");
+        imageFile.load(fileOpenDir+"2020-03/18/20200318_211636.jpeg");
+
+
         //ui->gridLayout->addWidget(pic);
         pic->setFrameStyle(QFrame::Panel | QFrame::Sunken);
         //pic->setText("first line\nsecond line");

@@ -74,6 +74,13 @@ public:
         int state;
     };
 
+    QString loadedFileName = "";
+    QString loadedFileNamewPath = "";
+    QString fileOpenDir;
+    QStringList filesInDirList;
+    QStringList fileFilters  = (QStringList() << "*.jpeg" << "*.jpg" << "*.png");
+    int filesInDirListIndex = 0;
+
     QLabel *pic;
 QVBoxLayout *layout;
 QImage imageFile;
