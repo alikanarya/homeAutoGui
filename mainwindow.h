@@ -75,8 +75,7 @@ public:
     };
 
     QString loadedFileName = "";
-    QString loadedFileNamewPath = "";
-    QString fileOpenDir;
+    QDir fileOpenDir;
     QStringList filesInDirList;
     QStringList fileFilters  = (QStringList() << "*.jpeg" << "*.jpg" << "*.png");
     int filesInDirListIndex = 0;
@@ -140,6 +139,10 @@ private slots:
     void on_testButton_clicked();
     void on_ngMeterButton_clicked();
     void updateNgConsumptionValue(float val);
+
+    void on_tab8Table_itemSelectionChanged();
+
+    void on_updateNgMeterData_clicked();
 
 signals:
 

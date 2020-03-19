@@ -206,7 +206,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     meterTable = ui->tab8Table;
 
     pic = new QLabel(this);
+    pic->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    //pic->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    pic->setGeometry(560,60,400,300);
+    pic->setScaledContents(true);
 
+    layout = new QVBoxLayout();
+    layout->addWidget(pic);
+    //setLayout(layout);
 }
 
 MainWindow::~MainWindow(){
@@ -1161,27 +1168,12 @@ void MainWindow::ngMeterGraph()
 
         ui->paramTabs->setCurrentIndex(7);
 
-        fileOpenDir = "//"+clientAddress+"/ngmeter-data/";
-        qDebug() << fileOpenDir;
+        fileOpenDir.setPath("//"+clientAddress+"/ngmeter-data/"+ui->dateEdit_BEGIN->date().toString("yyyy-MM/dd/"));
+        //qDebug() << fileOpenDir;
 
-        //filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
-
-        //imageFile.load("D:/Engineering/Repository Data/meter/ngmeter-data/2020-03/15/20200315_000002.jpeg");
-        //imageFile.load("//"+clientAddress+"/ngmeter-data/"+"2020-03/18/20200318_211636.jpeg");
-        imageFile.load(fileOpenDir+"2020-03/18/20200318_211636.jpeg");
-
-
-        //ui->gridLayout->addWidget(pic);
-        pic->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-        //pic->setText("first line\nsecond line");
-        //pic->setAlignment(Qt::AlignBottom | Qt::AlignRight);
-        pic->setGeometry(560,60,400,300);
-        pic->setScaledContents(true);
-
-        layout = new QVBoxLayout();
+        filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
+        imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(0));
         pic->setPixmap( QPixmap::fromImage( imageFile ).scaled( imageFile.width(), imageFile.height(), Qt::KeepAspectRatio));
-        layout->addWidget(pic);
-        //setLayout(layout);
 
     }
 
@@ -1798,4 +1790,23 @@ void MainWindow::on_ngMeterButton_clicked()
 void MainWindow::updateNgConsumptionValue(float val)
 {
     ui->ngMeterButton->setText(QString::number(val,'f',1)+" m3");
+}
+
+void MainWindow::on_tab8Table_itemSelectionChanged()
+{
+    qDebug() << meterTable->currentRow();
+    imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(meterTable->currentRow()));
+    pic->setPixmap( QPixmap::fromImage( imageFile ).scaled( imageFile.width(), imageFile.height(), Qt::KeepAspectRatio));
+
+}
+
+void MainWindow::on_updateNgMeterData_clicked()
+{
+    if (filesInDirList.size() > 0) {
+        for (int i=0; i<filesInDirList.size(); i++) {
+            if (meterTable->item(i, 4)->checkState() == Qt::Checked) {
+                qDebug() << meterTable->item(i, 2)->text();
+            }
+        }
+    }
 }
