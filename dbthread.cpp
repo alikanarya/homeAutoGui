@@ -70,6 +70,11 @@ void dbThread::run(){
         cmdNgConsumption = false;
     }
 
+    if (cmdUpdateMeterValue) {
+        updateMeterValue();
+        cmdUpdateMeterValue = false;
+    }
+
     verbose = false;
 }
 
@@ -961,6 +966,7 @@ void dbThread::ngConsumption()
                     ngMeterList.append(x);
 
                     meterData d;
+                    d.index = qry.value(0).toInt();
                     d.date = qry.value(1).toString();
                     d.time = qry.value(2).toString();
                     d.value = val;
@@ -991,4 +997,36 @@ void dbThread::ngConsumption()
             emit ngConsumptionGraph();
         }
     }
+}
+
+void dbThread::updateMeterValue()
+{
+    QString qryStr = "";
+
+    for (int i=0; i<ngMeterUpdateList.size(); i++) {
+        qryStr = QString( "UPDATE `%1` SET `value` = %2, `note` = 'fixed'  WHERE `index` = %3" ).arg("gas_reading").arg(ngMeterUpdateList.at(i).value).arg(ngMeterUpdateList.at(i).index);
+
+        //qDebug() << qryStr.toUtf8().constData() << endl;
+
+        if (db.open()) {
+
+            qry.prepare( qryStr );
+
+            if( !qry.exec() ){
+                qDebug() << qry.lastError().type();
+                qDebug() << qry.lastError().databaseText();
+            }
+            else {
+                //qDebug( "Updated!" );
+            }
+        }
+    }
+}
+
+void dbThread::appendMeterUpdateList(int index, float value)
+{
+    meterData x;
+    x.index = index;
+    x.value = value;
+    ngMeterUpdateList.append(x);
 }

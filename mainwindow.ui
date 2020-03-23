@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1800</width>
+    <width>1811</width>
     <height>967</height>
    </rect>
   </property>
@@ -972,9 +972,9 @@
    <widget class="QLabel" name="labelY6">
     <property name="geometry">
      <rect>
-      <x>1766</x>
+      <x>1765</x>
       <y>400</y>
-      <width>30</width>
+      <width>42</width>
       <height>17</height>
      </rect>
     </property>
@@ -998,9 +998,9 @@
    <widget class="QLabel" name="labelY5">
     <property name="geometry">
      <rect>
-      <x>1766</x>
+      <x>1765</x>
       <y>430</y>
-      <width>30</width>
+      <width>42</width>
       <height>17</height>
      </rect>
     </property>
@@ -1024,9 +1024,9 @@
    <widget class="QLabel" name="labelY4">
     <property name="geometry">
      <rect>
-      <x>1766</x>
+      <x>1765</x>
       <y>460</y>
-      <width>30</width>
+      <width>42</width>
       <height>17</height>
      </rect>
     </property>
@@ -1050,9 +1050,9 @@
    <widget class="QLabel" name="labelY3">
     <property name="geometry">
      <rect>
-      <x>1766</x>
+      <x>1765</x>
       <y>490</y>
-      <width>30</width>
+      <width>42</width>
       <height>17</height>
      </rect>
     </property>
@@ -1076,9 +1076,9 @@
    <widget class="QLabel" name="labelY2">
     <property name="geometry">
      <rect>
-      <x>1766</x>
+      <x>1765</x>
       <y>520</y>
-      <width>30</width>
+      <width>42</width>
       <height>17</height>
      </rect>
     </property>
@@ -1102,9 +1102,9 @@
    <widget class="QLabel" name="labelY1">
     <property name="geometry">
      <rect>
-      <x>1766</x>
+      <x>1765</x>
       <y>550</y>
-      <width>30</width>
+      <width>42</width>
       <height>17</height>
      </rect>
     </property>
@@ -1128,9 +1128,9 @@
    <widget class="QLabel" name="labelY0">
     <property name="geometry">
      <rect>
-      <x>1766</x>
+      <x>1765</x>
       <y>580</y>
-      <width>30</width>
+      <width>42</width>
       <height>17</height>
      </rect>
     </property>
@@ -3035,13 +3035,58 @@
      <string>NG METER</string>
     </property>
    </widget>
+   <widget class="QLabel" name="meterValue">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>220</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 255);</string>
+    </property>
+    <property name="text">
+     <string>12345.67</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="clearScene">
+    <property name="geometry">
+     <rect>
+      <x>1510</x>
+      <y>380</y>
+      <width>60</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Temizle</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1800</width>
+     <width>1811</width>
      <height>26</height>
     </rect>
    </property>

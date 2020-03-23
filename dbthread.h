@@ -43,6 +43,8 @@ public:
     void getAvgTemperature();
     void analyzeZones();
     void ngConsumption();
+    void updateMeterValue();
+    void appendMeterUpdateList(int index, float value);
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     QSqlQuery qry;
@@ -85,6 +87,7 @@ public:
     bool cmdAnalyzeZones = false;
     bool cmdSingleZone = false;
     bool cmdNgConsumption = false;
+    bool cmdUpdateMeterValue = false;
 
     struct summaryTable {
         QString date;
@@ -146,8 +149,9 @@ public:
     QList<tempData> tempList;
     QList<tempData> ngMeterList;
 
-    int meterDataSize = 4;
+    int meterDataSize = 5;
     struct meterData {
+        int index;
         QString date;
         QString time;
         float value;
@@ -155,6 +159,7 @@ public:
     };
 
     QList<meterData> ngMeterTableList;
+    QList<meterData> ngMeterUpdateList;
 
 public slots:
 

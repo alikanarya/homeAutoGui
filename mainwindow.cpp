@@ -1097,16 +1097,17 @@ void MainWindow::ngMeterGraph()
 
             ui->labelBeginDate->setText( ui->dateEdit_END->date().addDays(-1).toString("dd.MM.yyyy"));
             ui->labelEndDate->setText( ui->dateEdit_END->text());
-            graphScale = 72;
         }
 
+        graphScale = 72;
         int x1, x2, y1, y2;
 
         float minValue = dbThreadX->ngMeterList.first().value;
         float range = (dbThreadX->ngMeterList.last().value - minValue);
         float ySpan = range * 1.1;
-        float yScale = scene->height() / ySpan;
+        float yScale = sceneHeight / ySpan; //scene->height()
         int min = yScale * range * 0.05;
+        qDebug() << "minValue: " << minValue << " range: " << range << " ySpan: " << ySpan << " yScale: " << yScale;
 
         float y = 0;
         for (int i=0; i<7; i++){
@@ -1157,7 +1158,7 @@ void MainWindow::ngMeterGraph()
             }
             QTableWidgetItem *item = new QTableWidgetItem(" ");
             item->setCheckState(Qt::Unchecked);
-            meterTable->setItem(y, dbThreadX->meterDataSize, item );
+            meterTable->setItem(y, dbThreadX->meterDataSize-1, item );
 
             meterTable->item(y, 0)->setText( dbThreadX->ngMeterTableList[y].date );
             meterTable->item(y, 1)->setText( dbThreadX->ngMeterTableList[y].time );
@@ -1174,6 +1175,7 @@ void MainWindow::ngMeterGraph()
         filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
         imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(0));
         pic->setPixmap( QPixmap::fromImage( imageFile ).scaled( imageFile.width(), imageFile.height(), Qt::KeepAspectRatio));
+        ui->meterValue->setText(QString::number(dbThreadX->ngMeterTableList[0].value, 'f', 1));
 
     }
 
@@ -1794,19 +1796,30 @@ void MainWindow::updateNgConsumptionValue(float val)
 
 void MainWindow::on_tab8Table_itemSelectionChanged()
 {
-    qDebug() << meterTable->currentRow();
+    //qDebug() << meterTable->currentRow();
     imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(meterTable->currentRow()));
     pic->setPixmap( QPixmap::fromImage( imageFile ).scaled( imageFile.width(), imageFile.height(), Qt::KeepAspectRatio));
-
+    ui->meterValue->setText(QString::number(dbThreadX->ngMeterTableList[meterTable->currentRow()].value, 'f', 1));
+    //ui->meterValue->raise();
 }
 
 void MainWindow::on_updateNgMeterData_clicked()
 {
     if (filesInDirList.size() > 0) {
+        dbThreadX->ngMeterUpdateList.clear();
         for (int i=0; i<filesInDirList.size(); i++) {
             if (meterTable->item(i, 4)->checkState() == Qt::Checked) {
-                qDebug() << meterTable->item(i, 2)->text();
+                //qDebug() << meterTable->item(i, 2)->text();
+                dbThreadX->appendMeterUpdateList(dbThreadX->ngMeterTableList[i].index, meterTable->item(i, 2)->text().toFloat());
             }
         }
+
+        dbThreadX->cmdUpdateMeterValue = true;
+        dbThreadX->start();
     }
+}
+
+void MainWindow::on_clearScene_clicked()
+{
+    clearGraph();
 }
