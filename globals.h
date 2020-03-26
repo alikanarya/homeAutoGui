@@ -79,6 +79,7 @@ QString zoneAllFileName = "zoneAll--";
 QString zonesFileName = "zones.csv";
 QString tableNames[8] = {"zones", "oto", "sln", "blk", "mut", "eyo", "cyo", "yod"};
 QString tableSummary = "summary";
+QString tableNgValue = "gas_reading2";
 QString tblSummaryFiels[19] =
     {"index", "date",
      "0_zone_rate", "1_zone_rate", "2_zone_rate", "3_zone_rate", "4_zone_rate", "5_zone_rate", "6_zone_rate", "7_zone_rate",

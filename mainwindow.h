@@ -146,6 +146,8 @@ private slots:
 
     void on_clearScene_clicked();
 
+    void on_checkNgMeterData_clicked();
+
 signals:
 
     void connectTo();

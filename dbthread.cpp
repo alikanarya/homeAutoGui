@@ -892,9 +892,11 @@ void dbThread::ngConsumption()
     end_DT.setDate( QDate::fromString(endDate, "dd/MM/yy") );
     end_DT.setTime( QTime::fromString(endTime, "hh:mm:ss") );
 
+    ngMeterTableListAllDay = false;
     if ( end_DT.secsTo(refDT) == 0 ) {
         end_DT = end_DT.addDays(1);
         end_DT.setTime( QTime::fromString("00:00:02") );
+        ngMeterTableListAllDay = true;
     }
     QString _endDate = end_DT.toString("dd/MM/yy");
     QString _endTime = end_DT.toString("hh:mm:ss");
@@ -904,11 +906,11 @@ void dbThread::ngConsumption()
     QString qryStr = "";
     if (_endDate == beginDate)
         qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) AND"
-                                                 "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg("gas_reading").arg(_endDate).arg(beginDate).arg(_endTime).arg(beginTime);
+                                                 "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg(tableNgValue).arg(_endDate).arg(beginDate).arg(_endTime).arg(beginTime);
     else
         qryStr = QString( "SELECT * FROM %1 WHERE (STR_TO_DATE(date, '%d/%m/%y') < STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(date, '%d/%m/%y') > STR_TO_DATE('%3', '%d/%m/%y')) OR"
                                                      "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%2', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') <= STR_TO_DATE('%4', '%H:%i:%s')) OR"
-                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg("gas_reading").arg(_endDate).arg(beginDate).arg(_endTime).arg(beginTime);
+                                                     "(STR_TO_DATE(date, '%d/%m/%y') = STR_TO_DATE('%3', '%d/%m/%y') AND STR_TO_DATE(time, '%H:%i:%s') >= STR_TO_DATE('%5', '%H:%i:%s'))").arg(tableNgValue).arg(_endDate).arg(beginDate).arg(_endTime).arg(beginTime);
 
     //qDebug() << qryStr.toUtf8().constData() << endl;
 
@@ -1004,7 +1006,7 @@ void dbThread::updateMeterValue()
     QString qryStr = "";
 
     for (int i=0; i<ngMeterUpdateList.size(); i++) {
-        qryStr = QString( "UPDATE `%1` SET `value` = %2, `note` = 'fixed'  WHERE `index` = %3" ).arg("gas_reading").arg(ngMeterUpdateList.at(i).value).arg(ngMeterUpdateList.at(i).index);
+        qryStr = QString( "UPDATE `%1` SET `value` = %2, `note` = 'fixed'  WHERE `index` = %3" ).arg(tableNgValue).arg(ngMeterUpdateList.at(i).value).arg(ngMeterUpdateList.at(i).index);
 
         //qDebug() << qryStr.toUtf8().constData() << endl;
 

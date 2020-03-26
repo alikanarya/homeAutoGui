@@ -2808,6 +2808,19 @@
        <string>Güncelle</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="checkNgMeterData">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>50</y>
+        <width>91</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Veri Kontrol</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="zoneEstimateButton">

@@ -20,6 +20,7 @@ extern float statTotalActiveZonesPercent[];
 
 extern QString tableNames[];
 extern QString tableSummary;
+extern QString tableNgValue;
 extern QString tblSummaryFiels[];
 
 class dbThread: public QThread{
@@ -160,6 +161,7 @@ public:
 
     QList<meterData> ngMeterTableList;
     QList<meterData> ngMeterUpdateList;
+    bool ngMeterTableListAllDay;
 
 public slots:
 

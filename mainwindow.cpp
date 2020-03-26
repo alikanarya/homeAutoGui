@@ -1107,7 +1107,7 @@ void MainWindow::ngMeterGraph()
         float ySpan = range * 1.1;
         float yScale = sceneHeight / ySpan; //scene->height()
         int min = yScale * range * 0.05;
-        qDebug() << "minValue: " << minValue << " range: " << range << " ySpan: " << ySpan << " yScale: " << yScale;
+        //qDebug() << "minValue: " << minValue << " range: " << range << " ySpan: " << ySpan << " yScale: " << yScale;
 
         float y = 0;
         for (int i=0; i<7; i++){
@@ -1122,7 +1122,10 @@ void MainWindow::ngMeterGraph()
 
         int count = 1;
 
-        for (int i=dbThreadX->ngMeterList.size()-1; i>0; i--){
+        int size = dbThreadX->ngMeterList.size();
+        if (dbThreadX->ngMeterTableListAllDay)  size--;
+
+        for (int i=size-1; i>0; i--){
 
             x1= dbThreadX->ngMeterList[i].timeDiff / graphScale;
             x2= dbThreadX->ngMeterList[i-1].timeDiff / graphScale;
@@ -1149,22 +1152,24 @@ void MainWindow::ngMeterGraph()
         //-------------------------------------------------------------------------------
         meterTable->setRowCount(dbThreadX->ngMeterTableList.size());
         meterTable->setColumnCount(5);
-        meterTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        meterTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        //meterTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-        for (int y=0; y<dbThreadX->ngMeterTableList.size(); y++){
+        for (int y=0; y<size; y++){
             for (int x=0; x<dbThreadX->meterDataSize; x++){
                 meterTable->setItem(y, x, new QTableWidgetItem( " " ) );
                 meterTable->item(y, x)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
             }
-            QTableWidgetItem *item = new QTableWidgetItem(" ");
-            item->setCheckState(Qt::Unchecked);
-            meterTable->setItem(y, dbThreadX->meterDataSize-1, item );
 
             meterTable->item(y, 0)->setText( dbThreadX->ngMeterTableList[y].date );
             meterTable->item(y, 1)->setText( dbThreadX->ngMeterTableList[y].time );
             meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].value, 'f', 1) );
             meterTable->item(y, 3)->setText( dbThreadX->ngMeterTableList[y].note );
 
+            QTableWidgetItem *item = new QTableWidgetItem(" ");
+            item->setCheckState(Qt::Unchecked);
+            item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            meterTable->setItem(y, dbThreadX->meterDataSize-1, item );
         }
 
         ui->paramTabs->setCurrentIndex(7);
@@ -1822,4 +1827,27 @@ void MainWindow::on_updateNgMeterData_clicked()
 void MainWindow::on_clearScene_clicked()
 {
     clearGraph();
+}
+
+void MainWindow::on_checkNgMeterData_clicked()
+{
+    meterTable->setColumnCount(6);
+
+    int size = dbThreadX->ngMeterList.size();
+    if (dbThreadX->ngMeterTableListAllDay)  size--;
+
+    for (int y=0; y<size; y++){
+        float diff = 0;
+        if (y>0) {
+            diff = dbThreadX->ngMeterTableList[y].value-dbThreadX->ngMeterTableList[y-1].value;
+        }
+        meterTable->setItem(y, 5, new QTableWidgetItem( QString::number(diff, 'f', 1) ) );
+        meterTable->item(y, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        if (diff<0 || diff>1)
+            meterTable->item(y, 5)->setBackground(QBrush(QColor(255, 0, 0)));
+//        meterTable->item(y, 5)->setForeground(QBrush(QColor(255, 0, 0)));
+
+    }
+
+
 }
