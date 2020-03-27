@@ -1123,7 +1123,7 @@ void MainWindow::ngMeterGraph()
         int count = 1;
 
         int size = dbThreadX->ngMeterList.size();
-        if (dbThreadX->ngMeterTableListAllDay)  size--;
+        //if (dbThreadX->ngMeterTableListAllDay)  size--;
 
         for (int i=size-1; i>0; i--){
 
@@ -1802,7 +1802,15 @@ void MainWindow::updateNgConsumptionValue(float val)
 void MainWindow::on_tab8Table_itemSelectionChanged()
 {
     //qDebug() << meterTable->currentRow();
-    imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(meterTable->currentRow()));
+    QDateTime date;
+    date.setDate( QDate::fromString( dbThreadX->ngMeterTableList[meterTable->currentRow()].date, "dd/MM/yy") );
+    date.setTime( QTime::fromString( dbThreadX->ngMeterTableList[meterTable->currentRow()].time, "hh:mm:ss") );
+
+    QString filePath= "//"+clientAddress+"/ngmeter-data/20"+date.date().toString("yy-MM/dd/20")+date.date().toString("yyMMdd_")+date.time().toString("hhmmss.jpeg");
+    //qDebug() << filePath;
+
+    //imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(meterTable->currentRow()));
+    imageFile.load(filePath);
     pic->setPixmap( QPixmap::fromImage( imageFile ).scaled( imageFile.width(), imageFile.height(), Qt::KeepAspectRatio));
     ui->meterValue->setText(QString::number(dbThreadX->ngMeterTableList[meterTable->currentRow()].value, 'f', 1));
     //ui->meterValue->raise();
@@ -1834,7 +1842,7 @@ void MainWindow::on_checkNgMeterData_clicked()
     meterTable->setColumnCount(6);
 
     int size = dbThreadX->ngMeterList.size();
-    if (dbThreadX->ngMeterTableListAllDay)  size--;
+    //if (dbThreadX->ngMeterTableListAllDay)  size--;
 
     for (int y=0; y<size; y++){
         float diff = 0;
