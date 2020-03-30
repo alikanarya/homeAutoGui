@@ -1174,16 +1174,21 @@ void MainWindow::ngMeterGraph()
 
         ui->paramTabs->setCurrentIndex(7);
 
-        fileOpenDir.setPath("//"+clientAddress+"/ngmeter-data/"+ui->dateEdit_BEGIN->date().toString("yyyy-MM/dd/"));
-        //qDebug() << fileOpenDir;
+        QString mainPath = "//"+clientAddress;
+        fileOpenDir.setPath(mainPath+"/ngmeter-data/"+ui->dateEdit_BEGIN->date().toString("yyyy-MM/dd/"));
 
         filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
+        if (filesInDirList.isEmpty()) {
+            mainPath = "D:/Engineering/Repository Data/meter";
+            fileOpenDir.setPath(mainPath+"/ngmeter-data/"+ui->dateEdit_BEGIN->date().toString("yyyy-MM/dd/"));
+            filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
+        }
+
+        //qDebug() << fileOpenDir;
         imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(0));
         pic->setPixmap( QPixmap::fromImage( imageFile ).scaled( imageFile.width(), imageFile.height(), Qt::KeepAspectRatio));
         ui->meterValue->setText(QString::number(dbThreadX->ngMeterTableList[0].value, 'f', 1));
-
     }
-
 }
 
 void MainWindow::on_saveTempData_clicked(){
@@ -1806,7 +1811,18 @@ void MainWindow::on_tab8Table_itemSelectionChanged()
     date.setDate( QDate::fromString( dbThreadX->ngMeterTableList[meterTable->currentRow()].date, "dd/MM/yy") );
     date.setTime( QTime::fromString( dbThreadX->ngMeterTableList[meterTable->currentRow()].time, "hh:mm:ss") );
 
-    QString filePath= "//"+clientAddress+"/ngmeter-data/20"+date.date().toString("yy-MM/dd/20")+date.date().toString("yyMMdd_")+date.time().toString("hhmmss.jpeg");
+    QString mainPath = "//"+clientAddress;
+    fileOpenDir.setPath(mainPath+"/ngmeter-data/"+ui->dateEdit_BEGIN->date().toString("yyyy-MM/dd/"));
+    //qDebug() << fileOpenDir;
+
+    filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
+    if (filesInDirList.isEmpty()) {
+        mainPath = "D:/Engineering/Repository Data/meter";
+        fileOpenDir.setPath(mainPath+"/ngmeter-data/"+ui->dateEdit_BEGIN->date().toString("yyyy-MM/dd/"));
+        filesInDirList = fileOpenDir.entryList(fileFilters, QDir::Files);
+    }
+
+    QString filePath= mainPath+"/ngmeter-data/20"+date.date().toString("yy-MM/dd/20")+date.date().toString("yyMMdd_")+date.time().toString("hhmmss.jpeg");
     //qDebug() << filePath;
 
     //imageFile.load(fileOpenDir.path()+"/"+filesInDirList.at(meterTable->currentRow()));
@@ -1839,21 +1855,53 @@ void MainWindow::on_clearScene_clicked()
 
 void MainWindow::on_checkNgMeterData_clicked()
 {
-    meterTable->setColumnCount(6);
+    meterTable->setColumnCount(7);
 
     int size = dbThreadX->ngMeterList.size();
     //if (dbThreadX->ngMeterTableListAllDay)  size--;
 
+    QList<bool> issueList;
+    issueList.append(false);
+
     for (int y=0; y<size; y++){
+
         float diff = 0;
+        int diffTime = 0;
+
         if (y>0) {
-            diff = dbThreadX->ngMeterTableList[y].value-dbThreadX->ngMeterTableList[y-1].value;
+
+            QDateTime currentDT;
+            currentDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[y].date, "dd/MM/yy") );
+            currentDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[y].time, "hh:mm:ss") );
+
+            int yy = y;
+            bool cont = true;
+            do {
+                yy--;
+                if (!issueList.at(yy)) {
+                    QDateTime prevDT;
+                    prevDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[yy].date, "dd/MM/yy") );
+                    prevDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[yy].time, "hh:mm:ss") );
+
+                    diffTime = prevDT.secsTo(currentDT);
+                    diff = dbThreadX->ngMeterTableList[y].value-dbThreadX->ngMeterTableList[yy].value;
+                    cont = false;
+                }
+            } while (y > 0 && cont);
         }
+
         meterTable->setItem(y, 5, new QTableWidgetItem( QString::number(diff, 'f', 1) ) );
         meterTable->item(y, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        if (diff<0 || diff>1)
+        meterTable->setItem(y, 6, new QTableWidgetItem( QString::number(diffTime) ) );
+        meterTable->item(y, 6)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+        if ( diff < 0 || diff > (1.5 * diffTime/3600.0) ) {
+            issueList.append(true);
             meterTable->item(y, 5)->setBackground(QBrush(QColor(255, 0, 0)));
 //        meterTable->item(y, 5)->setForeground(QBrush(QColor(255, 0, 0)));
+        } else {
+            if (y!=0) issueList.append(false);
+        }
 
     }
 
