@@ -2743,7 +2743,7 @@
        <number>1</number>
       </property>
       <property name="columnCount">
-       <number>4</number>
+       <number>5</number>
       </property>
       <attribute name="horizontalHeaderMinimumSectionSize">
        <number>42</number>
@@ -2792,6 +2792,11 @@
       <column>
        <property name="text">
         <string>Note</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>OCR</string>
        </property>
       </column>
      </widget>

@@ -150,13 +150,14 @@ public:
     QList<tempData> tempList;
     QList<tempData> ngMeterList;
 
-    int meterDataSize = 5;
+    int meterDataSize = 6;
     struct meterData {
         int index;
         QString date;
         QString time;
         float value;
         QString note;
+        float ocr;
     };
 
     QList<meterData> ngMeterTableList;

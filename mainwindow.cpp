@@ -1151,7 +1151,7 @@ void MainWindow::ngMeterGraph()
         drawGraphZonesFlag = true;
         //-------------------------------------------------------------------------------
         meterTable->setRowCount(dbThreadX->ngMeterTableList.size());
-        meterTable->setColumnCount(5);
+        meterTable->setColumnCount(6);
         meterTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
         //meterTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
@@ -1165,6 +1165,7 @@ void MainWindow::ngMeterGraph()
             meterTable->item(y, 1)->setText( dbThreadX->ngMeterTableList[y].time );
             meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].value, 'f', 1) );
             meterTable->item(y, 3)->setText( dbThreadX->ngMeterTableList[y].note );
+            meterTable->item(y, 4)->setText( QString::number(dbThreadX->ngMeterTableList[y].ocr, 'f', 1) );
 
             QTableWidgetItem *item = new QTableWidgetItem(" ");
             item->setCheckState(Qt::Unchecked);
@@ -1837,7 +1838,7 @@ void MainWindow::on_updateNgMeterData_clicked()
     if (filesInDirList.size() > 0) {
         dbThreadX->ngMeterUpdateList.clear();
         for (int i=0; i<filesInDirList.size(); i++) {
-            if (meterTable->item(i, 4)->checkState() == Qt::Checked) {
+            if (meterTable->item(i, 5)->checkState() == Qt::Checked) {
                 //qDebug() << meterTable->item(i, 2)->text();
                 dbThreadX->appendMeterUpdateList(dbThreadX->ngMeterTableList[i].index, meterTable->item(i, 2)->text().toFloat());
             }
@@ -1855,8 +1856,8 @@ void MainWindow::on_clearScene_clicked()
 
 void MainWindow::on_checkNgMeterData_clicked()
 {
-    meterTable->setColumnCount(7);
-
+    meterTable->setColumnCount(8);
+    meterTable->setHorizontalHeaderLabels({"date","time","value","note","ocr","upd","diff","Tdiff"});
     int size = dbThreadX->ngMeterList.size();
     //if (dbThreadX->ngMeterTableListAllDay)  size--;
 
@@ -1890,15 +1891,24 @@ void MainWindow::on_checkNgMeterData_clicked()
             } while (y > 0 && cont);
         }
 
-        meterTable->setItem(y, 5, new QTableWidgetItem( QString::number(diff, 'f', 1) ) );
-        meterTable->item(y, 5)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        meterTable->setItem(y, 6, new QTableWidgetItem( QString::number(diffTime) ) );
+        meterTable->setItem(y, 6, new QTableWidgetItem( QString::number(diff, 'f', 1) ) );
         meterTable->item(y, 6)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        meterTable->setItem(y, 7, new QTableWidgetItem( QString::number(diffTime) ) );
+        meterTable->item(y, 7)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-        if ( diff < 0 || diff > (1.5 * diffTime/3600.0) ) {
+        float n = dbThreadX->ngMeterTableList[y].value;
+        if (n==0)   n=1;
+        int digitNo = qFloor(log10(n))+1;
+
+        if ( diff < 0 || diff > (1 * diffTime/3600.0) ) {
+            if (digitNo>4) {
+                dbThreadX->ngMeterTableList[y].value = n - qFloor(n/10000) * 10000;
+                meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].value, 'f', 1) );
+            }
             issueList.append(true);
-            meterTable->item(y, 5)->setBackground(QBrush(QColor(255, 0, 0)));
-//        meterTable->item(y, 5)->setForeground(QBrush(QColor(255, 0, 0)));
+            meterTable->item(y, 3)->setText( "error" );
+            //meterTable->item(y, 6)->setBackground(QBrush(QColor(255, 0, 0)));
+            //meterTable->item(y, 6)->setForeground(QBrush(QColor(255, 0, 0)));
         } else {
             if (y!=0) issueList.append(false);
         }

@@ -973,6 +973,7 @@ void dbThread::ngConsumption()
                     d.time = qry.value(2).toString();
                     d.value = val;
                     d.note = qry.value(4).toString();
+                    d.ocr = val;
                     ngMeterTableList.append(d);
 
                     if (verbose){
