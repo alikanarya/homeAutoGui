@@ -1885,7 +1885,7 @@ void MainWindow::on_checkNgMeterData_clicked()
                     prevDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[yy].time, "hh:mm:ss") );
 
                     diffTime = prevDT.secsTo(currentDT);
-                    diff = dbThreadX->ngMeterTableList[y].value-dbThreadX->ngMeterTableList[yy].value;
+                    diff = dbThreadX->ngMeterTableList[y].ocr - dbThreadX->ngMeterTableList[yy].ocr;
                     cont = false;
                 }
             } while (y > 0 && cont);
@@ -1896,14 +1896,14 @@ void MainWindow::on_checkNgMeterData_clicked()
         meterTable->setItem(y, 7, new QTableWidgetItem( QString::number(diffTime) ) );
         meterTable->item(y, 7)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
-        float n = dbThreadX->ngMeterTableList[y].value;
+        float n = dbThreadX->ngMeterTableList[y].ocr;
         if (n==0)   n=1;
         int digitNo = qFloor(log10(n))+1;
 
         if ( diff < 0 || diff > (1 * diffTime/3600.0) ) {
             if (digitNo>4) {
-                dbThreadX->ngMeterTableList[y].value = n - qFloor(n/10000) * 10000;
-                meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].value, 'f', 1) );
+                dbThreadX->ngMeterTableList[y].ocr = n - qFloor(n/10000) * 10000;
+                meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].ocr, 'f', 1) );
             }
             issueList.append(true);
             meterTable->item(y, 3)->setText( "error" );
