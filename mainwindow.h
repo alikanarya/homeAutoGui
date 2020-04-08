@@ -79,6 +79,17 @@ public:
     QStringList filesInDirList;
     QStringList fileFilters  = (QStringList() << "*.jpeg" << "*.jpg" << "*.png");
     int filesInDirListIndex = 0;
+//
+    int meterDataWindowSize = 9;
+    struct meterData {
+        int timeDiff;
+        int valDiff;
+        bool state;
+    };
+    QList<meterData> meterDataWindow;
+//
+
+    QList<int> stateList;   // 0: normal, 1: val=0(<4), 2: val digit>4, 3: val is decreasing, 4: val is increasing too much
 
     QLabel *pic;
 QVBoxLayout *layout;
@@ -147,6 +158,10 @@ private slots:
     void on_clearScene_clicked();
 
     void on_checkNgMeterData_clicked();
+
+    void on_checkNgMeterDataWindow_clicked();
+
+    void on_fixNgMeterData_clicked();
 
 signals:
 

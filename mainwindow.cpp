@@ -1914,6 +1914,203 @@ void MainWindow::on_checkNgMeterData_clicked()
         }
 
     }
+    float sum = 0;
+    int cnt = 0;
+    for (int y=0; y<size; y++){
+        if (!issueList.at(y)) {
+            cnt++;
+            sum += dbThreadX->ngMeterTableList[y].ocr;
+        }
+    }
 
+    float avg = sum / cnt;
+    qDebug() << "cnt: " << cnt << " avg: " << avg;
 
+}
+
+void MainWindow::on_checkNgMeterDataWindow_clicked()
+{
+    meterTable->setColumnCount(10);
+    meterTable->setHorizontalHeaderLabels({"date","time","value","note","ocr","upd","diffOcr","Tdiff","State","#"});
+    int size = dbThreadX->ngMeterList.size();
+    //if (dbThreadX->ngMeterTableListAllDay)  size--;
+
+    stateList.clear();   // 0: normal, 1: val=0(<4), 2: val digit>4, 3: val is decreasing, 4: val is increasing too much
+
+    float n = dbThreadX->ngMeterTableList[0].ocr;
+    if (n==0)   n=1;
+    int digitNo = qFloor(log10(n))+1;
+
+    if (digitNo<4)
+        stateList.append(1);
+    else if (digitNo>4) {
+        dbThreadX->ngMeterTableList[0].ocr = n - qFloor(n/10000) * 10000;
+        stateList.append(2);
+        meterTable->item(0, 2)->setText( QString::number(dbThreadX->ngMeterTableList[0].ocr, 'f', 1) );
+    } else
+        stateList.append(0);
+
+    if (stateList.at(0)!=0)
+        meterTable->item(0, 3)->setText( "error" );
+
+    meterTable->setItem(0, 6, new QTableWidgetItem( QString::number(0.0, 'f', 1) ) );
+    meterTable->item(0, 6)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    meterTable->setItem(0, 7, new QTableWidgetItem( QString::number(0) ) );
+    meterTable->item(0, 7)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    meterTable->setItem(0, 8, new QTableWidgetItem( QString::number(stateList.at(0)) ) );
+    meterTable->item(0, 8)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    meterTable->setItem(0, 9, new QTableWidgetItem( QString::number(0) ) );
+    meterTable->item(0, 9)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+    for (int y=1; y<size; y++){
+
+        float diff = 0;
+        int diffTime = 0;
+
+        QDateTime currentDT;
+        currentDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[y].date, "dd/MM/yy") );
+        currentDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[y].time, "hh:mm:ss") );
+
+        int yy = y;
+        bool cont = true;
+        do {
+            yy--;
+            if (stateList.at(yy)==0 || stateList.at(yy)==2 ) {
+                QDateTime prevDT;
+                prevDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[yy].date, "dd/MM/yy") );
+                prevDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[yy].time, "hh:mm:ss") );
+
+                diffTime = prevDT.secsTo(currentDT);
+                diff = dbThreadX->ngMeterTableList[y].ocr - dbThreadX->ngMeterTableList[yy].ocr;
+                cont = false;
+            }
+        } while (yy > 0 && cont);
+
+        meterTable->setItem(y, 6, new QTableWidgetItem( QString::number(diff, 'f', 1) ) );
+        meterTable->item(y, 6)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        meterTable->setItem(y, 7, new QTableWidgetItem( QString::number(diffTime) ) );
+        meterTable->item(y, 7)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+        n = dbThreadX->ngMeterTableList[y].ocr;
+        if (n==0)   n=1;
+        digitNo = qFloor(log10(n))+1;
+
+        if (digitNo<4)
+            stateList.append(1);
+        else if (digitNo>4) {
+            dbThreadX->ngMeterTableList[y].ocr = n - qFloor(n/10000) * 10000;
+            stateList.append(2);
+            meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].ocr, 'f', 1) );
+        } else {
+            if (diff<0) {
+                stateList.append(3);
+            } else if (diff > (1 * diffTime/3600.0)) {
+                stateList.append(4);
+            } else
+                stateList.append(0);
+
+        }
+
+        if (stateList.at(y)!=0)
+            meterTable->item(y, 3)->setText( "error" );
+
+        meterTable->setItem(y, 8, new QTableWidgetItem( QString::number(stateList.at(y)) ) );
+        meterTable->item(y, 8)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        meterTable->setItem(y, 9, new QTableWidgetItem( QString::number(y) ) );
+        meterTable->item(y, 9)->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    }
+
+    float sum = 0;
+    int cnt = 0;
+    for (int y=0; y<size; y++){
+        if (stateList.at(y)==0 || stateList.at(y)==2) {
+            cnt++;
+            sum += dbThreadX->ngMeterTableList[y].ocr;
+        }
+    }
+
+    float avg = sum / cnt;
+    qDebug() << "cnt: " << cnt << " avg: " << avg;
+}
+
+void MainWindow::on_fixNgMeterData_clicked()
+{
+//    QList<QPoint> rangeList;
+    QList<int> rangeList;
+    //QPoint p;
+    bool errorRange = false;
+    bool startError = false;
+    if ( !(stateList.at(0)==0 || stateList.at(0)==2) ) {
+        //p.setX(0);
+        rangeList.append(0);
+        errorRange = true;
+        startError = true;
+    }
+
+    for (int y=1; y<dbThreadX->ngMeterList.size(); y++){
+        if (errorRange) {
+            if (stateList.at(y)==0 || stateList.at(y)==2) {
+                //p.setY(y-1);
+                rangeList.append(y-1);
+                errorRange = false;
+                if (startError)
+                    startError = false;
+            }
+
+        } else {
+            if ( !(stateList.at(y)==0 || stateList.at(y)==2) ) {
+                //QPoint p;
+                //p.setX(y);
+                rangeList.append(y);
+                errorRange = true;
+            }
+        }
+    }
+
+    if (errorRange)
+        rangeList.append(dbThreadX->ngMeterList.size()-1);
+
+    QList<int> state2List;
+    for (int y=0; y<dbThreadX->ngMeterList.size(); y++){
+        if ( stateList.at(y)==2 ) {
+            state2List.append(y);
+        }
+    }
+
+    qDebug() << "Error index ranges: " << rangeList;
+    qDebug() << "State 2 indexes: " << state2List;
+
+    for (int i=0; i<rangeList.size(); i=i+2) {
+        if ( rangeList.at(i)==0 ) {
+
+        } else
+        if ( rangeList.at(i+1)==dbThreadX->ngMeterList.size()-1 ) {
+
+        } else {
+            QDateTime currentDT;
+            currentDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[rangeList.at(i+1)+1].date, "dd/MM/yy") );
+            currentDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[rangeList.at(i+1)+1].time, "hh:mm:ss") );
+            QDateTime prevDT;
+            prevDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[rangeList.at(i)-1].date, "dd/MM/yy") );
+            prevDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[rangeList.at(i)-1].time, "hh:mm:ss") );
+            int diffTime = prevDT.secsTo(currentDT);
+            float diff = dbThreadX->ngMeterTableList[rangeList.at(i+1)+1].ocr - dbThreadX->ngMeterTableList[rangeList.at(i)-1].ocr;
+
+            for (int j=rangeList.at(i); j<=rangeList.at(i+1); j++) {
+                currentDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[j].date, "dd/MM/yy") );
+                currentDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[j].time, "hh:mm:ss") );
+                dbThreadX->ngMeterTableList[j].value = dbThreadX->ngMeterTableList[rangeList.at(i)-1].ocr + diff * prevDT.secsTo(currentDT) / diffTime;
+
+                meterTable->item(j, 2)->setText( QString::number(dbThreadX->ngMeterTableList[j].value, 'f', 2) );
+
+            }
+
+            for (int j=0; j<state2List.size(); j++) {
+                if (state2List.at(j)==rangeList.at(i) || state2List.at(j)==rangeList.at(i+1)) {
+
+                }
+            }
+        }
+
+    }
 }
