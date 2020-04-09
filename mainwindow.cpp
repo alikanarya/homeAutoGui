@@ -1685,6 +1685,90 @@ void MainWindow::drawRoomEstimation(){
 
 }
 
+void MainWindow::checkNgDataTable()
+{
+    int size = dbThreadX->ngMeterList.size();
+    //if (dbThreadX->ngMeterTableListAllDay)  size--;
+
+    stateList.clear();   // 0: normal, 1: val=0(<4), 2: val digit>4, 3: val is decreasing, 4: val is increasing too much
+
+    float n = dbThreadX->ngMeterTableList[0].value;
+    if (n==0)   n=1;
+    int digitNo = qFloor(log10(n))+1;
+
+    if (digitNo<4)
+        stateList.append(1);
+    else if (digitNo>4) {
+        stateList.append(2);
+    } else
+        stateList.append(0);
+
+    if (stateList.at(0)!=0)
+        meterTable->item(0, 2)->setBackground(QBrush(QColor(255, 0, 0)));
+
+    for (int y=1; y<size; y++){
+
+        float diff = 0;
+        int diffTime = 0;
+
+        QDateTime currentDT;
+        currentDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[y].date, "dd/MM/yy") );
+        currentDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[y].time, "hh:mm:ss") );
+
+        int yy = y;
+        bool cont = true;
+        do {
+            yy--;
+            if (stateList.at(yy)==0 || stateList.at(yy)==2 ) {
+                QDateTime prevDT;
+                prevDT.setDate( QDate::fromString(dbThreadX->ngMeterTableList[yy].date, "dd/MM/yy") );
+                prevDT.setTime( QTime::fromString(dbThreadX->ngMeterTableList[yy].time, "hh:mm:ss") );
+
+                diffTime = prevDT.secsTo(currentDT);
+                diff = dbThreadX->ngMeterTableList[y].value - dbThreadX->ngMeterTableList[yy].value;
+                cont = false;
+            }
+        } while (yy > 0 && cont);
+
+        n = dbThreadX->ngMeterTableList[y].value;
+        if (n==0)   n=1;
+        digitNo = qFloor(log10(n))+1;
+
+        if (digitNo<4)
+            stateList.append(1);
+        else if (digitNo>4) {
+            stateList.append(2);
+        } else {
+            if (diff<0) {
+                stateList.append(3);
+            } else if (diff > (maxDiffHour * diffTime/3600.0)) {
+                stateList.append(4);
+            } else
+                stateList.append(0);
+
+        }
+
+        if (stateList.at(y)!=0)
+            meterTable->item(y, 2)->setBackground(QBrush(QColor(255, 0, 0)));
+
+    }
+
+    int cnt = 0;
+    for (int y=0; y<size; y++){
+        if (stateList.at(y)!=0) {
+            cnt++;
+        }
+    }
+
+    if (cnt>0) {
+        ui->textBrowser->append("Data integrity NOT passed ("+QString::number(cnt)+" item)");
+    } else {
+        ui->textBrowser->append("Data integrity PASSED");
+
+    }
+
+}
+
 void MainWindow::on_dateEdit_END_dateChanged(const QDate &date){
     if (date < ui->dateEdit_BEGIN->date())
         ui->dateEdit_BEGIN->setDate(date);
@@ -1840,7 +1924,10 @@ void MainWindow::on_updateNgMeterData_clicked()
         for (int i=0; i<filesInDirList.size(); i++) {
             if (meterTable->item(i, 5)->checkState() == Qt::Checked) {
                 //qDebug() << meterTable->item(i, 2)->text();
-                dbThreadX->appendMeterUpdateList(dbThreadX->ngMeterTableList[i].index, meterTable->item(i, 2)->text().toFloat());
+                if (ui->checkBoxManual->isChecked())
+                    dbThreadX->appendMeterUpdateList(dbThreadX->ngMeterTableList[i].index, meterTable->item(i, 2)->text().toFloat());
+                else
+                    dbThreadX->appendMeterUpdateList(dbThreadX->ngMeterTableList[i].index, dbThreadX->ngMeterTableList[i].value);
             }
         }
 
@@ -1856,6 +1943,8 @@ void MainWindow::on_clearScene_clicked()
 
 void MainWindow::on_checkNgMeterData_clicked()
 {
+    checkNgDataTable();
+/*
     meterTable->setColumnCount(8);
     meterTable->setHorizontalHeaderLabels({"date","time","value","note","ocr","upd","diff","Tdiff"});
     int size = dbThreadX->ngMeterList.size();
@@ -1900,7 +1989,7 @@ void MainWindow::on_checkNgMeterData_clicked()
         if (n==0)   n=1;
         int digitNo = qFloor(log10(n))+1;
 
-        if ( diff < 0 || diff > (1 * diffTime/3600.0) ) {
+        if ( diff < 0 || diff > (maxDiffHour * diffTime/3600.0) ) {
             if (digitNo>4) {
                 dbThreadX->ngMeterTableList[y].ocr = n - qFloor(n/10000) * 10000;
                 meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].ocr, 'f', 1) );
@@ -1925,7 +2014,7 @@ void MainWindow::on_checkNgMeterData_clicked()
 
     float avg = sum / cnt;
     qDebug() << "cnt: " << cnt << " avg: " << avg;
-
+*/
 }
 
 void MainWindow::on_checkNgMeterDataWindow_clicked()
@@ -1944,9 +2033,10 @@ void MainWindow::on_checkNgMeterDataWindow_clicked()
     if (digitNo<4)
         stateList.append(1);
     else if (digitNo>4) {
-        dbThreadX->ngMeterTableList[0].ocr = n - qFloor(n/10000) * 10000;
+        dbThreadX->ngMeterTableList[0].value = n - qFloor(n/10000) * 10000;
+        dbThreadX->ngMeterTableList[0].ocr = dbThreadX->ngMeterTableList[0].value;
         stateList.append(2);
-        meterTable->item(0, 2)->setText( QString::number(dbThreadX->ngMeterTableList[0].ocr, 'f', 1) );
+        meterTable->item(0, 2)->setText( QString::number(dbThreadX->ngMeterTableList[0].value, 'f', 1) );
     } else
         stateList.append(0);
 
@@ -1998,13 +2088,14 @@ void MainWindow::on_checkNgMeterDataWindow_clicked()
         if (digitNo<4)
             stateList.append(1);
         else if (digitNo>4) {
-            dbThreadX->ngMeterTableList[y].ocr = n - qFloor(n/10000) * 10000;
+            dbThreadX->ngMeterTableList[y].value = n - qFloor(n/10000) * 10000;
+            dbThreadX->ngMeterTableList[y].ocr = dbThreadX->ngMeterTableList[y].value;
             stateList.append(2);
-            meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].ocr, 'f', 1) );
+            meterTable->item(y, 2)->setText( QString::number(dbThreadX->ngMeterTableList[y].value, 'f', 1) );
         } else {
             if (diff<0) {
                 stateList.append(3);
-            } else if (diff > (1 * diffTime/3600.0)) {
+            } else if (diff > (maxDiffHour * diffTime/3600.0)) {
                 stateList.append(4);
             } else
                 stateList.append(0);
@@ -2025,7 +2116,7 @@ void MainWindow::on_checkNgMeterDataWindow_clicked()
     for (int y=0; y<size; y++){
         if (stateList.at(y)==0 || stateList.at(y)==2) {
             cnt++;
-            sum += dbThreadX->ngMeterTableList[y].ocr;
+            sum += dbThreadX->ngMeterTableList[y].value;
         }
     }
 
@@ -2102,15 +2193,17 @@ void MainWindow::on_fixNgMeterData_clicked()
                 dbThreadX->ngMeterTableList[j].value = dbThreadX->ngMeterTableList[rangeList.at(i)-1].ocr + diff * prevDT.secsTo(currentDT) / diffTime;
 
                 meterTable->item(j, 2)->setText( QString::number(dbThreadX->ngMeterTableList[j].value, 'f', 2) );
+                meterTable->item(j, 5)->setCheckState(Qt::Checked);
 
             }
 
-            for (int j=0; j<state2List.size(); j++) {
-                if (state2List.at(j)==rangeList.at(i) || state2List.at(j)==rangeList.at(i+1)) {
-
-                }
-            }
         }
-
     }
+
+    for (int j=0; j<state2List.size(); j++) {
+        //if (state2List.at(j)==rangeList.at(i) || state2List.at(j)==rangeList.at(i+1)) { }
+        meterTable->item(state2List.at(j), 5)->setCheckState(Qt::Checked);
+    }
+
+    checkNgDataTable();
 }

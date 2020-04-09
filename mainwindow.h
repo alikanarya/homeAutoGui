@@ -38,6 +38,7 @@ public:
     float calcEstValueNormal(int zone, int inp);
     float calcEstValueReduced(int zone, int inp);
     void drawRoomEstimation();
+    void checkNgDataTable();
 
     QSettings *settings;                // settings: to read/write ini file
     ThreadProgressDialog *progress;
@@ -90,10 +91,12 @@ public:
 //
 
     QList<int> stateList;   // 0: normal, 1: val=0(<4), 2: val digit>4, 3: val is decreasing, 4: val is increasing too much
+    float maxDiffHour = 1.6;
 
     QLabel *pic;
-QVBoxLayout *layout;
-QImage imageFile;
+    QVBoxLayout *layout;
+    QImage imageFile;
+
 private:
 
     Ui::MainWindow *ui;
